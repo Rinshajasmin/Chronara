@@ -1,0 +1,29 @@
+/* userheader.css */
+
+/* Apply Google Font (Roboto) to Navbar */
+/* userheader.css */
+
+/* Apply Poppins font to the entire navbar */
+.navbar {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* Apply Poppins to the navbar brand */
+  .navbar-brand {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600; /* Optionally, use a heavier weight for the brand */
+  }
+  
+  /* Apply Poppins to the navbar links */
+  .nav-link {
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold; /* Regular font weight for links */
+
+  }
+  
+  /* Style for hover effect */
+  .nav-link:hover {
+    color: #007bff; /* Change color when hovering over links */
+  }
+  
+  

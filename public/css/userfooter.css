@@ -1,0 +1,150 @@
+/* General Footer Styling */
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 15px;
+  position: relative; /* Ensures children elements can use absolute positioning */
+  min-height: 150px; /* Ensures the footer has sufficient height */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes content to top and bottom */
+}
+
+/* Footer Left Section in Bottom-Left Corner */
+.footer-left {
+  position: absolute;
+  bottom: 15px; /* Adjust distance from the bottom */
+  left: 15px; /* Adjust distance from the left */
+  display: flex;
+  align-items: center; /* Vertically center content */
+}
+
+/* Ensure .footer-logo container is visible and aligned */
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between image and text */
+  visibility: visible; /* Ensure logo is visible */
+}
+
+/* Footer Logo Image Style */
+.footer-logo img {
+  height: 60px; /* Set the height */
+  width: auto; /* Maintain aspect ratio */
+  display: block; /* Ensure the image is displayed properly */
+}
+
+/* Footer Left Text Style */
+.footer-left p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.footer-left a {
+  margin-left: 10px;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Footer Right Section */
+.footer-right {
+  position: absolute;
+  top: 15px; /* Adjust distance from the top */
+  right: 15px; /* Adjust distance from the right */
+}
+
+.footer-right nav {
+  display: flex;
+  gap: 15px;
+}
+
+.footer-right nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.footer-right nav a:hover {
+  text-decoration: underline;
+}
+
+/* About Us Section */
+.footer-about {
+  text-align: center;
+  margin-top: auto;
+}
+
+.footer-about .icons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.footer-about .icons i {
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.footer-about .icons i:hover {
+  color: #ddd;
+}
+/* For smaller screens (max-width: 768px) */
+@media (max-width: 768px) {
+  footer {
+    padding: 20px 10px; /* Adjust padding for smaller screens */
+  }
+
+  /* Footer Left Section */
+  .footer-left {
+    position: relative; /* Remove absolute positioning */
+    bottom: auto; /* Remove bottom positioning */
+    left: auto; /* Remove left positioning */
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center content */
+    margin-bottom: 15px; /* Add space between sections */
+  }
+
+  .footer-logo img {
+    height: 50px; /* Smaller logo on mobile */
+  }
+
+  /* Footer Right Section */
+  .footer-right {
+    position: relative; /* Remove absolute positioning */
+    top: auto;
+    right: auto;
+    margin-top: 10px; /* Add space between footer-right and footer-about */
+    text-align: center; /* Center the navigation */
+  }
+
+  .footer-right nav {
+    display: block; /* Stack links vertically */
+    gap: 10px;
+  }
+
+  .footer-about .icons {
+    gap: 20px; /* Increase space between icons */
+  }
+
+  .footer-about .icons i {
+    font-size: 1rem; /* Smaller icons for mobile */
+  }
+}
+
+/* For very small screens (max-width: 480px) */
+@media (max-width: 480px) {
+  .footer-left p,
+  .footer-left a {
+    font-size: 0.8rem; /* Smaller font size for mobile */
+  }
+
+  .footer-right nav a {
+    font-size: 0.8rem; /* Smaller font size for links */
+  }
+
+  .footer-about .icons i {
+    font-size: 0.
+  }
+}

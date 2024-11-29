@@ -1,0 +1,251 @@
+/* General Styles */
+/* General Styles */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f3f4f6;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #d8d8d8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar nav a {
+  margin-left: 20px;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* Login Page Layout */
+.login-page .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 60px); /* Adjust for fixed navbar height */
+  padding-top: 60px; /* Prevent overlap with navbar */
+}
+
+.image-section img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 57px;
+}
+
+/* Form Section */
+.form-section {
+  background-color: #fff;
+  padding: 40px;
+  margin-left: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin-top: 13px;
+}
+
+.form-section h2 {
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+.form-section label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.form-section input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.actions .forgot-password {
+  font-size: 0.9rem;
+  color: #007bff;
+}
+
+/* Buttons */
+.login-button {
+  background-color: #1e40af;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: -11px;
+}
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 28px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  gap: 10px;
+  margin-top: -17px;
+}
+.google-button img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Separator */
+.separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.separator .line {
+  flex: 1;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.separator p {
+  margin: 0 10px;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+/* Footer */
+footer {
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+  margin-top: auto; /* Pushes footer to the bottom */
+}
+
+footer nav a {
+  color: #fff;
+  margin: 0 10px;
+  font-size: 0.9rem;
+}
+
+ 
+/* For smaller screens (max-width: 768px) */
+ @media (max-width: 768px) {
+  /* Navbar adjustments */
+  .navbar {
+    padding: 10px 15px; /* Less padding for navbar */
+  }
+
+  .navbar .container {
+    flex-direction: column; /* Stack navbar items vertically */
+    align-items: flex-start; /* Align items to the left */
+  }
+
+  .navbar nav a {
+    margin-left: 10px; /* Less margin for navbar links */
+    font-size: 0.8rem; /* Smaller font size for navbar links */
+  }
+
+  /* Login Page Layout */
+  .login-page .container {
+    padding-top: 80px; /* Adjust padding for smaller screens */
+  
+  }
+
+  .image-section img {
+    max-width: 100%; /* Image should take full width */
+    height: auto;
+    border-radius: 10px; /* Adjust border radius */
+  }
+  
+
+  /* Form Section */
+  .form-section {
+    padding: 30px; /* Reduce padding */
+    margin-left: 0; /* Remove left margin */
+    max-width: 90%; /* Ensure form section fits screen */
+    margin-top: 20px; /* Add some top margin */
+  }
+
+  .form-section h2 {
+    font-size: 1.2rem; /* Adjust heading size */
+  }
+
+  .form-section label {
+    font-size: 0.85rem; /* Smaller font size for labels */
+  }
+
+  .form-section input {
+    font-size: 0.9rem; /* Adjust input font size */
+  }
+
+  .actions .forgot-password {
+    font-size: 0.8rem; /* Smaller font size for forgot password */
+  }
+
+  /* Buttons */
+  .login-button {
+    padding: 12px; /* Slightly bigger padding */
+    font-size: 1rem; /* Larger font size for better visibility */
+  }
+
+  .google-button {
+    font-size: 0.9rem; /* Slightly smaller font size */
+    padding: 12px; /* Adjust padding */
+    gap: 8px; /* Adjust gap between text and icon */
+  }
+
+  .google-button img {
+    width: 18px; /* Smaller icon size */
+    height: 18px;
+  }
+
+  /* Separator */
+  .separator p {
+    font-size: 0.8rem; /* Smaller font size for text inside separator */
+  }
+
+  /* Footer adjustments */
+  footer {
+    padding: 10px; /* Less padding for footer */
+  }
+
+  footer nav a {
+    font-size: 0.8rem; /* Smaller font size for footer links */
+  }
+}
+
