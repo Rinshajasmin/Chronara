@@ -3,4 +3,5 @@ const router= express.Router()
 const userController=require('../controllers/userController')
 
 router.get('/login',userController.loadLogin)
+router.get('/home',userController.loadHome)
 module.exports=router

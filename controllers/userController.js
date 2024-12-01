@@ -1,9 +1,17 @@
 
 const adminmodel = require('../models/usermodel')
 const loadLogin = async (req, res) => {
-    // Fetch users from the database (mock example here)
-    //res.send('List of all users');
     res.render('user/login',{ layout: 'layout', isUser: true })
 
 }; 
-module.exports={loadLogin} 
+const loadHome= async(req,res)=>{
+    try {
+        return res.render("user/home")
+        
+    } catch (error) {
+        console.log("Home page not found")
+        res.status(500).send("server error")
+    }
+
+}
+module.exports={loadLogin,loadHome} 

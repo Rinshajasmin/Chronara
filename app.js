@@ -39,7 +39,7 @@ app.engine(
 
 // Import Routes
 const userRoutes = require('./routes/userRoutes');
-app.use('/users', userRoutes); // Prefix your routes
+app.use('/user', userRoutes); // Prefix your routes
 const adminRoutes = require('./routes/adminRoutes');
 app.use('/admin', adminRoutes); 
 
