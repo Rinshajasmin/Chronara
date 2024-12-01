@@ -1,0 +1,163 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Container */
+.container {
+    display: flex;
+    min-height: 100vh;
+    align-items: stretch; /* Ensures both sides stretch to the same height */
+    justify-content: center;
+    background-color: #f4f6f8;
+  }
+  
+  /* Left Section */
+  .left-section {
+    flex: 1;
+    display: flex;
+  align-items: center; /* Vertically center the image */
+  justify-content: center; /* Horizontally center the image */
+    
+  }
+  
+  .logo {
+    width: auto;
+    max-height: 80%; /* Ensures the image scales proportionally within the section */
+    object-fit: contain;
+  }
+  
+ /* Right Section */
+.right-section {
+    flex: 1;
+    padding: 1.5rem; /* Reduced padding for the form container */
+    background-color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Signup Form */
+  .signup-form {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .signup-form h1 {
+    font-size: 1.8rem; /* Slightly smaller heading size */
+    margin-bottom: 1rem; /* Reduced margin below the heading */
+    text-align: center;
+    color: #333;
+  }
+  
+  .signup-form label {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 0.3rem; /* Reduced space below labels */
+    display: block;
+  }
+  
+  .signup-form input {
+    width: 100%;
+    padding: 0.8rem; /* Reduced padding inside input fields */
+    margin-bottom: 1rem; /* Reduced space between input fields */
+    border: 1px solid #ddd;
+    border-radius: 6px; /* Slightly smaller border radius */
+    font-size: 0.9rem;
+    background-color: #f9f9f9;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .signup-form input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+    background-color: #ffffff;
+  }
+  
+  .forgot-password {
+    font-size: 0.85rem; /* Slightly smaller font size */
+    color: #007bff;
+    text-decoration: none;
+    margin-bottom: 1rem; /* Keeps reasonable spacing here */
+    display: inline-block;
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 0.8rem; /* Reduced padding for the button */
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px; /* Smaller radius for a compact look */
+    font-size: 0.9rem; /* Slightly smaller font size */
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0, 123, 255, 0.2);
+  }
+  
+  .submit-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 5px 10px rgba(0, 123, 255, 0.3);
+  }
+  
+  .login-link {
+    text-align: center;
+    margin: 0.8rem 0; /* Reduced margin for a tighter layout */
+    font-size: 0.85rem;
+  }
+  
+  .divider {
+    text-align: center;
+    margin: 2rem 0; /* Reduced margin for a more compact design */
+    font-size: 0.85rem;
+    color: #999;
+    position: relative;
+  }
+  
+  .divider::before,
+  .divider::after {
+    content: '';
+    position: absolute;
+    width: 40%;
+    height: 1px;
+    background-color: #ddd;
+    top: 50%;
+  }
+  
+  .divider::before {
+    left: 0;
+  }
+  
+  .divider::after {
+    right: 0;
+  }
+  
+  .google-button {
+    width: 100%;
+    padding: 0.8rem; /* Reduced padding for Google button */
+    background-color: #ffffff;
+    color: #555;
+    border: 1px solid #ddd;
+    border-radius: 6px; /* Smaller radius for a compact look */
+    font-size: 0.9rem; /* Smaller font size */
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .google-button:hover {
+    background-color: #f4f4f4;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  }
+  

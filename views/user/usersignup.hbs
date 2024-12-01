@@ -1,0 +1,84 @@
+
+
+<head>
+    <link rel="stylesheet" href="/css/user/home.css">
+</head>
+     
+     <header class="navbar">
+        <div class="logo">chronara</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </nav>
+        <div class="auth-links">
+            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+        </div>
+    </header> 
+  <div class="container">
+    <div class="left-section">
+      <img src="/images/Luxury_Modern_Swiss_Watch_Clock_Logo-removebg-preview-removebg-preview.png" alt="Chronara Logo" class="logo">
+    </div>
+    <div class="right-section">
+      <form class="signup-form" id="signupform" method="post" action="/user/usersignup ">
+        <h1>Signup</h1>
+        <label for="username">Full Name</label>
+        <input type="text" id="username" placeholder="fullname" name="username">
+        <div id="error1" class="error-message"></div>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="example@email.com" name="email">
+                <div id="error2" class="error-message"></div>
+
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" name="password">
+                <div id="error3" class="error-message"></div>
+
+
+        <label for="confirm-password">Confirm Password</label> 
+        <input type="password" id="confirm-password" placeholder="Enter your password" name="confirmpassword">
+                <div id="error4" class="error-message"></div>
+
+
+        <label for="phone">Phone Number (Optional)</label>
+        <input type="tel" id="phone" placeholder="Enter your phone number" name="phone">
+                <div id="error5" class="error-message"></div>
+
+
+        <a href="#" class="forgot-password">Forgot password?</a>
+
+        <button type="submit" class="submit-button">Register</button>
+
+        <p class="login-link">Already have an account? <a href="#">Login Now</a></p>
+
+        <div class="divider">OR</div>
+
+        <button type="button" class="google-button">
+          <img src="/images/Google_Icons-09-512.webp" alt="Google">
+            
+          Continue with Google</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const usernameid=document.getElementById('username'); 
+    const emailid=document.getElementById('email');
+    const passwordid=document.getElementById('password');
+    const confirmpasswordid=document.getElementById('confirmpassword');
+    const phoneid=document.getElementById('phone');
+    const error1id=document.getElementById('error1')
+    const error2id=document.getElementById('error2')
+    const error3id=document.getElementById('error3')
+    const error4id=document.getElementById('error4')
+    const error5id=document.getElementById('error5')
+    const signupform=document.getElementById('signupform')
+
+
+
+
+
+  </script>
