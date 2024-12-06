@@ -160,4 +160,9 @@
     background-color: #f4f4f4;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
   }
+  .error-message{
+    color:red;
+    font-size: 0.75rem;
+    display: none;
+  }
   

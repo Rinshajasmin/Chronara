@@ -1,0 +1,132 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Container */
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Left Section */
+  .left {
+    color: white;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .left .logo h1 {
+    font-size: 3rem;
+    letter-spacing: 0.2rem;
+  }
+  
+  /* Right Section */
+  .right {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+  }
+  
+  .form-container {
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+  
+  .form-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+  
+  .form-container p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .form-container .otp-input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+  }
+  
+  .form-container .otp-input:focus {
+    border-color: #007bff;
+  }
+  
+  .resend {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .resend a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .resend a:hover {
+    text-decoration: underline;
+  }
+  
+  .timer {
+    font-weight: bold;
+  }
+  
+  .btn {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  .btn-resend {
+    background: none; /* Remove button background */
+    border: none; /* Remove button border */
+    color: #007bff; /* Link color (blue) */
+    text-decoration: underline; /* Underline to mimic a link */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    font-size: 14px; /* Adjust font size as needed */
+    padding: 0; /* Remove padding for minimal design */
+    margin: 0; /* Remove margin for consistent layout */
+    font-family: inherit; /* Inherit font for consistency */
+}
+
+.btn-resend:hover {
+    color: #0056b3; /* Darker blue for hover effect */
+    text-decoration: none; /* Remove underline on hover */
+}
+
+.btn-resend:disabled {
+    color: #6c757d; /* Grey color for disabled state */
+    cursor: not-allowed; /* Indicate disabled state */
+    text-decoration: none; /* Remove underline for disabled state */
+}

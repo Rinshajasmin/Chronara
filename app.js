@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const session = require('express-session')
 const exphbs = require('express-handlebars');
 const env=require('dotenv').config();
 const db=require('./config/db');
@@ -9,7 +10,19 @@ db()
 
 // Middleware for parsing JSON and form data
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false}));
+app.use(session({
+  secret:process.env.SESSION_SECRET,
+  resave:false,
+  saveUninitialized:true,
+  cookie:{
+   secure:false,
+   httpOnly:true,
+   maxAge:72*60*60*1000
+  }
+
+}))
+
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));

@@ -1,9 +1,8 @@
 
 
-<head>
-    <link rel="stylesheet" href="/css/user/home.css">
-</head>
-     
+ <head>
+    <link rel="stylesheet" href="/css/user/usersignup.css">
+</head> 
      <header class="navbar">
         <div class="logo">chronara</div>
         <nav>
@@ -22,7 +21,7 @@
       <img src="/images/Luxury_Modern_Swiss_Watch_Clock_Logo-removebg-preview-removebg-preview.png" alt="Chronara Logo" class="logo">
     </div>
     <div class="right-section">
-      <form class="signup-form" id="signupform" method="post" action="/user/usersignup ">
+      <form class="signup-form" id="signupform" method="post" action="/user/usersignup " name="signupform">
         <h1>Signup</h1>
         <label for="username">Full Name</label>
         <input type="text" id="username" placeholder="fullname" name="username">
@@ -39,7 +38,7 @@
 
 
         <label for="confirm-password">Confirm Password</label> 
-        <input type="password" id="confirm-password" placeholder="Enter your password" name="confirmpassword">
+        <input type="password" id="confirmpassword" placeholder="Enter your password" name="confirmpassword">
                 <div id="error4" class="error-message"></div>
 
 
@@ -76,9 +75,120 @@
     const error4id=document.getElementById('error4')
     const error5id=document.getElementById('error5')
     const signupform=document.getElementById('signupform')
+    function  nameValidate(e){
+
+     const  nameval = usernameid.value;
+       const namepattern= /^[A-Za-z\s]+$/;
+       if(nameval.trim()===''){
+        error1id.style.display="block"
+        error1id.innerHTML="please enter a valid name"
+            return false;
+
+       }else if(!namepattern.test(nameval)){
+        error1id.style.display="block"
+        error1id.innerHTML="name can only contain alphabets and spaces"
+            return false;
+
+       }
+       else{
+        error1id.style.display="none"
+        error1id.innerHTML=""
+            return true;
+
+        
+       }
+    }
+    function emailValidate() {
+  const emailval = emailid.value.trim();
+  const emailpattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+  if (!emailpattern.test(emailval)) {
+    error2id.style.display = "block";
+    error2id.innerHTML = "Invalid email format";
+    return false;
+  } else {
+    error2id.style.display = "none";
+    error2id.innerHTML = "";
+    return true;
+  }
+}
+   function phoneValidate() {
+  const phoneval = phoneid.value.trim();
+
+  if (phoneval === "") {
+    error5id.style.display = "block";
+    error5id.innerHTML = "Enter a valid phone number";
+    return false;
+  } else if (phoneval.length !== 10) {
+    error5id.style.display = "block";
+    error5id.innerHTML = "Enter 10 digits";
+    return false;
+  } else {
+    error5id.style.display = "none";
+    error5id.innerHTML = "";
+    return true;
+  }
+}
+    function passwordValidate() {
+  const passwordval = passwordid.value;
+  const cpasswordval = confirmpasswordid.value;
+  const alpha = /[a-zA-Z]/;
+  const digit = /\d/;
+
+  if (passwordval.length < 8) {
+    error3id.style.display = "block";
+    error3id.innerHTML = "Should contain at least 8 characters";
+    return false;
+  } else if (!alpha.test(passwordval) || !digit.test(passwordval)) {
+    error3id.style.display = "block";
+    error3id.innerHTML = "Should contain both letters and numbers";
+    return false;
+  } else {
+    error3id.style.display = "none";
+    error3id.innerHTML = "";
+  }
+if (passwordval !== cpasswordval) {
+    error4id.style.display = "block";
+    error4id.innerHTML = "Passwords do not match";
+    return false;
+  } else {
+    error4id.style.display = "none";
+    error4id.innerHTML = "";
+    return true;
+  }
+}
+
+  document.addEventListener("DOMContentLoaded",function(){
+     signupform.addEventListener("submit",function(e){
+           const isNameValid = nameValidate();
+const isEmailValid = emailValidate();
+const isPasswordValid = passwordValidate();
+const isPhoneValid = phoneValidate();
+
+if (!isNameValid || !isEmailValid || !isPasswordValid || !isPhoneValid) {
+    e.preventDefault(); // Block form submission if any validation fails
+}
+
+          if(
+            error1id.innerHTML ||
+            error2id.innerHTML ||
+
+            error3id.innerHTML ||
+
+            error4id.innerHTML ||
+
+            error5id.innerHTML 
+          ){
+            e.preventDefault()// blocking the form submission if any errors are present there
+          }
+
+
+     })
+  })
 
 
 
-
-
+ 
   </script>
+    {{> userfooter}} <!-- Include the footer partial -->
+

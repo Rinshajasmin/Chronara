@@ -1,0 +1,146 @@
+  
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+  <link rel="stylesheet" href="/css/user/verifyOtp.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+  <div class="container">
+    <!-- Left Side: Logo -->
+    <div class="left">
+      <div class="logo">
+        <div class="left-section">
+      <img src="/images/Luxury_Modern_Swiss_Watch_Clock_Logo-removebg-preview-removebg-preview.png" alt="Chronara Logo" class="logo">
+    </div>
+      </div>
+    </div>
+
+    <!-- Right Side: OTP Form -->
+    <div class="right">
+      <div class="form-container">
+        <h2>OTP verification</h2>
+        {{!-- <p>Enter OTP code sent to <b>+91****58</b> and <b>rin****@gmail.com</b></p> --}}
+
+        
+        <form id="otpform" action="/user/verifyOtp " method="post" onsubmit="return validateOTPform()">
+
+          <input type="text" id="otp" placeholder="Enter OTP code" class="otp-input" name="otp">
+          <div class="resend">
+            <p>Don't receive OTP code?          <button type="button" class="btn-resend" onclick="resendOTP()">Resend </button>
+</p>
+            {{!-- <p class="timer">52 Sec</p> --}}
+            <p class="timer">Resend available in <span id="timerValue">60</span> sec</p>
+
+          </div>
+          <button type="submit" class="btn">Verify and Proceed</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<script>
+    document.getElementById('otp').focus();
+
+    let timer = 60;
+    let timerInterval;
+    function startTimer(){
+        timerInterval= setInterval(()=>{
+            timer--;
+            document.getElementById('timerValue').textContent=timer;
+            if(timer <= 0){
+                clearInterval(timerInterval);
+                document.getElementById('timerValue').classList.add("expired")
+                document.getElementById('timerValue').textContent="expired";
+                document.getElementById('otp').disabled=true
+
+            }
+        },1000)
+    }
+    startTimer();
+
+ function validateOTPform(){
+
+   
+
+    //return false;
+      console.log('validateOTPform called'); // Debug log
+
+    const otpInput=document.getElementById('otp').value;
+        console.log('OTP input:', otpInput);
+
+    $.ajax({
+        type:"POST",
+        url:"/user/verifyOtp",
+        data:{otp:otpInput},
+
+        success:function(response){
+            if(response.success){
+                Swal.fire({
+                  icon:"success"  ,
+                  title:"OTP Verified successfully",
+                  showConfirmButton:false,
+                  timer:1500,
+
+                }).then(()=> {
+                    window.location.href=response.redirectUrl;
+
+                })
+            }else{
+                Swal.fire({
+                  icon:"error",
+                  title:"Error"  ,
+                  text:response.message
+                })
+            }
+        },
+        error:function(){
+            Swal.fire({
+                icon:"error",
+                title:"invalid OTP",
+                text:"please try again"
+            })
+        }
+
+    })
+    return false
+}
+function resendOTP(){
+  clearInterval(timerInterval);
+  timer=60;
+  document.getElementById('otp').disabled=false;
+  document.getElementById('timerValue').classList.remove("Expired")
+  startTimer()
+  $.ajax({
+    type:"POST",
+    url:"resend-otp",
+    success:function (response){
+      if(response.success){
+        Swal.fire({
+          icon:"success",
+          text:"OTP resend successfully",
+          showConfirmButton:false,
+          timer:1500
+        })
+      }else{
+        Swal.fire({
+          icon:"error",
+          title:"Error",
+          text:"An error occurred while resending the otp. please try again"
+        })
+      }
+    }
+  })
+  return false
+}
+</script>
+
+
+
+
+  
+  
+  {{!-- {{> userfooter}} <!-- Include the footer partial --> --}}
