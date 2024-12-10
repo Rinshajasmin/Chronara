@@ -38,7 +38,11 @@
   </nav>
 
  --}}
-  <header class="navbar">
+ <head>
+      <link rel="stylesheet" href="/css/userheader.css">
+
+ </head>
+   <header id="header" class="navbar">
         <div class="logo">chronara</div>
         <nav>
             <ul class="nav-links">
@@ -47,10 +51,24 @@
                 <li><a href="#">About</a></li>
             </ul>
         </nav>
+         {{#if username}}
+        <div class="dropdown">
+          <a class="sign-in-link" href="#">
+            {{username}}
+          </a>
+          <div class="dropdown-content">
+            <a  href="/profile">Profile</a>
+            <a  href="/logout">Logout</a>
+          </div>
+        </div>
+        {{else}}
         <div class="auth-links">
             <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
         </div>
+       {{/if}}  
+
     </header> 
+
 
 
 

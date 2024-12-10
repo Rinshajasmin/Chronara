@@ -3,9 +3,12 @@ const path = require('path');
 const app = express();
 const session = require('express-session')
 const exphbs = require('express-handlebars');
+const passport = require('./config/passport')
 const env=require('dotenv').config();
 const db=require('./config/db');
 db()
+const nocache=require('nocache')
+app.use(nocache()) 
 
 
 // Middleware for parsing JSON and form data
@@ -22,6 +25,9 @@ app.use(session({
   }
 
 }))
+
+app.use(passport.initialize());
+app.use(passport.session())
 
 
 // Set static folder

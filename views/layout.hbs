@@ -25,18 +25,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
-  {{#if isUser}}
-    {{> userheader }} <!-- Include admin header partial -->
-  {{!-- {{else}}
-    {{> header }} <!-- Include user header partial --> --}}
-  {{/if}}
-  
-  {{{body}}} <!-- Dynamic content will be rendered here -->
-  {{#if isUser}}
+    {{#if isUser}}
+        {{> userheader }} <!-- Include user header -->
+     {{!-- {{else}}
+        {{> adminheader }} <!-- Include admin header -->  --}}
+    {{/if}}
 
-  {{> userfooter}} <!-- Include the footer partial -->
-  {{!-- {{else}}
-    {{> userfooter }}  --}}
+    {{{body}}} <!-- Render dynamic page content -->
+
+    {{#if isUser}}
+        {{> userfooter }} <!-- Include user footer -->
+    {{!-- {{else}}
+        {{> adminfooter }} <!-- Include admin footer --> --}}
     {{/if}}
 </body>
 

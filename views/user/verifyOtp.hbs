@@ -111,12 +111,12 @@
 function resendOTP(){
   clearInterval(timerInterval);
   timer=60;
-  document.getElementById('otp').disabled=false;
-  document.getElementById('timerValue').classList.remove("Expired")
+  document.getElementById('otp').disabled=false;//to make the otp input field interactive
+  document.getElementById('timerValue').classList.remove("Expired")//will remove the class named expired
   startTimer()
   $.ajax({
     type:"POST",
-    url:"resend-otp",
+    url:"/user/resendOtp",
     success:function (response){
       if(response.success){
         Swal.fire({

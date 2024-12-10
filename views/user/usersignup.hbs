@@ -42,9 +42,16 @@
                 <div id="error4" class="error-message"></div>
 
 
-        <label for="phone">Phone Number (Optional)</label>
+        <label for="phone">Phone Number </label>
         <input type="tel" id="phone" placeholder="Enter your phone number" name="phone">
-                <div id="error5" class="error-message"></div>
+            {{#if message}}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <strong>Error!</strong> {{message}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {{/if}}
+
+
 
 
         <a href="#" class="forgot-password">Forgot password?</a>
@@ -55,10 +62,10 @@
 
         <div class="divider">OR</div>
 
-        <button type="button" class="google-button">
+        <a href="/user/auth/google" class="google-button">
           <img src="/images/Google_Icons-09-512.webp" alt="Google">
             
-          Continue with Google</button>
+          Continue with Google</a>
       </form>
     </div>
   </div>

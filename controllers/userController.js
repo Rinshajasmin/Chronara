@@ -2,15 +2,59 @@
 const adminmodel = require('../models/usermodel')
 const User = require('../models/usermodel')
 const env = require('dotenv').config();
- const nodemailer = require('nodemailer')
- const bcrypt = require('bcrypt')
-const loadLogin = async (req, res) => {
-    res.render('user/login',{ layout: 'layout', isUser: true })
+const nodemailer = require('nodemailer')
+const bcrypt = require('bcrypt')
 
-}; 
+const loadLogin = async (req,res)=>{
+      try {
+         if(!req.session.user){
+            return res.render('user/login',{ layout: 'layout', isUser: true });
+         }else{
+            res.redirect('/user/home')
+         }
+      } catch (error) {
+        res.redirect("/error ")
+      }
+}
+const login = async (req,res)=>{
+    try {
+        const {username,password } = req.body
+        const findUser = await User.findOne({username:username})
+        if(!findUser){
+            return res.render('user/login',{message:"user not found", layout: 'layout', isUser: true})
+        }if(findUser.isBlocked){
+            return res.render('user/login',{message:"user is blocked by admin ", layout: 'layout', isUser: true})
+        }
+        const passwordMatch = await bcrypt.compare(password,findUser.password)
+        if(!passwordMatch){
+         return res.render('user/login',{message:"wrong password", layout: 'layout', isUser: true})
+        }
+        req.session.user = {
+           _id: findUser._id,
+           username:findUser.username
+
+        };
+        res.redirect('/user/home')
+    } catch (error) {
+           console.error("login error",error)
+           res.render('user/login',{message:"login failed...please try again", layout: 'layout', isUser: true})
+    }
+}
+
+// const loadLogin = async (req, res) => {
+//     res.render('user/login',{ layout: 'layout', isUser: true })
+
+// }; 
 const loadHome= async(req,res)=>{
     try {
-        return res.render("user/home")
+        console.log(req.session.user)
+        const user = req.session.user;
+        if(user){
+            //const userData = await User.findOne({_id:user._id})
+            res.render('user/home', { username: user.username });
+        }else{
+            return res.render("user/home")
+        }
         
     } catch (error) {
         console.log("Home page not found")
@@ -50,6 +94,7 @@ const securePassword = async(password)=>{
     }
 
 }
+
  
 const verifyOtp= async(req,res)=>{  
     try {
@@ -160,4 +205,29 @@ const resendOtp =  async(req,res)=>{
     res.status(500).json({success:"false",message:"Internal server error"})
  }
 }
-module.exports={loadLogin,loadHome,loadSignup,signup,verifyOtp,resendOtp} 
+ const pageNotFound = async (req,res)=>{
+    try {
+        res.render('page 404')
+    } catch (error) {
+        res.redirect('/pageNotFound')
+    }
+ }
+const logout = async (req,res)=>{
+    try {
+        req.session.destroy((err)=>{
+            if(err){
+                console.log("session destruction error",err.message)
+                return res.redirect('/user/error')
+            }
+            return res.redirect('/user/login')
+        });
+    
+    } catch (error) {
+        console.log("logout error",error)
+        res.redirect('/user/error')
+    }
+         
+} 
+ 
+
+module.exports={loadLogin,loadHome,loadSignup,signup,verifyOtp,resendOtp,pageNotFound,login,logout} 

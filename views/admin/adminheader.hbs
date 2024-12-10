@@ -1,0 +1,210 @@
+<!-- header.html -->
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .navbar-aside {
+            width: 250px;
+            background-color: #8da7ab;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: fixed;
+            overflow-y: auto;
+        }
+
+        .navbar-aside .brand-wrap {
+            text-align: center;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 20px;
+            background-color: #6e7e6e;
+            color: white;
+        }
+
+        .navbar-aside ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .navbar-aside li {
+            width: 100%;
+        }
+
+        .navbar-aside .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .navbar-aside .menu-link:hover {
+            background-color: #5c6d5c;
+        }
+
+        .navbar-aside .menu-link i {
+            margin-right: 10px;
+        }
+
+        /* Main Content */
+        .main-wrap {
+            margin-left: 250px; /* Same width as the sidebar */
+            padding: 20px;
+            flex-grow: 1;
+            background-color: #f8f9fa;
+        }
+
+        .main-header {
+            background-color: #b0d5de;
+            padding: 15px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        /* Basic styles for the header */
+.main-header {
+    background-color: #b0d5de;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Admin name and dropdown caret */
+.admin-name {
+    cursor: pointer;
+    font-weight: bold;
+    color: #000;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+/* Dropdown link */
+.dropdown-content a {
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Hover effects */
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+/* Show the dropdown when hovering over the parent div */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="navbar-aside">
+        <div class="brand-wrap">CHRONARA</div>
+        <ul>
+            <li>
+                <a class="menu-link" href="/admin">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a class="menu-link" href="/admin/users">
+                    <i class="fas fa-users"></i> Customers
+                </a>
+            </li>
+            <li>
+                <a class="menu-link" href="/admin/category">
+                    <i class="fas fa-tags"></i> Category
+                </a>
+            </li>
+            <li>
+                <a class="menu-link" href="/admin/brands">
+                    <i class="fas fa-star"></i> Brands
+                </a>
+            </li>
+            <li>
+                <a class="menu-link" href="/admin/addProducts">
+                    <i class="fas fa-plus"></i> Add Product
+                </a>
+            </li>
+            <li>
+                <a class="menu-link" href="/admin/products">
+                    <i class="fas fa-box"></i> Products
+                </a>
+            </li>
+            <li>
+                <a class="menu-link" href="/admin/coupon">
+                    <i class="fas fa-percent"></i> Coupon
+                </a>
+            </li>
+            <li>
+                <a class="menu-link" href="/admin/banner">
+                    <i class="fas fa-image"></i> Banner
+                </a>
+            </li>
+            <li>
+                <a class="menu-link" href="/admin/orderList">
+                    <i class="fas fa-shopping-cart"></i> Orders
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-wrap">
+    <header class="main-header">
+        <div class="header-left">
+            <h2>Dashboard</h2>
+        </div>
+        
+        <!-- Dropdown Menu for Admin Name -->
+        <div class="dropdown">
+            <span class="admin-name">
+                Admin <i class="fas fa-caret-down"></i>
+            </span>
+            <!-- Dropdown Content -->
+            <div class="dropdown-content">
+                <a href="/admin/logout">Logout</a>
+            </div>
+        </div>
+    </header>
+    
+    <div>
+        <!-- Add your main content here -->
+        Welcome to the Admin Dashboard!
+    </div>
+</main>
+
+</body>
+</html>

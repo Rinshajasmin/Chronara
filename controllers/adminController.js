@@ -1,7 +1,11 @@
-const adminmodel = require('../models/adminmodel')
+const adminmodel = require('../models/adminmodel');
+const usermodel = require('../models/usermodel');
+const mongoose = require('mongoose')
+const bcrypt = require ('bcrypt')
 const loadLogin = async (req, res) => {
-    // Fetch users from the database (mock example here)
-    //res.send('List of all users');
+    if(req.session.admin){
+        return res.redirect('/admin/dashBoard')
+    }
     res.render('admin/login',{ layout: 'layout', isUser: false})
 
 }; 
@@ -10,7 +14,7 @@ const loadLogin = async (req, res) => {
 const registerLogin= async(req,res)=>{
     try {
         const{email,password}= req.body
-        const admin= await adminmodel.findOne({email})
+        const admin= await adminmodel.findOne({email,isAdmin:true})
         if(!admin)
             return res.render('admin/login',{message:'Invalid credentials'})
         const isMatch= await bcrypt.compare(password,admin.password)
@@ -21,8 +25,23 @@ const registerLogin= async(req,res)=>{
 
 
     } catch (error) {
-      res.send(error)  
-    }
+      console.log("login error",error) 
+      res.redirect("/error") 
+    } 
 }
+ const loadDashBoard = async(req,res)=>{
+    if(req.session.admin)
+    try {
+        res.render('admin/dashBoard',{layout:'layout',isUser:false})
 
-module.exports={loadLogin,registerLogin} 
+    } catch (error) {
+         res.redirect('/error')
+        
+    }
+ }
+
+ const errorPageAdmin = async (req,res)=>{
+    res.render('admin/error')
+ }
+
+module.exports={loadLogin,registerLogin,loadDashBoard,errorPageAdmin} 

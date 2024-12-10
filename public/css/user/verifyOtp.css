@@ -130,3 +130,7 @@
     cursor: not-allowed; /* Indicate disabled state */
     text-decoration: none; /* Remove underline for disabled state */
 }
+.Expired {
+  color: red;
+}
+
