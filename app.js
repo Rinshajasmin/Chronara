@@ -1,6 +1,10 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const bodyParser = require('body-parser');
+
+//const helpers = require('./helpers');
+
 const session = require('express-session')
 const exphbs = require('express-handlebars');
 const passport = require('./config/passport')
@@ -13,7 +17,7 @@ app.use(nocache())
 
 // Middleware for parsing JSON and form data
 app.use(express.json());
-app.use(express.urlencoded({ extended: false}));
+app.use(express.urlencoded({ extended: true}));
 app.use(session({
   secret:process.env.SESSION_SECRET,
   resave:false,
@@ -50,10 +54,16 @@ app.engine(
       __dirname + '/views/user',    // User-specific partials
       __dirname + '/views/admin',   // Admin-specific partials
     ], 
+    runtimeOptions: {
+      allowProtoPropertiesByDefault: true
+    },
   })
 );
 
+
   app.set('view engine', 'hbs');
+
+  
   
 
 // Import Routes

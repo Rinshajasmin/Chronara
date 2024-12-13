@@ -12,7 +12,7 @@ const productSchema=new Schema({
     },
     brand:{
         type:String,
-        required:true
+        required:false
     },
     category:{
         type:Schema.Types.ObjectId,
@@ -21,11 +21,11 @@ const productSchema=new Schema({
     },
     regularPrice:{
        type:Number,
-       required:true
+       required:false
     },
     salePrice:{
         type:Number,
-        required:true
+        required:false
     },
     productOffer:{
         type:Number,
@@ -33,24 +33,24 @@ const productSchema=new Schema({
     },
     quantity:{
         type:Number,
-        default:true
+        default:false
     },
     color:{
         type:String,
-        required:true
+        required:false
     },
     productImage:{
         type:[String],
-        required:true
+        required:false
     },
-    isBlocked:{
+    isDeleted:{
         type:Boolean,
         default:false
     },
     status:{
         type:String,
         enum:["Available","out of stock"],
-        required:true,
+        required:false,
         default:"Available"
     },
 },{timestamps:true});

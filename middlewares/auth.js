@@ -2,8 +2,8 @@ const { Admin } = require('mongodb');
 const User = require('../models/usermodel')
 const admin = require('../models/adminmodel')
 const userAuth = async(req,res,next)=>{
-    if(req.sessin.user){
-        User.findById(req.sessin.user)
+    if(req.session.user){
+        User.findById(req.session.user)
         .then(data=>{
             if(data && !data.isBlocked){
                  next();
@@ -22,6 +22,7 @@ const userAuth = async(req,res,next)=>{
 }
 
 const adminAuth = async(req,res,next)=>{
+   if(req.session && req.session.admin)
     admin.findOne({isAdmin:true})
     .then(data=>{
         if(data){

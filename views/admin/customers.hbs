@@ -1,0 +1,206 @@
+{{> adminheader }} <!-- Include admin header partial -->
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+{{!-- //<div class="container mt-3"> --}}
+   {{!-- //<div class="container mt-4"> --}}
+    <h2 class="text-center mb-4">Customers</h2>
+
+
+    <!-- Customer Table -->
+    <table id="customerTable" class="table table-striped table-bordered table-hover table-responsive">
+        <thead class="thead-dark">
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Action</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {{#each users}}
+            <tr>
+                <td>{{this.username}}</td>
+                <td>{{this.email}}</td>
+                <td>{{this.phone}}</td>
+                <td>
+                    {{#if this.isBlocked}}
+                    <span class="badge bg-danger">Blocked</span>
+                    {{else}}
+                    <span class="badge bg-success">Active</span>
+                    {{/if}}
+                </td>
+                <td>
+                {{#if this.isBlocked}}
+                    <!-- Show Unblock button if user is blocked -->
+                    <a href="/admin/unBlock/{{this._id}}" class="btn btn-success">Unblock</a>
+                {{else}}
+                    <!-- Show Block button if user is active -->
+                    <a href="/admin/block/{{this._id}}" class="btn btn-danger">Block</a>
+                {{/if}}
+            </td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="4" class="text-center">No Customers Found</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Initialize DataTables
+        $('#customerTable').DataTable({
+             searching: true,  // Enable the built-in search box
+        paging: true,     // Enable pagination
+        lengthChange: false,
+        pageLength:5
+        });
+        
+    });
+</script>
+
+
+
+
+<!-- CSS Style -->
+
+    
+<style>
+    /* Style the DataTables search input */
+    .dataTables_filter input {
+        border-radius: 5px;  /* Rounded corners */
+        padding: 10px 15px;  /* Add some padding */
+        font-size: 14px;      /* Font size for better readability */
+        margin-left: 10px;    /* Space between the table and search bar */
+        background-color: #f8f9fa; /* Light background color */
+        border: 1px solid #ced4da; /* Border styling */
+    }
+
+    /* Style the label of the search input */
+    .dataTables_filter label {
+        font-size: 16px;
+        margin-right: 10px;
+    }
+
+    /* Hover effect on the search input */
+    .dataTables_filter input:hover {
+        border-color: #007bff;
+    }
+
+    /* Focus effect on the search input */
+    .dataTables_filter input:focus {
+        border-color: #0056b3;
+        outline: none;
+    }
+
+
+    #customerTable {
+        font-size: 14px;
+    }
+    #customerTable th, #customerTable td {
+        text-align: center;
+    }
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+
+    .customer-management {
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .title {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .search-bar {
+        display: flex;
+        margin-bottom: 20px;
+    }
+
+    .search-bar input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px 0 0 4px;
+    }
+
+    .search-bar button {
+        padding: 10px 20px;
+        background-color: #444;
+        color: #fff;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+    }
+
+    .search-bar button:hover {
+        background-color: #333;
+    }
+
+    .customer-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .customer-table th, 
+    .customer-table td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    .customer-table th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+    }
+
+    .customer-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .block-btn {
+        background-color: #d9534f;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-right: 5px;
+    }
+
+    .unblock-btn {
+        background-color: #5cb85c;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .block-btn:hover {
+        background-color: #c9302c;
+    }
+
+    .unblock-btn:hover {
+        background-color: #4cae4c;
+    }
+    .block-btn, .unblock-btn {
+    display: inline-block !important; /* Force buttons to display */
+    visibility: visible !important; /* Ensure they are not hidden */
+}
+
+</style>
+

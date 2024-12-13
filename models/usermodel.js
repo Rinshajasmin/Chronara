@@ -1,4 +1,6 @@
 const mongoose =require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 // const { schema } = require('./adminmodel');
 const {Schema} = mongoose
 const userSchema=new Schema({
@@ -26,14 +28,14 @@ const userSchema=new Schema({
         type:String,
         required:false,
     },
-    // isBlocked:{
-    //     type:Boolean,
-    //     default:false
-    // },
-    // isAdmin:{
-    //     type:Boolean,
-    //     default:false
-    // },
+    isBlocked:{
+        type:Boolean,
+        default:false
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false
+    }
     // cart:[{
     //     type:Schema.Types.ObjectId,
     //     ref:"Cart"
@@ -77,4 +79,6 @@ const userSchema=new Schema({
     // }]
 
 })
+userSchema.plugin(mongoosePaginate);
+
 module.exports = mongoose.model('User', userSchema);

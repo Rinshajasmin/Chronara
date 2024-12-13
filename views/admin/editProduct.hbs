@@ -1,0 +1,126 @@
+<form action="/admin/editProduct/{{product._id}}" method="post" >
+    <!-- Product Name -->
+    <div class="form-group mb-3">
+        <label for="productName" class="form-label fw-bold">Product Name</label>
+        <input type="text" id="productName" name="productName" class="form-control" value="{{product.productName}}" required>
+    </div>
+
+    <!-- Product Description -->
+    <div class="form-group mb-3">
+        <label for="productDesc" class="form-label fw-bold">Description</label>
+        <textarea id="productDesc" name="productDesc" class="form-control" rows="3" required>{{product.productDesc}}</textarea>
+    </div>
+
+   <div class="form-group mb-3">
+    <label for="category" class="form-label fw-bold">Category</label>
+    <select id="category" name="category" class="form-select" required>
+        <option value="" disabled>Select a category</option>
+        {{#each categories}}
+            <option value="{{this._id}}" {{#if this.isSelected}}selected{{/if}}>{{this.name}}</option>
+        {{/each}}
+    </select>
+</div>
+
+
+    <!-- Product Price -->
+    <div class="form-group mb-3">
+        <label for="price" class="form-label fw-bold">Price</label>
+        <input type="number" id="price" name="price" class="form-control" value="{{product.regularPrice}}" required>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">Update Product</button>
+    </div>
+</form>
+<style>
+/* General Form Styling */
+form {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+form h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+    font-size: 1rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    background: #fff;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Input Focus Effects */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* Button Styling */
+.btn {
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    text-transform: uppercase;
+}
+
+.btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Center Align Text */
+.text-center {
+    text-align: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    form {
+        padding: 15px;
+    }
+
+    .btn {
+        padding: 10px;
+    }
+}
+</style>

@@ -40,8 +40,8 @@
         <div class="hero-content">
             <h1>FIND TIMELESS ELEGANCE...</h1>
 <p>Explore stylish, reliable, and high-quality watches at unbeatable prices. From timeless classics to the latest smartwatches, we’ve got it all. Don’t wait—find your perfect match and order now! </p>           <div class="search-bar">
-                <input type="text" placeholder="Search">
-                <button>Search</button>
+                {{!-- <input type="text" placeholder="Search">
+                <button>Search</button> --}}
             </div>
         </div>
         <div class="hero-image">
@@ -91,6 +91,37 @@
     </section>
     </div>
     <section class="watch-section">
+  <div class="container">
+    {{#each products}}
+  <div class="watch-item">
+    <div class="wishlist-icon">
+      <i class="fa-regular fa-heart"></i>
+    </div>
+
+    <!-- Product Image -->
+    {{#if productImage.[0]}}
+      <img src="{{productImage.[0]}}" alt="{{productName}}" />
+    {{else}}
+      <img src="/images/default-watch.jpg" alt="Default Image" />
+    {{/if}}
+
+    <!-- Product Details -->
+    <p>{{productName}}</p>
+    <p>Price: ₹{{regularPrice}}</p>
+    <p>
+      {{#if quantity}}
+        <span class="text-success">In Stock</span>
+      {{else}}
+        <span class="text-danger">Out of Stock</span>
+      {{/if}}
+    </p>
+  </div>
+{{/each}}
+
+  </div>
+</section>
+
+    {{!-- <section class="watch-section">
   <div class="container">
     <div class="watch-item">
         <div class="wishlist-icon">
@@ -152,9 +183,26 @@
       <button class="buy-btn">Buy</button>
     </div>
   </div>
-</section>
+</section> --}}
   {{> userfooter}} <!-- Include the footer partial -->
 
 
 
 
+{{!-- <section class="watch-section">
+  <div class="container">
+    {{#each products}}
+    <div class="watch-item">
+      <div class="wishlist-icon">
+        <i class="fa-regular fa-heart"></i>
+      </div>
+      <img src="{{this.productImage}}" alt="{{this.name}}">
+      <span class="badge">{{#if this.isNew}}New{{/if}}</span>
+      {{!-- <h3>{{this.brand}}</h3> --}}
+      {{!-- <p>{{this.productDesc}}</p>
+      <button class="buy-btn">Buy</button>
+    </div>
+    {{/each}}
+  </div>
+</section> 
+{{!-- {{> userfooter}} <!-- Include the footer partial --> --}}

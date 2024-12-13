@@ -1,6 +1,9 @@
 
 const adminmodel = require('../models/usermodel')
 const User = require('../models/usermodel')
+const Category = require('../models/categorySchema')
+const Product = require('../models/productSchema')
+
 const env = require('dotenv').config();
 const nodemailer = require('nodemailer')
 const bcrypt = require('bcrypt')
@@ -49,11 +52,24 @@ const loadHome= async(req,res)=>{
     try {
         console.log(req.session.user)
         const user = req.session.user;
+        const categories = await Category.find({isListed:true});
+
+        let productData = await Product.find(
+            {isBlocked:false,
+            // category:{$in:categories.map(category=>category._id)},quantity:{$gt:0}
+        })
+        
+        productData.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+        productData=productData.slice(0,4)
+     
+
         if(user){
-            //const userData = await User.findOne({_id:user._id})
-            res.render('user/home', { username: user.username });
+            const userData = await User.findOne({_id:user._id})
+            console.log("Categories:", categories);
+            console.log("Products:", productData);
+           return  res.render('user/home', { username: user.username ,user:userData,products:productData});
         }else{
-            return res.render("user/home")
+            return res.render("user/home",{products:productData})
         }
         
     } catch (error) {

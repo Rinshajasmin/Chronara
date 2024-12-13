@@ -43,5 +43,21 @@ const registerLogin= async(req,res)=>{
  const errorPageAdmin = async (req,res)=>{
     res.render('admin/error')
  }
+ const logout = async(req,res)=>{
+    try {
+        req.session.destroy(err=>{
+            if(err){
+                console.log("error in destroying session",err)
+                return res.redirect('/admin/error')
+            }
+            res.redirect('/admin/login')
+        })
+        
+    } catch (error) {
+        console.log("error in logout",error)
+        res.redirect('/admin/error')
+    }
+ }
+ 
 
-module.exports={loadLogin,registerLogin,loadDashBoard,errorPageAdmin} 
+module.exports={loadLogin,registerLogin,loadDashBoard,errorPageAdmin,logout} 

@@ -1,0 +1,199 @@
+
+<head>
+       <!-- Include Cropper.js CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+
+<!-- Include Cropper.js JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+</head>
+
+    <!-- Add Product Form -->
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <form action="/admin/addProducts" method="POST" id="addproduct" name="addproduct"  enctype="multipart/form-data">
+                <!-- Product Name -->
+                <div class="form-group mb-3">
+                    <label for="productName" class="form-label fw-bold">Product Name</label>
+                    <input type="text" id="productName" name="productName" class="form-control" placeholder="Enter product name" required>
+                </div>
+
+                <!-- Product Description -->
+                <div class="form-group mb-3">
+                    <label for="productDescription" class="form-label fw-bold">Description</label>
+                    <textarea id="productDescription" name="productDesc" class="form-control" rows="3" placeholder="Write a brief description of the product" required></textarea>
+                </div>
+
+                <!-- Product Category -->
+                <div class="form-group mb-3">
+                    <label for="productCategory" class="form-label fw-bold">Category</label>
+                    <select id="productCategory" name="category" class="form-select" required>
+                        <option value="" disabled selected>Select a category</option>
+                        {{#each category}}
+                        <option value="{{this._id}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+                <!-- Product Price -->
+                <div class="form-group mb-3">
+                    <label for="productPrice" class="form-label fw-bold">Price</label>
+                    <input type="number" id="regularPrice" name="regularPrice" class="form-control" placeholder="Enter product price" required>
+                </div>
+
+                <!-- Product Images -->
+     <div class="form-group mb-3">
+    <label for="productImages" class="form-label fw-bold">Upload Images</label>
+    <input type="file" id="productImage" name="productImage" class="form-control" multiple accept="image/*" required>
+    <small class="text-muted">Minimum 3 images. Supported formats: jpg, png, gif.</small>
+     </div>
+    <!-- Image Preview Area -->
+
+    <div  class="form-group mb-3" id="imagePreviewContainer" style="display:none; margin-top: 20px;">
+        <h5>Crop Your Image:</h5>
+        
+        <img id="imagePreview" src="/uploads/re-image/" style="max-width: 100%; display: block;" />
+        <button type="button" id="cropImageButton" class="btn btn-primary mt-3">Crop & Save Image</button>
+    </div> 
+
+
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">Add Product</button>
+                </div>
+            </form>
+        </div>
+     
+<script>
+    
+    let cropper;
+    const imageInput = document.getElementById('productImage');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const cropImageButton = document.getElementById('cropImageButton');
+
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                // Update the image preview src to show the selected image
+                imagePreview.src = event.target.result;
+
+                // Show the image preview and cropper container
+                imagePreviewContainer.style.display = 'block';
+
+                // Initialize Cropper.js for the image
+                if (cropper) {
+                    cropper.destroy(); // Destroy previous cropper instance if exists
+                }
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: 1, // Adjust aspect ratio as needed
+                    viewMode: 1,
+                    autoCropArea: 0.8,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: true,
+                    scalable: true,
+                });
+            };
+            reader.readAsDataURL(file); // This will trigger the onload event
+        }
+    });
+
+    cropImageButton.addEventListener('click', function() {
+        if (cropper) {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            const croppedImage = croppedCanvas.toDataURL('image/jpeg');
+
+            // Show cropped image (optional)
+            const croppedImageElement = document.createElement('img');
+            croppedImageElement.src = croppedImage;
+            document.body.appendChild(croppedImageElement); // Optional, remove if not needed
+
+            // Send cropped image data to the server
+            const formData = new FormData();
+            croppedCanvas.toBlob(function(blob) {
+                formData.append('croppedImage', blob);
+                formData.append('productName', document.getElementById('productName').value);
+                formData.append('productDesc', document.getElementById('productDescription').value);
+                formData.append('category', document.getElementById('productCategory').value);
+                formData.append('regularPrice', document.getElementById('regularPrice').value);
+
+                fetch('/admin/addProducts', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Image and Product Data Saved:', data);
+                    // Optionally redirect or update UI here
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        }
+    });
+
+
+</script>
+    
+<style>
+    /* General styling for the container */
+.card {
+    max-width: 600px;
+    margin: 30px auto;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: #ffffff;
+    border: none;
+}
+
+.card-body {
+    padding: 30px;
+}
+
+/* Form labels */
+.form-label {
+    font-size: 16px;
+    color: #333333;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Input fields */
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    font-size: 14px;
+    padding: 10px 15px;
+    color: #555555;
+    box-shadow: none;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Select dropdown */
+.form-select {
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    font-size: 14px;
+    padding: 10px 15px;
+    color: #555555;
+}
+#imagePreviewContainer {
+    position: relative;
+    margin-top: 20px;
+    border: 2px dashed #ccc;
+    padding: 10px;
+    text-align: center;
+}
+#imagePreview {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+}
+</style>
