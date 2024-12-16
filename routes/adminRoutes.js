@@ -28,12 +28,14 @@ router.post('/editCategory/:id',adminAuth,categoryController.editCategory)
 router.post('/deleteCategory/:id',adminAuth,categoryController.deleteCategory)
 //product management
 router.get('/addProducts',adminAuth,productController.getAddProductPage)
-router.post('/addProducts',adminAuth,uploads.array("productImage",3),productController.addProduct)
+router.post('/addProducts',adminAuth,uploads.array("productImage",5),productController.addProduct)
 router.get('/products',adminAuth,productController.getProducts)
 router.post('/editProduct/:id',adminAuth,productController.editProduct)
 router.get('/editProduct/:id',adminAuth,productController.geteditProduct)
 router.post('/deleteProduct/:id',adminAuth,productController.deleteProduct)
-
+router.get('/addProductsnew',productController.getaddnew)
+router.post("/addProductsnew",uploads.array("productImage",3),productController.addnew)
+router.get('/')
 
 
 module.exports=router

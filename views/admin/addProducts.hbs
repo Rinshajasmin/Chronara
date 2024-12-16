@@ -19,8 +19,8 @@
 
                 <!-- Product Description -->
                 <div class="form-group mb-3">
-                    <label for="productDescription" class="form-label fw-bold">Description</label>
-                    <textarea id="productDescription" name="productDesc" class="form-control" rows="3" placeholder="Write a brief description of the product" required></textarea>
+                    <label for="productDesc" class="form-label fw-bold">Description</label>
+                    <textarea id="productDesc" name="productDesc" class="form-control" rows="3" placeholder="Write a brief description of the product" required></textarea>
                 </div>
 
                 <!-- Product Category -->
@@ -36,14 +36,14 @@
 
                 <!-- Product Price -->
                 <div class="form-group mb-3">
-                    <label for="productPrice" class="form-label fw-bold">Price</label>
+                    <label for="regularPrice" class="form-label fw-bold">Price</label>
                     <input type="number" id="regularPrice" name="regularPrice" class="form-control" placeholder="Enter product price" required>
                 </div>
 
                 <!-- Product Images -->
      <div class="form-group mb-3">
-    <label for="productImages" class="form-label fw-bold">Upload Images</label>
-    <input type="file" id="productImage" name="productImage" class="form-control" multiple accept="image/*" required>
+    <label for="productImage" class="form-label fw-bold">Upload Images</label>
+<input type="file" id="productImage" name="productImage" class="form-control" multiple accept="image/*" required>
     <small class="text-muted">Minimum 3 images. Supported formats: jpg, png, gif.</small>
      </div>
     <!-- Image Preview Area -->
@@ -65,30 +65,29 @@
         </div>
      
 <script>
-    
     let cropper;
     const imageInput = document.getElementById('productImage');
     const imagePreviewContainer = document.getElementById('imagePreviewContainer');
     const imagePreview = document.getElementById('imagePreview');
     const cropImageButton = document.getElementById('cropImageButton');
+    const submitProductButton = document.querySelector('button[type="submit"]');
+    const croppedImagesArray = []; // To store cropped images as Blobs
 
-    imageInput.addEventListener('change', function(e) {
+    // Handle image upload and preview
+    imageInput.addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(event) {
-                // Update the image preview src to show the selected image
-                imagePreview.src = event.target.result;
+            reader.onload = function (event) {
+                imagePreview.src = event.target.result; // Show selected image
+                imagePreviewContainer.style.display = 'block'; // Display cropper container
 
-                // Show the image preview and cropper container
-                imagePreviewContainer.style.display = 'block';
-
-                // Initialize Cropper.js for the image
+                // Initialize Cropper.js
                 if (cropper) {
-                    cropper.destroy(); // Destroy previous cropper instance if exists
+                    cropper.destroy(); // Destroy previous instance if exists
                 }
                 cropper = new Cropper(imagePreview, {
-                    aspectRatio: 1, // Adjust aspect ratio as needed
+                    aspectRatio: 1, // Adjust ratio as needed
                     viewMode: 1,
                     autoCropArea: 0.8,
                     movable: true,
@@ -97,45 +96,162 @@
                     scalable: true,
                 });
             };
-            reader.readAsDataURL(file); // This will trigger the onload event
+            reader.readAsDataURL(file); // Trigger `onload`
         }
     });
 
-    cropImageButton.addEventListener('click', function() {
+    // Handle crop and save
+    cropImageButton.addEventListener('click', function () {
+        if (cropper) {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            croppedCanvas.toBlob(function (blob) {
+                if (blob) {
+                    croppedImagesArray.push(blob); // Add cropped image Blob to array
+                    alert('Image cropped and saved!');
+                    console.log('Cropped Images Array:', croppedImagesArray);
+                }
+            }, 'image/jpeg');
+        }
+    });
+
+    // Handle product submission
+    submitProductButton.addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData();
+        formData.append('productName', document.getElementById('productName').value);
+        formData.append('productDesc', document.getElementById('productDesc').value);
+        formData.append('category', document.getElementById('productCategory').value);
+        formData.append('regularPrice', document.getElementById('regularPrice').value);
+
+        // Add original images to FormData
+        const files = imageInput.files;
+        for (let i = 0; i < files.length; i++) {
+            formData.append('productImage', files[i]); // Append original images under "images"
+        }
+
+        // Add cropped images to FormData
+        croppedImagesArray.forEach((blob) => {
+            formData.append('productImage', blob); // Append cropped images under "images"
+        });
+
+        // Send the form data via fetch
+        fetch('/admin/addProducts', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                alert('Product added successfully!');
+                console.log('Server response:', data);
+            })
+            
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to save the product. Please try again.');
+            });
+    });
+</script>
+
+
+{{!-- <script>
+    let cropper;
+    const imageInput = document.getElementById('productImage');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const cropImageButton = document.getElementById('cropImageButton');
+    const submitProductButton = document.getElementById('submitProductButton');
+    const croppedImagesArray = []; // To store cropped images
+
+    // Handle image upload and preview
+    imageInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                imagePreview.src = event.target.result; // Show selected image
+                imagePreviewContainer.style.display = 'block'; // Display cropper container
+
+                // Initialize Cropper.js
+                if (cropper) {
+                    cropper.destroy(); // Destroy previous instance if exists
+                }
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: 1, // Adjust ratio as needed
+                    viewMode: 1,
+                    autoCropArea: 0.8,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: true,
+                    scalable: true,
+                });
+            };
+            reader.readAsDataURL(file); // Trigger `onload`
+        }
+    });
+
+    // Handle crop and save
+    cropImageButton.addEventListener('click', function () {
         if (cropper) {
             const croppedCanvas = cropper.getCroppedCanvas();
             const croppedImage = croppedCanvas.toDataURL('image/jpeg');
-
-            // Show cropped image (optional)
-            const croppedImageElement = document.createElement('img');
-            croppedImageElement.src = croppedImage;
-            document.body.appendChild(croppedImageElement); // Optional, remove if not needed
-
-            // Send cropped image data to the server
-            const formData = new FormData();
-            croppedCanvas.toBlob(function(blob) {
-                formData.append('croppedImage', blob);
-                formData.append('productName', document.getElementById('productName').value);
-                formData.append('productDesc', document.getElementById('productDescription').value);
-                formData.append('category', document.getElementById('productCategory').value);
-                formData.append('regularPrice', document.getElementById('regularPrice').value);
-
-                fetch('/admin/addProducts', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Image and Product Data Saved:', data);
-                    // Optionally redirect or update UI here
-                })
-                .catch(error => console.error('Error:', error));
-            });
+            croppedImagesArray.push(croppedImage); // Save cropped image
+            alert('Image cropped and saved!'); // Confirmation for cropping
+            console.log('Cropped Images Array:', croppedImagesArray);
         }
     });
 
+    // Handle product submission
+    submitProductButton.addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent default form submission
 
-</script>
+        const formData = new FormData();
+        formData.append('productName', document.getElementById('productName').value);
+        formData.append('productDesc', document.getElementById('productDescription').value);
+        formData.append('category', document.getElementById('productCategory').value);
+        formData.append('regularPrice', document.getElementById('regularPrice').value);
+
+        // Append cropped images to the form data
+        croppedImagesArray.forEach((image, index) => {
+            formData.append('croppedImage', image); // Use a separate field for cropped images
+        });
+
+        // Append original product images from file input
+        const fileInput = document.getElementById('productImage');
+        const files = fileInput.files;
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append('productImage', files[i]); // Match the field name expected by multer
+        }
+
+        formData.forEach((value, key) => {
+            console.log(key, value); // Log form data for debugging
+        });
+
+        // Send the form data via fetch
+        fetch('/admin/addProducts', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            alert('Product added successfully!');
+            console.log('Server response:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to save the product. Please try again.');
+        });
+    });
+</script> --}}
+
+
     
 <style>
     /* General styling for the container */
@@ -197,3 +313,241 @@
     border: 1px solid #ddd;
 }
 </style>
+
+{{!-- <script>
+
+let cropper;
+const imageInput = document.getElementById('productImage');
+const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+const imagePreview = document.getElementById('imagePreview');
+const cropImageButton = document.getElementById('cropImageButton');
+const croppedImagesArray = []; // Array to store cropped images
+
+imageInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            // Update the image preview src to show the selected image
+            imagePreview.src = event.target.result;
+
+            // Show the image preview and cropper container
+            imagePreviewContainer.style.display = 'block';
+
+            // Initialize Cropper.js for the image
+            if (cropper) {
+                cropper.destroy(); // Destroy previous cropper instance if exists
+            }
+            cropper = new Cropper(imagePreview, {
+                aspectRatio: 1, // Adjust aspect ratio as needed
+                viewMode: 1,
+                autoCropArea: 0.8,
+                movable: true,
+                zoomable: true,
+                rotatable: true,
+                scalable: true,
+            });
+        };
+        reader.readAsDataURL(file); // This will trigger the onload event
+    }
+});
+
+cropImageButton.addEventListener('click', function() {
+    if (cropper) {
+        const croppedCanvas = cropper.getCroppedCanvas();
+        const croppedImage = croppedCanvas.toDataURL('image/jpeg');
+
+        // Optionally show cropped image
+        const croppedImageElement = document.createElement('img');
+        croppedImageElement.src = croppedImage;
+        document.body.appendChild(croppedImageElement); // Optional, remove if not needed
+
+        // Push cropped image to the array
+        croppedImagesArray.push(croppedImage); // Add the cropped image to the array
+
+        console.log('Cropped Images Array:', croppedImagesArray);
+
+        // You can append other form data and the images as needed
+        const formData = new FormData();
+        formData.append('productName', document.getElementById('productName').value);
+        formData.append('productDesc', document.getElementById('productDescription').value);
+        formData.append('category', document.getElementById('productCategory').value);
+        formData.append('regularPrice', document.getElementById('regularPrice').value);
+
+        // Append original image
+        const file = imageInput.files[0]; // Assuming `file` is the original image
+        formData.append('productImage', file);
+
+        // Append cropped images from the array
+        croppedImagesArray.forEach((croppedImage, index) => {
+            formData.append(`croppedImages[]`, croppedImage); // Send all cropped images
+        });
+
+        // Send the form data to the server
+        fetch('/admin/addProducts', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Image and Product Data Saved:', data);
+            // Optionally redirect or update UI here
+        })
+        .catch(error => console.error('Error:', error));
+    }
+});
+</script>  --}}
+{{!-- <head>
+    <!-- Include Cropper.js CSS and JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+</head>
+
+<div class="card shadow-lg">
+    <div class="card-body">
+        <form id="addProductForm" name="addProductForm" method="post" action="admin/addProducts" enctype="multipart/form-data">
+            <!-- Product Name -->
+            <div class="form-group mb-3">
+                <label for="productName" class="form-label fw-bold">Product Name</label>
+                <input type="text" id="productName" name="productName" class="form-control" placeholder="Enter product name" required>
+            </div>
+
+            <!-- Product Description -->
+            <div class="form-group mb-3">
+                <label for="productDescription" class="form-label fw-bold">Description</label>
+                <textarea id="productDescription" name="productDesc" class="form-control" rows="3" placeholder="Write a brief description of the product" required></textarea>
+            </div>
+
+            <!-- Product Category -->
+            <div class="form-group mb-3">
+                <label for="productCategory" class="form-label fw-bold">Category</label>
+                <select id="productCategory" name="category" class="form-select" required>
+                    <option value="" disabled selected>Select a category</option>
+                    {{#each category}}
+                    <option value="{{this._id}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <!-- Product Price -->
+            <div class="form-group mb-3">
+                <label for="regularPrice" class="form-label fw-bold">Price</label>
+                <input type="number" id="regularPrice" name="regularPrice" class="form-control" placeholder="Enter product price" required>
+            </div>
+
+            <!-- Product Images -->
+           <div class="form-group mb-3">
+    <label for="productImage" class="form-label fw-bold">Upload Images</label>
+    <input type="file" id="productImage" name="productImage" class="form-control" multiple accept="image/*" required>
+    <small class="text-muted">Minimum 3 images. Supported formats: jpg, png, gif.</small>
+</div>
+
+<!-- Image Preview Area -->
+<div class="form-group mb-3" id="imagePreviewContainer" style="display:none; margin-top: 20px;">
+    <h5>Crop Your Image:</h5>
+    <img id="imagePreview" style="max-width: 100%; display: block;" />
+    <button type="button" id="cropImageButton" class="btn btn-primary mt-3">Crop & Save Image</button>
+</div>
+
+<!-- Submit Button -->
+<div class="text-center">
+    <button type="button" id="submitProductButton" class="btn btn-primary px-5 py-2 fw-bold">Add Product</button>
+</div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    let cropper;
+const imageInput = document.getElementById('productImage');
+const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+const imagePreview = document.getElementById('imagePreview');
+const cropImageButton = document.getElementById('cropImageButton');
+const submitProductButton = document.getElementById('submitProductButton');
+const croppedImagesArray = []; // To store cropped images
+
+// Handle image upload and preview
+imageInput.addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            imagePreview.src = event.target.result; // Show selected image
+            imagePreviewContainer.style.display = 'block'; // Display cropper container
+
+            // Initialize Cropper.js
+            if (cropper) {
+                cropper.destroy(); // Destroy previous instance if exists
+            }
+            cropper = new Cropper(imagePreview, {
+                aspectRatio: 1, // Adjust ratio as needed
+                viewMode: 1,
+                autoCropArea: 0.8,
+                movable: true,
+                zoomable: true,
+                rotatable: true,
+                scalable: true,
+            });
+        };
+        reader.readAsDataURL(file); // Trigger `onload`
+    }
+});
+
+// Handle crop and save
+cropImageButton.addEventListener('click', function () {
+    if (cropper) {
+        const croppedCanvas = cropper.getCroppedCanvas();
+        const croppedImage = croppedCanvas.toDataURL('image/jpeg');
+        croppedImagesArray.push(croppedImage); // Save cropped image
+        alert('Image cropped and saved!'); // Confirmation for cropping
+        console.log('Cropped Images Array:', croppedImagesArray);
+    }
+});
+
+// Handle product submission
+submitProductButton.addEventListener('click', function (e) {
+   //e.preventDefault(); // Prevent default form submission
+
+    const formData = new FormData();
+formData.append('productName', document.getElementById('productName').value);
+formData.append('productDesc', document.getElementById('productDescription').value);
+formData.append('category', document.getElementById('productCategory').value);
+formData.append('regularPrice', document.getElementById('regularPrice').value);
+
+formData.forEach((value, key) => {
+    console.log(key, value);
+});
+
+const fileInput = document.getElementById('productImage');
+const files = fileInput.files;
+
+for (let i = 0; i < files.length; i++) {
+    formData.append('productImage', files[i]); // Match the field name expected by multer
+}
+
+formData.forEach((value, key) => {
+    console.log(key, value);
+});
+
+fetch('/admin/addProducts', {
+            method: 'POST',
+            body: formData,
+        }) 
+    .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return response.json();
+    })
+    .then(data => {
+        alert('Product added successfully!');
+        console.log('Server response:', data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to save the product. Please try again.');
+    });
+
+ });
+
+
+</script> --}}

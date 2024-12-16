@@ -22,7 +22,7 @@ const userAuth = async(req,res,next)=>{
 }
 
 const adminAuth = async(req,res,next)=>{
-   if(req.session && req.session.admin)
+   if(req.session && req.session.admin)//checking wether the admin is present in the session to ensure while logout
     admin.findOne({isAdmin:true})
     .then(data=>{
         if(data){
