@@ -93,33 +93,40 @@
     <section class="watch-section">
   <div class="container">
     {{#each products}}
-  <div class="watch-item">
-    <div class="wishlist-icon">
-      <i class="fa-regular fa-heart"></i>
-    </div>
+      <div class="watch-item">
+        <a href="/user/wishlist" class="wishlist-icon">
+          <i class="fa-solid fa-heart"></i>
+        </a>
 
-    <!-- Product Image -->
-    {{#if productImage.[0]}}
-      <img src="{{productImage.[0]}}" alt="{{productName}}" />
-    {{else}}
-      <img src="/images/default-watch.jpg" alt="Default Image" />
-    {{/if}}
+        <!-- Product Image with Link -->
+        <a href="/user/productDetails/{{_id}}">
+          {{#if productImage.[0]}}
+            <img src="{{productImage.[0]}}" alt="{{productName}}" />
+          {{else}}
+            <img src="/images/default-watch.jpg" alt="Default Image" />
+          {{/if}}
+        </a>
 
-    <!-- Product Details -->
-    <p>{{productName}}</p>
-    <p>Price: ₹{{regularPrice}}</p>
-    <p>
-      {{#if quantity}}
-        <span class="text-success">In Stock</span>
-      {{else}}
-        <span class="text-danger">Out of Stock</span>
-      {{/if}}
-    </p>
-  </div>
-{{/each}}
-
+        <!-- Product Details -->
+        <p>{{productName}}</p>
+        <p>Price: ₹{{regularPrice}}</p>
+        <p>
+          {{#if quantity}}
+            <span class="text-success">In Stock</span>
+          {{else}}
+            <span class="text-danger">Out of Stock</span>
+          {{/if}}
+        </p>
+        {{#if quantity}}
+          <div class="cart-link-container">
+            <a href="/user/addToCart/{{_id}}" class="link-add-to-cart">Add to Cart</a>
+          </div>
+        {{/if}}
+      </div>
+    {{/each}}
   </div>
 </section>
+
 
     {{!-- <section class="watch-section">
   <div class="container">

@@ -35,7 +35,7 @@ router.get('/editProduct/:id',adminAuth,productController.geteditProduct)
 router.post('/deleteProduct/:id',adminAuth,productController.deleteProduct)
 router.get('/addProductsnew',productController.getaddnew)
 router.post("/addProductsnew",uploads.array("productImage",3),productController.addnew)
-router.get('/')
+
 
 
 module.exports=router

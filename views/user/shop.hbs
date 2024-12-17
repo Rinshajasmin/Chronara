@@ -1,0 +1,546 @@
+<head>
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+</head>
+<header id="header" class="navbar">
+  <div class="logo">chronara</div>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+  </nav>
+  {{#if username}}
+    <div class="dropdown">
+      <a class="sign-in-link" href="#">{{username}}</a>
+      <div class="dropdown-content">
+        <a href="/user/profile">Profile</a>
+        <a href="/user/logout">Logout</a>
+      </div>
+    </div>
+  {{else}}
+    <div class="auth-links">
+      <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+    </div>
+  {{/if}}
+</header>
+
+<!-- Shop Page Section -->
+<section class="shop-page">
+  <div class="container shop-container">
+    <!-- Sidebar Section -->
+    <aside class="sidebar" style="flex: 0 0 220px;"> <!-- Fixed smaller width -->
+      <h3>Search</h3>
+      <form action="/user/filter" method="GET">
+    <input type="text" name="query" placeholder="Search products..." class="search-bar" />
+    {{!-- <button type="submit" class="search-btn">Search</button> --}}
+  </form>
+      <!-- Filter by Price -->
+      <!-- Filter by Price -->
+<div class="filter-section">
+  <h4>Filter by Price</h4>
+  <ul>
+    <li><a href="/user/filter/under-500">Under ₹500</a></li>
+    <li><a href="/user/filter/500-1000">₹500 - ₹1000</a></li>
+    <li><a href="/user/filter/1000-1500">₹1000 - ₹1500</a></li>
+    <li><a href="/user/filter/above-1500">Above ₹1500</a></li>
+  </ul>
+</div>
+
+
+      <!-- Sort Options -->
+     <!-- Sort by Dropdown -->
+<div class="filter-section">
+  <h4>Sort by</h4>
+  <select id="sortOptions" class="sort-dropdown">
+    <option value="">Select</option>
+    <option value="/user/sort/popularity">Popularity</option>
+    <option value="/user/sort/price-low-high">Price: Low to High</option>
+    <option value="/user/sort/price-high-low">Price: High to Low</option>
+    <option value="/user/sort/new-arrivals">New Arrivals</option>
+    <option value="/user/sort/a-z">A → Z</option>
+    <option value="/user/sort/z-a">Z → A</option>
+  </select>
+</div>
+
+    </aside>
+
+    <!-- Product Grid Section -->
+    <div class="product-section" style="flex: 1;">
+      <div class="product-grid" style="grid-template-columns: repeat(4, 1fr);"> 
+        {{#each products}}
+          <div class="product-card">
+            <a href="/user/wishlist" class="wishlist-icon">
+          <i class="fa-solid fa-heart"></i>
+            </a>
+            <a href="/user/productDetails/{{_id}}" class="product-image">
+              {{#if productImage.[0]}}
+                <img src="{{productImage.[0]}}" alt="{{productName}}" />
+              {{else}}
+                <img src="/images/default-watch.jpg" alt="Default Image" />
+              {{/if}}
+            </a>
+            <div class="product-info">
+              <p class="product-name">{{productName}}</p>
+              <p class="product-price">₹{{regularPrice}}</p>
+              {{#if quantity}}
+                <p class="product-stock text-success">In Stock</p>
+                <a href="/user/addToCart/{{_id}}" class="add-to-cart-link">Add to Cart</a>
+              {{else}}
+                <p class="product-stock text-danger">Out of Stock</p>
+                {{!-- //<span class="text-muted">Out of Stock</span> --}}
+              {{/if}}
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</section>
+  {{> userfooter}} <!-- Include the footer partial -->
+ 
+<script>
+  document.getElementById('sortOptions').addEventListener('change', function () {
+    const selectedValue = this.value;
+    if (selectedValue) {
+      window.location.href = selectedValue;
+    }
+  });
+</script>
+
+
+
+
+  {{!-- <style>
+    /* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  gap: 20px;
+}
+* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.auth-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  flex: 1 1 250px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h3,
+.sidebar h4 {
+  margin-bottom: 15px;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.filter-section ul {
+  list-style: none;
+}
+
+.filter-section li {
+  margin-bottom: 10px;
+}
+
+.filter-section a {
+  text-decoration: none;
+  color: #333;
+}
+
+.filter-section select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Product Section */
+.product-section {
+  flex: 3 1 700px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.product-info {
+  margin-top: 10px;
+}
+
+.product-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.product-price {
+  color: #28a745;
+  margin-bottom: 5px;
+}
+
+.add-to-cart-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #fff;
+  background-color: #007bff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.add-to-cart-link:hover {
+  background-color: #0056b3;
+}
+
+/* Wishlist Icon */
+.wishlist-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #999;
+  font-size: 20px;
+}
+
+.wishlist-icon:hover {
+  color: #e63946;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    order: 1;
+  }
+
+  .product-section {
+    order: 2;
+  }
+}
+
+@media (max-width: 576px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+  </style> --}}
+<style>
+    /* General Reset */
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+body {
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  gap: 20px;
+} 
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.auth-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+/* Sidebar Styles */
+.sidebar {
+  flex: 1 1 250px;
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h3,
+.sidebar h4 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 2px solid #007bff;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Styled Search Bar */
+.search-bar {
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 25px;
+  border: none;
+  border-radius: 30px;
+  background-color: #f1f1f1;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.search-bar:focus {
+  outline: none;
+  background-color: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  border: 1px solid #007bff;
+}
+
+/* Filter Section */
+.filter-section {
+  margin-bottom: 25px;
+}
+
+.filter-section ul {
+  list-style: none;
+}
+
+.filter-section li {
+  margin: 10px 0;
+}
+
+.filter-section a {
+  text-decoration: none;
+  color: #555;
+  display: block;
+  padding: 8px 10px;
+  border-radius: 5px;
+  transition: all 0.3s;
+}
+
+.filter-section a:hover {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* Styled Dropdown for Sorting */
+.filter-section select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-section select:hover,
+.filter-section select:focus {
+  outline: none;
+  background-color: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  border: 1px solid #007bff;
+}
+
+/* Product Section */
+.product-section {
+  flex: 3 1 700px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+/* Product Card */
+.product-card {
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #eaeaea;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.product-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.product-info {
+  margin-top: 15px;
+}
+
+.product-name {
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+}
+
+.product-price {
+  color: #28a745;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.add-to-cart-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #fff;
+  background-color: #007bff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.add-to-cart-link:hover {
+  background-color: #0056b3;
+}
+
+.wishlist-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #999;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.wishlist-icon:hover {
+  color: #e63946;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    order: 1;
+  }
+
+  .product-section {
+    order: 2;
+  }
+}
+
+@media (max-width: 576px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    padding: 15px;
+  }
+}
+
+</style>

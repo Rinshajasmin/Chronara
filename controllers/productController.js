@@ -18,7 +18,7 @@ const User = require('../models/usermodel')
         try {
             const products = await Product.find({ isDeleted: false }) // Filter out deleted products
             .populate('category', 'name') // Include the category name
-            .select('productName productDesc regularPrice stock productImage'); // Specify the fields to include
+            .select('productName productDesc regularPrice  productImage'); // Specify the fields to include
         
         res.render('admin/products', { products });;
         } catch (error) {
@@ -318,7 +318,7 @@ const geteditProduct = async (req, res) => {
             return {
                 _id: category._id,
                 name: category.name,
-                isSelected: category._id.toString() === product.category.toString()
+                isListed: category._id.toString() === product.category.toString()
             };
         });
 
@@ -350,11 +350,11 @@ const editProduct = async (req, res) => {
         product.productDesc = productDesc || product.productDesc;
         product.category = category || product.category;
         product.regularPrice = regularPrice || product.regularPrice;
-
+        // product.productImage=productImage || product.productImage;
         
-        if ( productImage&& productImage.length >= 1) {
-            product.productImage = productImage; // Update image array
-        }
+        // if ( productImage&& productImage.length >= 1) {
+        //     product.productImage = productImage; // Update image array
+        // }
 
         // Save the updated product
         await product.save();

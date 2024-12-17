@@ -266,25 +266,36 @@ body {
     position: absolute; /* Position relative to the .watch-item container */
     top: 21px; /* Adjust to place it on the image */
     right: 22px; /* Adjust to place it on the image */
-    background-color: rgba(255, 255, 255, 0.8); /* Optional: Add a translucent background */
     padding: 5px;
     border-radius: 50%;
     cursor: pointer;
-  }
-  
-  .wishlist-icon img {
-    width: 20px; /* Adjust size of the icon */
-    height: 20px;
-  }
-  
-  /* Hover Effect */
-  .wishlist-icon:hover {
-    background-color: rgba(255, 0, 0, 0.8); /* Optional: Change background color on hover */
-  }
-  /* Active Heart Icon Style */
+    background-color: transparent; /* Remove background color */
+    border: none; /* Ensure no border is visible */
+}
+
+/* Remove default anchor or focus outline */
+.wishlist-icon:focus, 
+.wishlist-icon:active {
+    outline: none; /* Remove focus outline */
+    box-shadow: none; /* Remove any shadow on focus */
+}
+
+/* Ensure icon is white */
+.wishlist-icon i {
+    color: #ffffff; /* Set icon color to white */
+    font-size: 20px; /* Adjust icon size if needed */
+}
+
+/* Hover Effect */
+.wishlist-icon:hover i {
+    color: #ff0000; /* Change to red on hover for emphasis */
+}
+
+/* Active (Toggled) State */
 .wishlist-icon i.active {
-    color: #ff0000; /* Red color when active */
-  }
+    color: #ff0000; /* Red color when the icon is active */
+}
+
   
   
   .watch-item h3 {
@@ -295,7 +306,8 @@ body {
   .watch-item p {
     color: #555;
     font-size: 14px;
-    margin-bottom: 10px;
+    margin-bottom: 9px;
+    margin-top: 9px ;
   }
   
   /* Badge Styling */
@@ -371,3 +383,23 @@ body {
         position: relative;
         z-index: 500;
     }
+    .cart-link-container {
+      margin-top: 10px; /* Add space above the link */
+    }
+    
+    .link-add-to-cart {
+      display: inline-block;
+      padding: 8px 12px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+    
+    .link-add-to-cart:hover {
+      background-color: #0056b3;
+    }
+    
+    
