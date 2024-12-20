@@ -7,6 +7,10 @@ const addressSchema= new Schema({
     ref:"User",
     required:true
    },
+   isDeleted:{
+      type:Boolean,
+      default:false
+   },
    address:[{
       addressType:{
         type:String,

@@ -1,0 +1,443 @@
+
+
+
+<header id="header" class="navbar">
+  <div class="logo">chronara</div>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+  </nav>
+  {{#if username}}
+    <div class="dropdown">
+      <a class="sign-in-link" href="#">{{username}}</a>
+      <div class="dropdown-content">
+        <a href="/user/profile">Profile</a>
+        <a href="/user/logout">Logout</a>
+      </div>
+    </div>
+  {{else}}
+    <div class="auth-links">
+      <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+    </div>
+  {{/if}}
+</header>
+
+
+
+
+
+<main class="main">
+ {{!-- <div class="page-header breadcrumb-wrap mb-3">
+   <div class="container">
+     <div class="breadcrumb">
+       <a href="#" rel="nofollow">Home</a>
+       <span></span> Profile <span></span> Account
+     </div>
+   </div>
+ </div> --}}
+  <section class="pt-10 pb-10">
+   <div class="container">
+     <div class="row">
+       <div class="col-lg-10 m-auto">
+         <div class="row">
+           <div class="col-md-4">
+             <div class="dashboard-menu">
+               <ul class="nav flex-column" role="tablist">
+                 <li class="nav-item">
+                   <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="false">
+                     <i class="fi-rs-settings-sliders mr-10"></i>Dashboard
+                   </a>
+                 </li>
+                 <li class="nav-item">
+                   <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="true">
+                     <i class="fi-rs-marker mr-10"></i>My Address
+                   </a>
+                 </li>
+                 <li class="nav-item">
+                   <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false">
+                     <i class="fi-rs-shopping-bag mr-10"></i>Orders
+                   </a>
+                 </li>
+                 <li class="nav-item">
+                   <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false">
+                     <i class="fi-rs-shopping-cart-check mr-10"></i>Wallet Status
+                   </a>
+                 </li>
+                 <li class="nav-item">
+                   <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#wallet-history" role="tab" aria-controls="track-orders" aria-selected="false">
+                     <i class="fi-rs-shopping-cart-check mr-10"></i>Wallet History
+                   </a>
+                 </li>
+                 <li class="nav-item">
+                   <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#referal" role="tab" aria-controls="track-orders" aria-selected="false">
+                     <i class="fi-rs-shopping-cart-check mr-10"></i>Referals
+                   </a>
+                 </li>
+                 <li class="nav-item">
+                   <a class="nav-link" href="/logout">
+                     <i class="fi-rs-sign-out mr-10"></i>Logout
+                   </a>
+                 </li>
+               </ul>
+             </div>
+           </div>
+           <div class="col-md-8">
+             <div class="tab-content dashboard-content">
+
+
+               <div class="tab-pane fade show active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                 <div class="card card-green">
+                   <div class="card-header">
+                     <h5 class="mb-0 text-center">User Profile</h5>
+                   </div>
+                   <div class="card-body text-center">
+                     <h5 class="card-title">{{user.username}}</h5>
+                     <p class="card-text">
+                       <strong>Phone:</strong>{{user.phone}}
+                     </p>
+                     <p class="card-text">
+                       <strong>Email:</strong>{{user.email}}
+                     </p>
+                     <a href="/user/change-email" class="btn btn-sm btn-success ml-2">Change Email</a>
+                     <a href="/user/change-password" class="btn btn-sm btn-success">Change Password</a>
+                   </div>
+                 </div>
+               </div>
+
+
+               <div
+                 class="tab-pane fade"
+                 id="address"
+                 role="tabpanel"
+                 aria-labelledby="address-tab"
+               >
+               
+              <div class="row">
+  {{#if userAddress}}
+    {{#each userAddress}}
+      <div class="col-lg-6">
+        <div class="card mb-3 mb-lg-0">
+          <div class="card-header">
+            <h5 class="mb-0">{{this.addressType}}</h5>
+          </div>
+          <div class="card-body">
+            <address>
+              <strong>Name:</strong> {{this.name}}<br>
+              <strong>City:</strong> {{this.city}}<br>
+              <strong>Landmark:</strong> {{this.landMark}}<br>
+              <strong>State:</strong> {{this.state}}<br>
+              <strong>Pincode:</strong> {{this.pincode}}<br>
+              <strong>Phone:</strong> {{this.phone}}<br>
+              <strong>Alt Phone:</strong> {{this.altPhone}}<br>
+            </address>
+             <div>
+                     <a href="/user/addAddress">
+                       <button class="btn btn-primary w-70">
+                         Add address
+                       </button>
+                     </a>
+                   </div>
+            <div class="d-flex justify-content-between">
+              <a href="/user/editAddress/?id={{this._id}}" class="btn-small">Edit</a>
+              <a href="/user/deleteAddress/{{_id}}" class="btn-small" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  {{else}}
+    <div class="col-lg-6">
+      <div class="card mb-3 mb-lg-0">
+        <div class="card-header">
+          <h5 class="mb-0">No Address</h5>
+        </div>
+        <div class="card-body">
+          <address>
+            <em>No address available. Please add one.</em>
+            <div>
+                     <a href="/user/addAddress">
+                       <button class="btn btn-primary w-70">
+                         Add address
+                       </button>
+                     </a>
+                   </div>
+          </address>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</div>
+
+
+               </div>
+
+
+               <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                 <div class="card">
+                   <div class="card-header">
+                     <h5 class="mb-0">Your Orders</h5>
+                   </div>
+                   <div class="card-body">
+                     <div class="table-responsive">
+                       <table class="table">
+                         <thead>
+                           <tr>
+                             <th>Order</th>
+                             <th>Status</th>
+                             <th>Total</th>
+                             <th>Actions</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                           <tr>
+                             <td></td>
+                             <td></td>
+                             <td></td>
+                             <td>
+                               <a href="" class="btn-small d-block">View</a>
+                             </td>
+                           </tr>
+                         </tbody>
+                       </table>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+
+
+               <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                 <div class="card">
+                   <div class="card-header">
+                     <h5 class="mb-0">Wallet</h5>
+                   </div>
+                   <div class="card-body contact-from-area">
+                     <div class="row">
+                       <div class="col-lg-8 mx-auto text-center mt-90">
+                         <form>
+                           <div class="form-group">
+                             <label for="walletAmount" class="h4">Amount</label>
+                             <div class="h3"></div>
+                           </div>
+                           <button type="button" class="btn btn-success" onclick="">Add Money</button>
+                         </form>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+
+
+               <div class="tab-pane fade" id="wallet-history" role="tabpanel" aria-labelledby="orders-tab">
+                 <div class="card">
+                   <div class="card-header">
+                     <h5 class="mb-0">Wallet History</h5>
+                   </div>
+                   <div class="card-body">
+                     <div class="table-responsive">
+                       <table class="table">
+                         <thead>
+                           <tr>
+                             <th>Date</th>
+                             <th>Status</th>
+                             <th>Amount</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                           <tr>
+                             <td></td>
+                             <td></td>
+                             <td></td>
+                           </tr>
+                         </tbody>
+                       </table>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+
+
+               <div class="tab-pane fade" id="referal" role="tabpanel" aria-labelledby="track-orders-tab">
+                 <div class="card">
+                   <div class="card-header">
+                     <h5 class="mb-0">Referal</h5>
+                   </div>
+                   <div class="card-body">
+                     <h6 class="mb-3">Refer your friends and earn money!</h6>
+                     <p>Share this link: <strong>></strong></p>
+                     <p>Earned: ₹</p>
+                   </div>
+                 </div>
+               </div>
+       </div>
+     </div>
+   </div>
+ </section>
+</main>
+{{>userfooter}}
+
+
+<style>
+/* General Container */
+.main {
+    margin-top: -46px; /* Reduce top margin */
+    padding-top: 0; /* Ensure there is no additional padding */
+   /* Add more spacing for a cleaner layout */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align menu and card at the top */
+  gap: 30px; /* Add spacing between the menu and card */
+  background-color: #f4f4f4; /* Subtle background to make elements pop */
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.auth-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Dashboard Menu Styling */
+.dashboard-menu {
+  background-color: #cce3e6;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 220px; /* Keep the fixed width */
+  margin-right: 289px; /* Add space between sidebar and form */
+  position: relative; /* Ensure proper positioning */
+  left: -10px; /* Move the sidebar slightly to the left */
+}
+
+
+.dashboard-menu .nav-link {
+  font-weight: bold;
+  color: #30683c;
+  box-shadow: 0 4px 10px rgba(123, 131, 112, 0.3), 0 4px 20px rgba(0, 191, 255, 0.2);
+  transition: box-shadow 0.3s ease, color 0.3s ease;
+  padding: 10px 15px; /* Better spacing for menu items */
+  display: block; /* Ensure links stack vertically */
+  text-align: center; /* Center-align text */
+  border-radius: 5px; /* Rounded edges for links */
+}
+
+.dashboard-menu .nav-link:hover {
+  color: #00bfff;
+  box-shadow: 0 4px 15px rgba(173, 255, 47, 0.5), 0 6px 25px rgba(0, 191, 255, 0.4);
+}
+.btn-small {
+    padding: 10px 20px;
+    font-size: 14px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Edit Button Style */
+.btn-small:nth-child(1) {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: 1px solid #4CAF50;
+}
+
+.btn-small:nth-child(1):hover {
+    background-color: #45a049; /* Darker Green on hover */
+}
+
+/* Delete Button Style */
+.btn-small:nth-child(2) {
+    background-color: #f44336; /* Red */
+    color: white;
+    border: 1px solid #f44336;
+}
+
+.btn-small:nth-child(2):hover {
+    background-color: #d32f2f; /* Darker Red on hover */
+}
+
+/* Optionally, add spacing between buttons */
+.btn-small + .btn-small {
+    margin-left: 10px;
+}
+
+
+/* Card Styling */
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Lighter shadow for a cleaner look */
+  background-color: #ffffff; /* White background for clarity */
+  width: 400px; /* Fixed width for consistency */
+  padding: 20px;
+}
+
+.card-header {
+  background-color: #487379;
+  color: white;
+  border-radius: 10px 10px 0 0;
+  padding: 10px 15px;
+  font-size: 1.2rem; /* Slightly larger font for emphasis */
+  text-align: center;
+}
+
+/* Buttons */
+.btn-success {
+  background-color: #577194;
+  border-color: #6bb87d;
+  font-size: 1rem;
+  padding: 10px 15px;
+  border-radius: 5px;
+  width: 100%; /* Full-width buttons for a neat look */
+  margin-top: 10px;
+}
+
+.btn-success:hover {
+  background-color: #506955;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .main {
+    flex-direction: column; /* Stack menu and card vertically */
+    align-items: center;
+    gap: 20px;
+  }
+
+  .dashboard-menu {
+    width: 100%; /* Full width for smaller screens */
+    text-align: center;
+  }
+
+  .card {
+    width: 100%; /* Full width for smaller screens */
+  }
+}
+</style>

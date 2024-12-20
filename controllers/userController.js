@@ -409,6 +409,15 @@ const filterProduct= async (req, res) => {
     res.status(500).send('Server error');
   }
   }
-  
+ const getuserProfile = async(req,res)=>{
 
-module.exports={loadLogin,loadHome,loadSignup,signup,verifyOtp,resendOtp,pageNotFound,login,logout,loadShop,filterProduct,sortProduct,searchProduct} 
+ } 
+
+module.exports={loadLogin,
+    loadHome,
+    loadSignup,
+    signup,verifyOtp,resendOtp,
+    pageNotFound,login,logout,loadShop,
+    filterProduct,sortProduct,searchProduct,
+    getuserProfile
+} 

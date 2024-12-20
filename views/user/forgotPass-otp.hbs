@@ -1,0 +1,270 @@
+
+<header id="header" class="navbar">
+  <div class="logo">chronara</div>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+  </nav>
+  {{#if username}}
+    <div class="dropdown">
+      <a class="sign-in-link" href="#">{{username}}</a>
+      <div class="dropdown-content">
+        <a href="/user/profile">Profile</a>
+        <a href="/user/logout">Logout</a>
+      </div>
+    </div>
+  {{else}}
+    <div class="auth-links">
+      <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+    </div>
+  {{/if}}
+</header>
+
+
+<main>
+    <div class="otp-container">
+      <h1>Email Verification</h1>
+      <form action="" onsubmit="return validateOtpForm()">
+      <label for="otp">Enter OTP:</label>
+      <input type="text" id="otp" placeholder="Enter OTP" maxlength="6" required>
+      {{#if message}}
+      <p class="message" style="color: red;">{{message}}</p>
+    {{/if}}
+      <button type="submit" >Verify OTP</button>
+      </form>
+      <div class="otp-timer" id="otpTimer"></div>
+      <button type="button" onclick="resendOTP()">Resend OTP<button>
+      <p class="login-link">Already verified? <a href="/user/login">Login now</a></p>
+    </div>
+  </main>
+
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" ></script>
+
+<!-- Include SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+  let otpTimerInterval ;
+  let timer = 60;
+
+function updateTimerColor(percentage){
+    const timerElement = document.getElementById('otpTimer');
+    if(percentage > 50){
+        timerElement.style.backgroundColor='#28a745';
+
+    }else if (percentage>25){
+        timerElement.style.backgroundColor='#ffc107'
+    }else{
+                timerElement.style.backgroundColor='#dc3545'
+
+    }
+}
+
+   
+   function startOtpTimer(){
+    const timerElement = document.getElementById('otpTimer')
+    otpTimerInterval = setInterval(function(){
+        const minutes = Math.floor(timer/60);
+        const seconds = timer % 60;
+        timerElement.textContent = `${minutes}:${seconds<10?'0':''}${seconds}`;
+        updateTimerColor((timer/60)*100);
+        if(--timer <0){
+            clearInterval(otpTimerInterval);
+            timerElement.textContent = 'Expired',
+            timerElement.style.backgroundColor = 'red'
+        }
+    },1000)
+   }
+   initializeOtpTimer();
+
+   function initializeOtpTimer(){
+    clearInterval(otpTimerInterval);
+    timer = 60;
+    startOtpTimer();
+   }
+
+   function validateOtpForm(){
+    const otpInput = document.getElementById('otp').value;
+    $.ajax({
+        type:'POST',
+        url:'/user/verify-passForget-otp',
+        data:{otp:otpInput},
+        success:function(response){
+            if(response.success){
+                Swal.fire({
+                    icon:'success',
+                    title:'OTP Verified successfully',
+                    showConfirmButton:false,
+                    timer:1500
+                }).then( ()=>{
+                    window.location.href= response.redirectUrl;
+                })
+            }else{
+                Swal.fire({
+                    icon:'error',
+                    title:'invalid OTP',
+                    text:response.message
+                })
+            }
+        },
+        error: function (){
+            Swal.fire({
+                icon:'error',
+                title:'Error',
+                text:'Failed to verify OTP.Please try again'
+            })
+        }
+    });
+    return false
+   }
+
+
+function resendOTP(){
+    clearInterval(otpTimerInterval);
+    timer = 60;
+    startOtpTimer();
+    $.ajax({
+        type:'POST',
+        url:'/user/resend-forgot-otp',
+        success: function (response){
+            if(response.success){
+                Swal.fire({
+                    icon:'success',
+                    title:'Resend OTP successful',
+                    showConfirmButton:false,
+                    timer:1500
+                })
+            }else{
+                Swal.fire({
+                    icon:'error',
+                    title:'Error',
+                    text:'failed to resend otp'
+                })
+            }
+        },
+        error:function(){
+            Swal.fire({
+                    icon:'error',
+                    title:'Error',
+                    text:'failed resend otp'
+                })
+
+        }
+    })
+}
+
+
+</script>
+
+<style>
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f8f9fa; /* Light gray background */
+  color: #333;
+}
+/* OTP Form Container */
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85vh;
+}
+
+.otp-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 350px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  margin: 15px 0 5px 0;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* OTP Input */
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Verify Button */
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Links */
+p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+}
+
+p a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+.otp-timer {
+  width: 50px; /* Adjust width for the size of the circle */
+  height: 50px; /* Height should be equal to width for a perfect circle */
+  border-radius: 50%; /* Makes it a circle */
+  background-color: #f0f0f0; /* Light gray background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto; /* Center it horizontally */
+  font-weight: bold;
+  color: #333; /* Text color */
+  font-size: 14px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+}
+
+</style>
