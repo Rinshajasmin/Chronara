@@ -35,21 +35,25 @@ const userSchema=new Schema({
     isAdmin:{
         type:Boolean,
         default:false
-    }
-    // cart:[{
-    //     type:Schema.Types.ObjectId,
-    //     ref:"Cart"
-    // }],
+    },
+    cart:[{
+        type:Schema.Types.ObjectId,
+        ref:"Cart"
+    }],
     // wallet:[{
     //      type:Schema.Types.ObjectId,
     //     ref:"Wishlist"
         
-    // }],
-    // orderHistory:[{
-    //  type:Schema.Types.ObjectId,
-    // ref:"Order"
+    //}],
+    orderHistory:[{
+     type:Schema.Types.ObjectId,
+    ref:"Order"
     
-    // }], 
+    }], 
+    addresses: [{ // Add reference to the Address schema
+        type: Schema.Types.ObjectId,
+        ref: "Address"
+    }]
     // createdOn : {
     //     type:Date,
     //     default:Date.now,

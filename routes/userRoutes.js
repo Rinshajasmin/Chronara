@@ -3,6 +3,8 @@ const router= express.Router()
 const passport = require('passport')
 const userController=require('../controllers/userController')
 const profileController = require('../controllers/profileController')
+const productController = require('../controllers/productController')
+const cartController = require('../controllers/cartController')
 const {userAuth} = require('../middlewares/auth')
 
 router.get('/login',userController.loadLogin)
@@ -47,6 +49,26 @@ router.post('/addAddress',userAuth,profileController.postAddAddress)
 router.get('/deleteAddress/:id',userAuth,profileController.deleteAddress)
 router.get('/editAddress',userAuth,profileController.getEditAddress)
 router.post('/editAddress',userAuth,profileController.updateAddress)
+
+
+//product management
+router.get('/productDetails',userAuth,productController.getProductDetails)
+//cart management
+// router.get('/addToCart',userAuth,productController.viewCart)
+// router.post('/addToCart',userAuth,productController.addToCart)
+router.get("/cart", userAuth, cartController.getCartPage)
+router.post("/addToCart",userAuth, cartController.addToCart)
+router.post("/changeQuantity", userAuth,cartController.changeQuantity)
+router.post("/deleteItem", userAuth, cartController.deleteProduct)
+
+
+//checkout
+router.post('/checkOut',userAuth,cartController.getCheckOut)
+
+//order management
+
+router.post('/placeOrder',userAuth,cartController.placeOrders)
+
 
 router.get('/pageNotFound',userController.pageNotFound)
 router.get('/logout',userController.logout)

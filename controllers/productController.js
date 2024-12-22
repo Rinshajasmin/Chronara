@@ -441,10 +441,57 @@ const addnew = async(req,res)=>{
         return res.redirect("/admin/error")
     }
 }
+const getProductDetails = async(req,res)=>{
+try {
+    const userId = req.session.user;
+    const userData = await User.findById(userId);
+    const productId = req.query.id;
+    const product = await Product.findById(productId).populate("category")
+    const findCategory = product.category;
+    const categoryOffer = findCategory?.categoryOffer || 0
+    const productOffer = product.productOffer || 0;
+    const totalOffer = categoryOffer + productOffer;
+    res.render("user/productDetails",{
+        user:userData,
+        product:product,
+        quantity:product.quantity,
+        category:findCategory,
+        totalOffer:totalOffer
 
+
+    });
+
+} catch (error) {
+    console.log("error while fetching the product details",error)
+    res.redirect("/user/error")
+}
+}
+
+const viewCart = async(req,res)=>{
+    try {
+       
+
+        res.render('user/cart')
+    } catch (error) {
+        
+    }
+
+}
+
+
+const addToCart = async(req,res)=>{
+        try {
+            res.render('user/cart')
+        } catch (error) {
+            console.error("error while adding to cart",error)
+            res.redirect("/user/error")
+        }
+}
 
  module.exports ={
-    getProducts,getAddProductPage,addProduct,geteditProduct,editProduct,deleteProduct,addnew,getaddnew
+    getProducts,getAddProductPage,addProduct,geteditProduct,editProduct,deleteProduct,addnew,getaddnew,
+    getProductDetails,
+    viewCart,addToCart
  }
 
 

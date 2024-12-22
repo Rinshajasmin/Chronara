@@ -1,0 +1,423 @@
+{{!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Checkout</title>
+</head>
+<body>
+    <h1>Checkout</h1>
+
+    <h2>Order Summary</h2>
+    <ul>
+        {{#each items}}
+        <li>
+            <strong>{{productId.productName}}</strong>
+            <br>Quantity: {{quantity}}
+            <br>Price: ${{price}}
+            <br>Total: ${{totalPrice}}
+        </li>
+        {{/each}}
+    </ul>
+
+    <h3>Total Price: ${{totalPrice}}</h3>
+
+    <form action="/place-order" method="POST">
+        <label for="paymentMethod">Select Payment Method:</label>
+        <select name="paymentMethod" id="paymentMethod" required>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Debit Card">Debit Card</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Cash on Delivery">Cash on Delivery</option>
+        </select>
+        <button type="submit">Confirm and Place Order</button>
+    </form>
+</body>
+<style>
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .checkout-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #007BFF;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            color: #28a745;
+            font-size: 1.25rem;
+            margin-top: 20px;
+        }
+
+        .order-summary {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        .order-summary li {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: #555;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .order-summary strong {
+            color: #333;
+        }
+
+        .order-summary .total-price {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+            text-align: left;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .payment-methods div {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            width: 100px;
+        }
+
+        .payment-methods img {
+            width: 40px;
+            margin-bottom: 5px;
+        }
+
+        .payment-methods p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #333;
+        }
+</style>
+
+</html> --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <title>Checkout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .checkout-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #007BFF;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            color: #28a745;
+            font-size: 1.25rem;
+            margin-top: 20px;
+        }
+
+        .order-summary {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        .order-summary li {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: #555;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .order-summary strong {
+            color: #333;
+        }
+
+        .order-summary .total-price {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+            text-align: left;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #007BFF;
+            background-color: #e9f4ff;
+        }
+
+        option {
+            padding: 10px;
+            background-color: #fff;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        select:hover {
+            background-color: #e0e0e0;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .payment-methods div {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            width: 100px;
+        }
+
+        .payment-methods img {
+            width: 40px;
+            margin-bottom: 5px;
+        }
+
+        .payment-methods p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #333;
+        }
+ /* Container for the address list */
+.address-list {
+    margin: 20px 0;
+}
+
+/* Each address item */
+.address-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    gap: 10px;
+    align-items: center; /* Center align text and radio button */
+}
+
+/* Adjusting radio button to be hidden and allowing label to handle click */
+.address-item input[type="radio"] {
+    display: none; /* Hide the radio button */
+}
+
+/* Style the label to look like a button or selectable area */
+.address-item label {
+    display: flex;
+    flex-direction: column; /* Stack text vertically */
+    align-items: center; /* Center the text and other content inside label */
+    padding: 10px;
+    width: 100%; /* Allow label to fill the container */
+    cursor: pointer; /* Indicate that the label is clickable */
+}
+
+/* Style the label to create space and center text */
+.address-item label p {
+    margin: 5px 0; /* Adjust text spacing */
+    text-align: center; /* Center text inside the label */
+}
+
+/* Style the radio button when selected */
+.address-item input[type="radio"]:checked + label {
+    background-color: #e0f7e0;
+    border: 2px solid #4CAF50;
+}
+
+.address-item input[type="radio"]:not(:checked) + label {
+    background-color: #fff;
+    border: 2px solid #ccc;
+}
+
+/* Add a hover effect to indicate selectability */
+.address-item label:hover {
+    background-color: #f1f1f1;
+}
+
+
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <h1>Checkout</h1>
+
+        <h2>Order Summary</h2>
+        <ul class="order-summary">
+            {{#each items}}
+            <li>
+                <strong>{{productId.productName}}</strong><br>
+                Quantity: {{quantity}}<br>
+                Price: ₹{{price}}<br>
+                Total: ₹{{totalPrice}}
+            </li>
+            {{/each}}
+        </ul>
+
+        <h3 class="total-price">Total Price:₹ {{totalPrice}}</h3>
+
+        <form action="/user/placeOrder" method="POST">
+            <input type="hidden" name="cartId" value={{cartId}}>
+
+
+            <label>Select Address:</label>
+<div class="address-list">
+    {{#each addresses}}
+    {{#each this.address}}
+    <div class="address-item">
+        <input type="radio" id="address-{{this._id}}" name="address" value="{{this._id}}" required>
+        <label for="address-{{this._id}}">
+            <p><strong>{{this.name}}, {{this.city}}, {{this.state}}, {{this.pincode}}</strong></p>
+            <p>Landmark: {{this.landMark}}</p>
+            <p>Phone: {{this.phone}}</p>
+        </label>
+    </div>
+    {{/each}}
+{{/each}}
+
+</div>
+
+            <label for="paymentMethod">Select Payment Method:</label>
+            <select name="paymentMethod" id="paymentMethod" required>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="PayPal">PayPal</option>
+                <option value="Cash on Delivery">Cash on Delivery</option>
+            </select>
+
+            <div class="payment-methods">
+                <div>
+                    <i class="fas fa-credit-card"></i>
+                    <p>Credit Card</p>
+                </div>
+                <div>
+                    <i class="fab fa-paypal"></i>
+                    <p>PayPal</p>
+                </div>
+                <div>
+                    <i class="fas fa-wallet"></i>
+                    <p>COD</p>
+                </div>
+            </div>
+
+            <button type="submit">Confirm and Place Order</button>
+        </form>
+    </div>
+
+</body>
+</html>
+             

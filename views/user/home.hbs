@@ -12,7 +12,7 @@
             <ul class="nav-links">
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Contact</a></li>
-                <li><a href="#">About</a></li>
+                <li><a href="/user/cart/?id={{_id}}" >Cart</a></li>
             </ul>
         </nav>
          {{#if username}}
@@ -52,11 +52,11 @@
 <section class="categories">
     <h2>Newest Collection Available</h2>
     <div class="category-list">
-        <a href="#" class="category-item">
+        <a href="/user/filter" class="category-item">
             <img src="/images/menwatch.png" alt="Men Watches">
             <p>Men</p>
         </a>
-        <a href="#" class="category-item">
+        <a href="/user/filter" class="category-item">
             <img src="/images/womenwatch.png" alt="Women Watches">
             <p>Women</p>
         </a>
@@ -82,7 +82,8 @@
             <p>From ₹500 to ₹10,000. Shop now...</p>
             <div class="banner-buttons">
             
-                <button class="btn-secondary">SHOP NOW</button>
+                <button  class="btn-secondary">
+                  <a href="/user/shop">SHOP NOW</a></button>
             </div>
         </div>
         <div class="banner-image">
@@ -99,7 +100,7 @@
         </a>
 
         <!-- Product Image with Link -->
-        <a href="/user/productDetails/{{_id}}">
+        <a href="/user/productDetails/?id={{_id}}">
           {{#if productImage.[0]}}
             <img src="{{productImage.[0]}}" alt="{{productName}}" />
           {{else}}
@@ -119,7 +120,14 @@
         </p>
         {{#if quantity}}
           <div class="cart-link-container">
-            <a href="/user/addToCart/{{_id}}" class="link-add-to-cart">Add to Cart</a>
+            <form action="/user/addToCart" method="POST">
+    <input type="hidden" id="productId" name="productId" value="{{_id}}">
+    {{!-- <input type="hidden" id="userId" name="userId" value="{{user._id}}"> --}}
+    <button type="submit" class="btn btn-primary">Add to Cart</button>
+</form>
+
+
+            {{!-- <a href="/user/cart/?id={{_id}}" class="link-add-to-cart">Add to Cart</a> --}}
           </div>
         {{/if}}
       </div>
