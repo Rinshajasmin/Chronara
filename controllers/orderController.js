@@ -41,18 +41,33 @@ const deleteOrder = async (req, res) => {
         if (!orders) {
             return res.status(404).send('order not found');
         }
-  
+        
+     
         // Redirect back to the products list
-        res.redirect('/admin/orders');
+        res.redirect('/admin/dashBoard');
     } catch (error) {
         console.error(error);
         res.status(500).send('Server Error');
     }
 };
 
+const getEditOrder = async(req,res)=>{
+    try {
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+        res.render('admin/editOrder', { order });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error fetching order details.');
+    }
+}
+
 
 
 module.exports = {
     getAllOrders,
-    deleteOrder
+    deleteOrder,
+    getEditOrder
 }

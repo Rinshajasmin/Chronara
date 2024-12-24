@@ -39,6 +39,7 @@ router.post("/addProductsnew",uploads.array("productImage",3),productController.
 
 //order Management
 router.get('/getAllOrders',adminAuth,orderController.getAllOrders)
+router.get('/editOrder/:id',adminAuth,orderController.getEditOrder)
 router.post('/deleteOrder/:id',adminAuth,orderController.deleteOrder)
 
 

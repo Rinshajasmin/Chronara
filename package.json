@@ -8,6 +8,7 @@
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.1",
     "hbs": "^4.2.0",
+    "helmet": "^8.0.0",
     "mongodb": "^6.11.0",
     "mongoose": "^8.8.2",
     "mongoose-paginate-v2": "^1.8.5",
