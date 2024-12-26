@@ -11,6 +11,7 @@ const passport = require('./config/passport')
 const env=require('dotenv').config();
 const db=require('./config/db');
 db()
+const moment = require('moment')
 const nocache=require('nocache')
 app.use(nocache()) 
 
@@ -59,11 +60,27 @@ app.engine(
       __dirname + '/views/user',    // User-specific partials
       __dirname + '/views/admin',   // Admin-specific partials
     ], 
+    helpers: {
+      formatDate: (date, format) => moment(date).format(format),
+      eq: (a, b) => {
+        return a === b; // Return true or false for equality check
+      },
+      statusClass: (status) => {
+        switch (status) {
+          case 'Pending': return 'text-warning';
+          case 'Shipped': return 'text-primary';
+          case 'Delivered': return 'text-success';
+          case 'Cancelled': return 'text-danger';
+          default: return 'text-secondary';
+        }
+      },
+    },
     runtimeOptions: {
       allowProtoPropertiesByDefault: true
     },
   })
 );
+
 
 
   app.set('view engine', 'hbs');

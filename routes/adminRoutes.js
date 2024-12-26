@@ -40,8 +40,8 @@ router.post("/addProductsnew",uploads.array("productImage",3),productController.
 //order Management
 router.get('/getAllOrders',adminAuth,orderController.getAllOrders)
 router.get('/editOrder/:id',adminAuth,orderController.getEditOrder)
-router.post('/deleteOrder/:id',adminAuth,orderController.deleteOrder)
-
+// router.post('/deleteOrder/:id',adminAuth,orderController.deleteOrder)
+router.post('/statusUpdate/:id',adminAuth,orderController.updateStatus)
 
 
 module.exports=router

@@ -4,29 +4,47 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   />
 </head>
-<header id="header" class="navbar">
-  <div class="logo">chronara</div>
-  <nav>
-    <ul class="nav-links">
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Contact</a></li>
-      <li><a href="#">About</a></li>
-    </ul>
-  </nav>
-  {{#if username}}
-    <div class="dropdown">
-      <a class="sign-in-link" href="#">{{username}}</a>
-      <div class="dropdown-content">
-        <a href="/user/profile">Profile</a>
-        <a href="/user/logout">Logout</a>
-      </div>
-    </div>
-  {{else}}
-    <div class="auth-links">
-      <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
-    </div>
-  {{/if}}
-</header>
+ <header id="header" class="navbar">
+        <div class="logo">chronara</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/user/home">Home</a></li>
+                <li><a href="/user/contact">Contact</a></li>
+                <li><a href="/user/about">About</a></li>
+
+                {{!-- <li><a href="/user/cart/?id={{_id}}" >Cart</a></li> --}}
+            </ul>
+        </nav>
+        
+         {{#if username}}
+         <div class="shopping-icon">
+              <a href="/user/cart/?id={{_id}}" class="cart-icon">
+              
+                <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
+              </a>
+        <div class="dropdown">
+          
+          <a class="sign-in-link" href="#">  
+            
+                   <i class="fas fa-user-circle"></i> <!-- Profile icon -->
+
+
+            {{username}}
+          </a>
+          <div class="dropdown-content">
+            <a  href="/user/userProfile">Profile</a>
+            <a  href="/user/logout">Logout</a>
+          </div>
+        </div>
+        </div>
+        
+        {{else}}
+        <div class="auth-links">
+            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+        </div>
+       {{/if}}  
+ 
+    </header> 
 
 <!-- Shop Page Section -->
 <section class="shop-page">
@@ -34,7 +52,7 @@
     <!-- Sidebar Section -->
     <aside class="sidebar" style="flex: 0 0 220px;"> <!-- Fixed smaller width -->
       <h3>Search</h3>
-      <form action="/user/filter" method="GET">
+      <form action="/user/shop" method="GET">
     <input type="text" name="query" placeholder="Search products..." class="search-bar" />
     {{!-- <button type="submit" class="search-btn">Search</button> --}}
   </form>
@@ -88,7 +106,15 @@
               <p class="product-price">₹{{regularPrice}}</p>
               {{#if quantity}}
                 <p class="product-stock text-success">In Stock</p>
-                <a href="/user/addToCart/{{_id}}" class="add-to-cart-link">Add to Cart</a>
+                {{!-- <a href="/user/addToCart/?is={{_id}}" class="add-to-cart-link">Add to Cart</a> --}}
+                {{!-- <form action="/user/addToCart" method="POST">
+    <input type="hidden" name="productId" value={{_id}}>  <!-- Pass the product ID as hidden -->
+    <button type="submit" class="add-to-cart-button">Add to Cart</button>
+</form> --}}
+<!-- Example Add to Cart Button -->
+<button class="add-to-cart-btn btn btn-primary" data-product-id="{{_id}}" onclick="addToCart('{{_id}}')">Add to Cart</button>
+
+
               {{else}}
                 <p class="product-stock text-danger">Out of Stock</p>
                 {{!-- //<span class="text-muted">Out of Stock</span> --}}
@@ -101,6 +127,7 @@
   </div>
 </section>
   {{> userfooter}} <!-- Include the footer partial -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  
 <script>
   document.getElementById('sortOptions').addEventListener('change', function () {
@@ -109,7 +136,53 @@
       window.location.href = selectedValue;
     }
   });
+
+  
+
+    // Function to handle the Add to Cart button click
+    function addToCart(productId) {
+        // You can use AJAX here to send the productId to your backend
+        fetch('/user/addToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Item Added!',
+                    text: 'The item has been added to your cart.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+                console.log(data.cartDetails);
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message || 'Something went wrong.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An unexpected error occurred.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    }
 </script>
+
+
+
+
 
 
 
@@ -321,7 +394,8 @@ body {
   padding: 20px;
   gap: 20px;
 } 
-.navbar {
+
+      .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -351,7 +425,52 @@ body {
     text-decoration: none;
     color: #333;
     font-weight: 500;
+}  
+ .fas.fa-user-circle {
+    margin-right: 8px; /* Space between icon and username */
+    font-size: 20px;   /* Icon size */
+    color: #333;       /* Icon color */
 }
+.fas.fa-shopping-cart {
+    margin-right: 8px; /* Space between icon and username */
+    font-size: 20px;   /* Icon size */
+    color: #333;       /* Icon color */
+}
+.dropdown{
+    position: relative;
+    display: inline-block;
+    
+  } 
+  .dropdown-content{
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    right: 0;
+  }
+  .dropdown-content a{
+    color: black;
+    padding: 12px 16px ;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    }
+    .dropdown-content a:hover{
+        background-color: #f1f1f1;
+    }
+    .dropdown:hover .dropdown-content{
+        display: block;
+    }
+    #header{
+        position: relative;
+        z-index: 500;
+    }
+     .shopping-icon a{
+        text-decoration: none;
+    }
+  
 /* Sidebar Styles */
 .sidebar {
   flex: 1 1 250px;

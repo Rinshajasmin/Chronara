@@ -1,25 +1,50 @@
 const { Admin } = require('mongodb');
 const User = require('../models/usermodel')
 const admin = require('../models/adminmodel')
-const userAuth = async(req,res,next)=>{
-    if(req.session.user){
-        User.findById(req.session.user)
-        .then(data=>{
-            if(data && !data.isBlocked){
-                 next();
-            }else{
-                res.redirect('/user/login')
-            }
-        })
-        .catch(error=>{
-            console.log('error in user auth middleware')
-            res.status(500).send("internal server error")
-        })
+// const userAuth = async(req,res,next)=>{
+//     if(req.session.user){
+//         User.findById(req.session.user)
+//         .then(data=>{
+//             if(data && !data.isBlocked){
+//                  next();
+//             }else{
+//                 res.redirect('/user/login')
+//             }
+//         })
+//         .catch(error=>{
+//             console.log('error in user auth middleware')
+//             res.status(500).send("internal server error")
+//         })
     
-    }else{
-        res.redirect("/user/login")
+//     }else{
+//         res.redirect("/user/login")
+//     }
+// }
+const userAuth = async (req, res, next) => {
+    try {
+      if (req.session.user) {
+        // Fetch the user by ID and check if the user is blocked
+        const user = await User.findOne({ _id: req.session.user, isBlocked: false });
+  
+        if (user) {
+          // User is found and is not blocked, proceed to next middleware
+          return next();
+        } else {
+          // User is either blocked or doesn't exist
+          req.session.destroy(() => {
+            res.render('user/login',{message:"Ypu are Blocked by admin",layout:'layout',isUser:true});
+          });
+        }
+      } else {
+        // User is not logged in, redirect to login page
+        res.redirect("/user/login?message=Please%20log%20in%20to%20continue");
+      }
+    } catch (error) {
+      console.error('Error in userAuth middleware:', error);
+      res.status(500).send("Internal server error");
     }
-}
+  };
+  
 
 const adminAuth = async(req,res,next)=>{
    if(req.session && req.session.admin)//checking wether the admin is present in the session to ensure while logout

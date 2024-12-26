@@ -1,31 +1,86 @@
 <!-- filter.hbs (for displaying filtered products) -->
 <header id="header" class="navbar">
-  <div class="logo">chronara</div>
-  <nav>
-    <ul class="nav-links">
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Contact</a></li>
-      <li><a href="#">About</a></li>
-    </ul>
-  </nav>
-  {{#if username}}
-    <div class="dropdown">
-      <a class="sign-in-link" href="#">{{username}}</a>
-      <div class="dropdown-content">
-        <a href="/user/profile">Profile</a>
-        <a href="/user/logout">Logout</a>
-      </div>
-    </div>
-  {{else}}
-    <div class="auth-links">
-      <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
-    </div>
-  {{/if}}
-</header>
+        <div class="logo">chronara</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/user/home">Home</a></li>
+                <li><a href="/user/contact">Contact</a></li>
+                <li><a href="/user/about">About</a></li>
+
+                {{!-- <li><a href="/user/cart/?id={{_id}}" >Cart</a></li> --}}
+            </ul>
+        </nav>
+        
+         {{#if username}}
+         <div class="shopping-icon">
+              <a href="/user/cart/?id={{_id}}" class="cart-icon">
+              
+                <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
+              </a>
+        <div class="dropdown">
+          
+          <a class="sign-in-link" href="#">  
+            
+                   <i class="fas fa-user-circle"></i> <!-- Profile icon -->
+
+
+            {{username}}
+          </a>
+          <div class="dropdown-content">
+            <a  href="/user/userProfile">Profile</a>
+            <a  href="/user/logout">Logout</a>
+          </div>
+        </div>
+        </div>
+        
+        {{else}}
+        <div class="auth-links">
+            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+        </div>
+       {{/if}}  
+ 
+    </header> 
+
 
 <section class="shop-page">
   <div class="container shop-container">
-   
+    <aside class="sidebar" style="flex: 0 0 220px;"> <!-- Fixed smaller width -->
+      <h3>Search</h3>
+      <form action="/user/filter" method="GET">
+    <input type="text" name="query" placeholder="Search products..." class="search-bar" />
+    {{!-- <button type="submit" class="search-btn">Search</button> --}}
+  </form>
+      <!-- Filter by Price -->
+      <!-- Filter by Price -->
+<div class="filter-section">
+  <h4>Filter by Price</h4>
+  <ul>
+  <li><a href="/user/filter?filter=under-500&sort={{selectedSort}}">Under ₹500</a></li>
+  <li><a href="/user/filter?filter=500-1000&sort={{selectedSort}}">₹500 - ₹1000</a></li>
+  <li><a href="/user/filter?filter=1000-1500&sort={{selectedSort}}">₹1000 - ₹1500</a></li>
+  <li><a href="/user/filter?filter=above-1500&sort={{selectedSort}}">Above ₹1500</a></li>
+</ul>
+
+</div>
+
+
+      <!-- Sort Options -->
+     <!-- Sort by Dropdown -->
+<div class="filter-section">
+  <h4>Sort by</h4>
+  <select id="sortOptions" class="sort-dropdown">
+    <option value="">Select</option>
+    <option value="/user/sort/popularity">Popularity</option>
+    <option value="/user/sort/price-low-high">Price: Low to High</option>
+    <option value="/user/sort/price-high-low">Price: High to Low</option>
+    <option value="/user/sort/new-arrivals">New Arrivals</option>
+    <option value="/user/sort/a-z">A → Z</option>
+    <option value="/user/sort/z-a">Z → A</option>
+  </select>
+</div>
+
+    </aside>
+
 
     <!-- Product Grid Section for Filtered Products -->
     <div class="product-section" style="flex: 1;">
@@ -56,6 +111,16 @@
 </section>
   {{> userfooter}} <!-- Include the footer partial -->
 
+
+  <script>
+  document.getElementById('sortOptions').addEventListener('change', function () {
+    const selectedValue = this.value;
+    if (selectedValue) {
+      window.location.href = selectedValue;
+    }
+  });
+</script>
+
 <style>
 /* General Styles */
 /* General Styles */
@@ -74,7 +139,8 @@ body {
   padding: 20px;
   max-width: 1200px;
 }
-.navbar {
+
+      .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -104,10 +170,140 @@ body {
     text-decoration: none;
     color: #333;
     font-weight: 500;
+}  
+ .fas.fa-user-circle {
+    margin-right: 8px; /* Space between icon and username */
+    font-size: 20px;   /* Icon size */
+    color: #333;       /* Icon color */
 }
+.fas.fa-shopping-cart {
+    margin-right: 8px; /* Space between icon and username */
+    font-size: 20px;   /* Icon size */
+    color: #333;       /* Icon color */
+}
+.dropdown{
+    position: relative;
+    display: inline-block;
+    
+  } 
+  .dropdown-content{
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    right: 0;
+  }
+  .dropdown-content a{
+    color: black;
+    padding: 12px 16px ;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    }
+    .dropdown-content a:hover{
+        background-color: #f1f1f1;
+    }
+    .dropdown:hover .dropdown-content{
+        display: block;
+    }
+    #header{
+        position: relative;
+        z-index: 500;
+    }
+     .shopping-icon a{
+        text-decoration: none;
+    }
+  
 
 /* Sidebar Styling */ 
+.sidebar {
+  flex: 1 1 250px;
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
+.sidebar h3,
+.sidebar h4 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-bottom: 2px solid #007bff;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Styled Search Bar */
+.search-bar {
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 25px;
+  border: none;
+  border-radius: 30px;
+  background-color: #f1f1f1;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.search-bar:focus {
+  outline: none;
+  background-color: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  border: 1px solid #007bff;
+}
+
+/* Filter Section */
+.filter-section {
+  margin-bottom: 25px;
+}
+
+.filter-section ul {
+  list-style: none;
+}
+
+.filter-section li {
+  margin: 10px 0;
+}
+
+.filter-section a {
+  text-decoration: none;
+  color: #555;
+  display: block;
+  padding: 8px 10px;
+  border-radius: 5px;
+  transition: all 0.3s;
+}
+
+.filter-section a:hover {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* Styled Dropdown for Sorting */
+.filter-section select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-section select:hover,
+.filter-section select:focus {
+  outline: none;
+  background-color: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+  border: 1px solid #007bff;
+}
 /* Product Section */
 .product-section {
   display: flex;

@@ -4,7 +4,8 @@ const Address = require('../models/addressmodel')
 const nodemailer = require('nodemailer')
 const bcrypt = require('bcrypt')
 const env = require('dotenv').config()
-const session = require('express-session')
+const session = require('express-session');
+const { query } = require('express');
 
 
 function generateOtp(){
@@ -192,7 +193,7 @@ const getUserProfile = async (req, res) => {
             return res.render('user/userProfile', { user: userData, userAddress: null }); // No addresses found
         }
 
-        res.render('user/userProfile', { user: userData, userAddress: addressData.address }); // Pass only the array
+        res.render('user/userProfile', { user: userData, userAddress: addressData.address,username:userData.username }); // Pass only the array
     } catch (error) {
         console.error("Error while retrieving user profile:", error);
         res.redirect('/user/error');
@@ -329,13 +330,14 @@ const postAddAddress = async(req,res)=>{
     try {
         const userId = req.session.user;
         const userData = await User.findOne({_id:userId});
-        const {addressType,name,city,landMark,state,pincode,phone,altPhone} = req.body;
+        const {addressType,name,city,landMark,state,pincode,phone, altPhone} = req.body;
+        console.log(req.body)
 
         const userAddress = await Address.findOne({userId:userData._id});
         if(!userAddress){
             const newAddress = new Address({
                 userId:userData._id,
-                address: [{addressType,name,city,landMark,state,pincode,phone,altPhone}]
+                address: [{addressType,name,city,landMark,state,pincode,phone, altphone}]
 
             })
             await newAddress.save();
@@ -353,31 +355,33 @@ const postAddAddress = async(req,res)=>{
 
 }
 
-const deleteAddress = async(req,res)=>{
+const deleteAddress = async (req, res) => {
     try {
-        const { addressId } = req.body; // Extract the address ID from the request body
+        const {addressId} = req.body; // Get the address ID from the URL
         const userId = req.session.user; // Get the user ID from the session
-        const userData = await User.findById(userId); // Fetch user data
 
-        // Find the address document and update it by removing the specific address
-        const updatedAddress = await Address.findOneAndUpdate(
+        if (!addressId) {
+            return res.status(400).send({ success: false, message: "Address ID is required" });
+        }
+
+        const userAddress = await Address.findOneAndUpdate(
             { userId: userId },
-            //{ $pull: { address: { _id: addressId } } },
-            {isDeleted:true},
+            { $pull: { address: { _id: addressId } } }, // Remove the specific address
             { new: true }
         );
 
-        if (!updatedAddress) {
+        if (!userAddress) {
             return res.status(404).send({ success: false, message: "Address not found" });
         }
-       res.render('user/userProfile',{user:userData})
-       // res.send({ success: true, message: "Address deleted successfully", data: updatedAddress });
+
+        res.redirect('/user/userProfile');
     } catch (error) {
         console.error("Error deleting address:", error);
         res.status(500).send({ success: false, message: "Internal server error" });
     }
-}
+};
 
+    
 const getEditAddress = async(req,res)=>{
     try {
         const addressId = req.query.id;

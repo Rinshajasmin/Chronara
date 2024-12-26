@@ -5,15 +5,19 @@ const userController=require('../controllers/userController')
 const profileController = require('../controllers/profileController')
 const productController = require('../controllers/productController')
 const cartController = require('../controllers/cartController')
+const orderController = require('../controllers/orderController')
 const {userAuth} = require('../middlewares/auth')
 
 router.get('/login',userController.loadLogin)
 router.post('/login',userController.login)
-router.get('/home',userAuth,userController.loadHome)
+router.get('/home',userController.loadHome)
 router.get('/shop',userController.loadShop)
 router.get('/filter/:filter',userController.filterProduct)
 router.get('/sort/:sortType',userController.sortProduct)
 router.get('/filter',userController.searchProduct)
+// router.get('/filter/:filter/:sortType', userController.getFilteredAndSortedProducts);
+
+
 
 router.get('/usersignup',userController.loadSignup)
 router.post('/usersignup',userController.signup)
@@ -46,7 +50,7 @@ router.post('/resend-otp',userAuth,profileController.resendOtp)//resend for emai
 
 router.get('/addAddress',userAuth,profileController.getAddAddress)
 router.post('/addAddress',userAuth,profileController.postAddAddress)
-router.get('/deleteAddress/:id',userAuth,profileController.deleteAddress)
+router.post('/deleteAddress',userAuth,profileController.deleteAddress)
 router.get('/editAddress',userAuth,profileController.getEditAddress)
 router.post('/editAddress',userAuth,profileController.updateAddress)
 
@@ -55,7 +59,7 @@ router.post('/editAddress',userAuth,profileController.updateAddress)
 router.get('/productDetails',userAuth,productController.getProductDetails)
 //cart management
 // router.get('/addToCart',userAuth,productController.viewCart)
-// router.post('/addToCart',userAuth,productController.addToCart)
+//  router.post('/addToCart',userAuth,productController.addToCart)
 router.get("/cart", userAuth, cartController.getCartPage)
 router.post("/addToCart",userAuth, cartController.addToCart)
 router.post("/changeQuantity", userAuth,cartController.changeQuantity)
@@ -68,6 +72,8 @@ router.post('/checkOut',userAuth,cartController.getCheckOut)
 //order management
 
 router.post('/placeOrder',userAuth,cartController.placeOrders)
+router.get('/getUserOrders',userAuth,orderController.getOrderslist)
+
 
 
 router.get('/pageNotFound',userController.pageNotFound)

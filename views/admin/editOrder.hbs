@@ -1,16 +1,198 @@
-{{!-- <h1>Edit Order Status</h1>
-<form action="/admin/orders/{{order._id}}" method="POST">
-  <div>
-    <label for="status">Status:</label>
-    <select name="status" id="status" required>
-      <option value="Pending" {{#ifEquals order.status "Pending"}}selected{{/ifEquals}}>Pending</option>
-      <option value="Processing" {{#ifEquals order.status "Processing"}}selected{{/ifEquals}}>Processing</option>
-      <option value="Shipped" {{#ifEquals order.status "Shipped"}}selected{{/ifEquals}}>Shipped</option>
-      <option value="Delivered" {{#ifEquals order.status "Delivered"}}selected{{/ifEquals}}>Delivered</option>
-      <option value="Cancelled" {{#ifEquals order.status "Cancelled"}}selected{{/ifEquals}}>Cancelled</option>
-      <option value="Return request" {{#ifEquals order.status "Return request"}}selected{{/ifEquals}}>Return request</option>
-      <option value="Returned" {{#ifEquals order.status "Returned"}}selected{{/ifEquals}}>Returned</option>
-    </select>
-  </div>
-  <button type="submit">Update</button>
-</form> --}}
+<head>
+
+</head>
+
+{{>adminheader}}
+<h4>Details</h4>
+<div class="container">
+    {{!-- <div class="header">
+        <h1>Order Details</h1>
+        <nav>
+            <a href="/dashboard">Dashboard</a> &gt; 
+            <a href="/orderList">Order List</a> &gt; 
+            <span>Order Details</span>
+        </nav>
+    </div> --}}
+
+    <div class="details-grid">
+        <!-- Order Details -->
+        <div class="card">
+            <h2>Order #{{order.orderId}}</h2>
+
+
+             <div class="status">
+              <form method="POST" action="/admin/statusUpdate/{{order._id}}">
+    <div class="form-group">
+        <label for="status">Order Status</label>
+        <select id="status" name="status" class="form-select form-select-lg mb-3">
+            <option value="Pending" {{#if (eq order.status "Pending")}}selected{{/if}}>Pending</option>
+            <option value="Shipped" {{#if (eq order.status "Shipped")}}selected{{/if}}>Shipped</option>
+            <option value="Delivered" {{#if (eq order.status "Delivered")}}selected{{/if}}>Delivered</option>
+            <option value="Cancelled" {{#if (eq order.status "Cancelled")}}selected{{/if}}>Cancelled</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Status</button>
+</form>
+
+
+    </div>
+
+            <ul>
+                <li><strong>Added:</strong>{{formatDate order.createdOn "DD MMMM YYYY"}}</li>
+                <li><strong>Payment Method:</strong> {{order.paymentMethod}}</li>
+                <li><strong>Shipping Method:</strong> Free Shipping</li>
+            </ul>
+        </div>
+
+        <!-- Customer Details -->
+        <div class="card">
+            <h2>Customer</h2>
+            <ul>
+                <li><strong>Name:</strong> {{order.address.username}}</li>
+                <li><strong>Email:</strong> {{order.address.email}}</li>
+                <li><strong>Phone:</strong> {{order.address.phone}}</li>
+            </ul>
+        </div>
+
+        <!-- Document Details -->
+        {{!-- <div class="card">
+            <h2>Document</h2>
+            <ul>
+                <li><strong>Invoice:</strong> {{order.invoiceId}}</li>
+                <li><strong>Shipping:</strong> {{order.shippingId}}</li>
+                <li><strong>Rewards:</strong> {{order.rewards}} points</li>
+            </ul>
+        </div> --}}
+
+        <!-- Address Details -->
+         <div class="card">
+        <h2>Address</h2>
+        {{#each addressDetails}}
+        <ul>
+            <li><strong>Address Type:</strong> {{this.addressType}}</li>
+            <li><strong>Name:</strong> {{this.name}}</li>
+            <li><strong>Phone:</strong> {{this.phone}}</li>
+            <li><strong>Alternative Phone:</strong> {{this.altPhone}}</li>
+            <li><strong>City:</strong> {{this.city}}</li>
+            <li><strong>Landmark:</strong> {{this.landMark}}</li>
+            <li><strong>State:</strong> {{this.state}}</li>
+            <li><strong>Pincode:</strong> {{this.pincode}}</li>
+        </ul>
+        {{/each}}
+    </div>
+    </div>
+
+    <!-- Order List -->
+    <div class="order-list">
+        <h2>Order List</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    {{!-- <th>SKU</th> --}}
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each order.orderItems}}
+                <tr>
+                    <td>{{this.product.productName}} <br> <small>{{this.product.productDetails}}</small></td>
+                    
+                    <td>{{this.quantity}}</td>
+                    <td>₹{{this.price}}</td>
+                   
+                    <td>₹{{this.totalPrice}}</td>
+                </tr>
+                 {{/each}}
+                
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">Subtotal:</td>
+                    <td>₹{{order.totalOrderPrice}}</td>
+                </tr>
+                
+                <tr>
+                    <td colspan="4">Shipping Rate:</td>
+                    <td>free Shipping</td>
+                </tr>
+                <tr>
+                    <td colspan="4"><strong>Total:</strong></td>
+                    <td><strong>₹{{order.totalOrderPrice}}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+h2{
+  font-size: 12px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    margin: 0;
+}
+
+.header nav {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.card {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+    margin: 0 0 10px;
+}
+
+
+
+.order-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.order-list table th,
+.order-list table td {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    text-align: left;
+}
+
+.order-list table tfoot td {
+    font-weight: bold;
+}
+</style>

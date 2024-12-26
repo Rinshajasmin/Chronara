@@ -33,7 +33,7 @@ const productSchema=new Schema({
     },
     quantity:{
         type:Number,
-        default:false
+        default:0
     },
     color:{
         type:String,

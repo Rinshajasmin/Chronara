@@ -1,8 +1,9 @@
 
 <head>
     <link rel="stylesheet" href="/css/user/home.css">
-    {{!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> --}}
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 </head>
      
@@ -10,14 +11,27 @@
         <div class="logo">chronara</div>
         <nav>
             <ul class="nav-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="/user/cart/?id={{_id}}" >Cart</a></li>
+                <li><a href="/user/home">Home</a></li>
+                <li><a href="/user/contact">Contact</a></li>
+                <li><a href="/user/about">About</a></li>
+
+                {{!-- <li><a href="/user/cart/?id={{_id}}" >Cart</a></li> --}}
             </ul>
         </nav>
+        
          {{#if username}}
+         <div class="shopping-icon">
+              <a href="/user/cart/?id={{_id}}" class="cart-icon">
+              
+                <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
+              </a>
         <div class="dropdown">
-          <a class="sign-in-link" href="#">
+          
+          <a class="sign-in-link" href="#">  
+            
+                   <i class="fas fa-user-circle"></i> <!-- Profile icon -->
+
+
             {{username}}
           </a>
           <div class="dropdown-content">
@@ -25,12 +39,14 @@
             <a  href="/user/logout">Logout</a>
           </div>
         </div>
+        </div>
+        
         {{else}}
         <div class="auth-links">
             <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
         </div>
        {{/if}}  
-
+ 
     </header> 
 
 
@@ -50,6 +66,11 @@
     </section>
     <!-- Categories Section -->
 <section class="categories">
+   {{#if successMessage}}
+        <div class="alert alert-success">
+            {{successMessage}}
+        </div>
+    {{/if}}
     <h2>Newest Collection Available</h2>
     <div class="category-list">
         <a href="/user/filter" class="category-item">
@@ -60,11 +81,11 @@
             <img src="/images/womenwatch.png" alt="Women Watches">
             <p>Women</p>
         </a>
-        <a href="#" class="category-item">
+        <a href="/user/shop" class="category-item">
             <img src="/images/casuals.png" alt="Casual Watches">
             <p>Casuals</p>
         </a>
-        <a href="#" class="category-item">
+        <a href="/user/shop" class="category-item">
             <img src="/images/smartwatch.png" alt="Smart Watches">
             <p>Smart Watches</p>
         </a>
@@ -120,11 +141,13 @@
         </p>
         {{#if quantity}}
           <div class="cart-link-container">
-            <form action="/user/addToCart" method="POST">
+            {{!-- <form action="/user/addToCart" method="POST">
     <input type="hidden" id="productId" name="productId" value="{{_id}}">
     {{!-- <input type="hidden" id="userId" name="userId" value="{{user._id}}"> --}}
-    <button type="submit" class="btn btn-primary">Add to Cart</button>
-</form>
+    {{!-- <button type="submit" class="btn btn-primary">Add to Cart</button>
+</form>  --}}
+<button class="add-to-cart-btn btn btn-primary" data-product-id="{{_id}}" onclick="addToCart('{{_id}}')">Add to Cart</button>
+
 
 
             {{!-- <a href="/user/cart/?id={{_id}}" class="link-add-to-cart">Add to Cart</a> --}}
@@ -200,8 +223,52 @@
   </div>
 </section> --}}
   {{> userfooter}} <!-- Include the footer partial -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+<script>
+    function addToCart(productId) {
+        // You can use AJAX here to send the productId to your backend
+        fetch('/user/addToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Item Added!',
+                    text: 'The item has been added to your cart.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+                console.log(data.cartDetails);
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message || 'Something went wrong.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An unexpected error occurred.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    }
 
 
+
+
+</script>
 
 
 {{!-- <section class="watch-section">

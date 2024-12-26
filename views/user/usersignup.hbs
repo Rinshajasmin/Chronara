@@ -7,7 +7,7 @@
         <div class="logo">chronara</div>
         <nav>
             <ul class="nav-links">
-                <li><a href="#">Home</a></li>
+                <li><a href="/user/home">Home</a></li>
                 <li><a href="#">Contact</a></li>
                 <li><a href="#">About</a></li>
             </ul>
@@ -44,6 +44,8 @@
 
         <label for="phone">Phone Number </label>
         <input type="tel" id="phone" placeholder="Enter your phone number" name="phone">
+                        <div id="error5" class="error-message"></div>
+
             {{#if message}}
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <strong>Error!</strong> {{message}}
@@ -69,133 +71,236 @@
       </form>
     </div>
   </div>
+{{!-- <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    signupform.addEventListener("submit", function (e) {
+      const isNameValid = nameValidate();
+      const isEmailValid = emailValidate();
+      const isPasswordValid = passwordValidate();
+      const isPhoneValid = phoneValidate();
 
-  <script>
-    const usernameid=document.getElementById('username'); 
-    const emailid=document.getElementById('email');
-    const passwordid=document.getElementById('password');
-    const confirmpasswordid=document.getElementById('confirmpassword');
-    const phoneid=document.getElementById('phone');
-    const error1id=document.getElementById('error1')
-    const error2id=document.getElementById('error2')
-    const error3id=document.getElementById('error3')
-    const error4id=document.getElementById('error4')
-    const error5id=document.getElementById('error5')
-    const signupform=document.getElementById('signupform')
-    function  nameValidate(e){
+      // If any validation fails, block form submission
+      if (!isNameValid || !isEmailValid || !isPasswordValid || !isPhoneValid) {
+        e.preventDefault(); // Block form submission
+      }
+    });
+  });
 
-     const  nameval = usernameid.value;
-       const namepattern= /^[A-Za-z\s]+$/;
-       if(nameval.trim()===''){
-        error1id.style.display="block"
-        error1id.innerHTML="please enter a valid name"
-            return false;
+  // Validation functions
 
-       }else if(!namepattern.test(nameval)){
-        error1id.style.display="block"
-        error1id.innerHTML="name can only contain alphabets and spaces"
-            return false;
+  function nameValidate() {
+    const nameval = usernameid.value.trim();
+    const namepattern = /^[A-Za-z\s]+$/;
 
-       }
-       else{
-        error1id.style.display="none"
-        error1id.innerHTML=""
-            return true;
-
-        
-       }
+    if (nameval === "") {
+      error1id.style.display = "block";
+      error1id.innerHTML = "Please enter a valid name";
+      return false;
+    } else if (!namepattern.test(nameval)) {
+      error1id.style.display = "block";
+      error1id.innerHTML = "Name can only contain alphabets and spaces";
+      return false;
+    } else {
+      error1id.style.display = "none";
+      error1id.innerHTML = "";
+      return true;
     }
+  }
+
+  function emailValidate() {
+    const emailval = emailid.value.trim();
+    const emailpattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+    if (emailval === "") {
+      error2id.style.display = "block";
+      error2id.innerHTML = "Email is required";
+      return false;
+    } else if (!emailpattern.test(emailval)) {
+      error2id.style.display = "block";
+      error2id.innerHTML = "Invalid email format";
+      return false;
+    } else {
+      error2id.style.display = "none";
+      error2id.innerHTML = "";
+      return true;
+    }
+  }
+
+  function phoneValidate() {
+    const phoneval = phoneid.value.trim();
+
+    if (phoneval === "") {
+      error5id.style.display = "block";
+      error5id.innerHTML = "Enter a valid phone number";
+      return false;
+    } else if (phoneval.length !== 10) {
+      error5id.style.display = "block";
+      error5id.innerHTML = "Enter 10 digits";
+      return false;
+    } else {
+      error5id.style.display = "none";
+      error5id.innerHTML = "";
+      return true;
+    }
+  }
+
+  function passwordValidate() {
+    const passwordval = passwordid.value;
+    const cpasswordval = confirmpasswordid.value;
+    const alpha = /[a-zA-Z]/;
+    const digit = /\d/;
+
+    if (passwordval.length < 8) {
+      error3id.style.display = "block";
+      error3id.innerHTML = "Should contain at least 8 characters";
+      return false;
+    } else if (!alpha.test(passwordval) || !digit.test(passwordval)) {
+      error3id.style.display = "block";
+      error3id.innerHTML = "Should contain both letters and numbers";
+      return false;
+    } else {
+      error3id.style.display = "none";
+      error3id.innerHTML = "";
+    }
+
+    if (passwordval !== cpasswordval) {
+      error4id.style.display = "block";
+      error4id.innerHTML = "Passwords do not match";
+      return false;
+    } else {
+      error4id.style.display = "none";
+      error4id.innerHTML = "";
+      return true;
+    }
+  }
+</script> --}}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+        console.log("Script loaded successfully!"); // Add this for testing
+
+    // Fetch the form and input elements
+    const signupForm = document.getElementById("signupform");
+    const usernameField = document.getElementById("username");
+    const emailField = document.getElementById("email");
+    const passwordField = document.getElementById("password");
+    const confirmPasswordField = document.getElementById("confirmpassword");
+    const phoneField = document.getElementById("phone");
+    const error1 = document.getElementById("error1");
+    const error2 = document.getElementById("error2");
+    const error3 = document.getElementById("error3");
+    const error4 = document.getElementById("error4");
+    const error5 = document.getElementById("error5");
+
+    // Validation functions
+    function nameValidate() {
+      const nameValue = usernameField.value.trim();
+      const namePattern = /^[A-Za-z\s]+$/;
+
+      if (nameValue === "") {
+        error1.style.display = "block";
+        error1.innerHTML = "Please enter a valid name";
+        return false;
+      } else if (!namePattern.test(nameValue)) {
+        error1.style.display = "block";
+        error1.innerHTML = "Name can only contain alphabets and spaces";
+        return false;
+      } else {
+        error1.style.display = "none";
+        error1.innerHTML = "";
+        return true;
+      }
+    }
+
     function emailValidate() {
-  const emailval = emailid.value.trim();
-  const emailpattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      const emailValue = emailField.value.trim();
+      const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
-  if (!emailpattern.test(emailval)) {
-    error2id.style.display = "block";
-    error2id.innerHTML = "Invalid email format";
-    return false;
-  } else {
-    error2id.style.display = "none";
-    error2id.innerHTML = "";
-    return true;
-  }
-}
-   function phoneValidate() {
-  const phoneval = phoneid.value.trim();
+      if (emailValue === "") {
+        error2.style.display = "block";
+        error2.innerHTML = "Email is required";
+        return false;
+      } else if (!emailPattern.test(emailValue)) {
+        error2.style.display = "block";
+        error2.innerHTML = "Invalid email format";
+        return false;
+      } else {
+        error2.style.display = "none";
+        error2.innerHTML = "";
+        return true;
+      }
+    }
 
-  if (phoneval === "") {
-    error5id.style.display = "block";
-    error5id.innerHTML = "Enter a valid phone number";
-    return false;
-  } else if (phoneval.length !== 10) {
-    error5id.style.display = "block";
-    error5id.innerHTML = "Enter 10 digits";
-    return false;
-  } else {
-    error5id.style.display = "none";
-    error5id.innerHTML = "";
-    return true;
-  }
-}
     function passwordValidate() {
-  const passwordval = passwordid.value;
-  const cpasswordval = confirmpasswordid.value;
-  const alpha = /[a-zA-Z]/;
-  const digit = /\d/;
+      const passwordValue = passwordField.value.trim();
+      const confirmPasswordValue = confirmPasswordField.value.trim();
+      const alpha = /[a-zA-Z]/;
+      const digit = /\d/;
 
-  if (passwordval.length < 8) {
-    error3id.style.display = "block";
-    error3id.innerHTML = "Should contain at least 8 characters";
-    return false;
-  } else if (!alpha.test(passwordval) || !digit.test(passwordval)) {
-    error3id.style.display = "block";
-    error3id.innerHTML = "Should contain both letters and numbers";
-    return false;
-  } else {
-    error3id.style.display = "none";
-    error3id.innerHTML = "";
-  }
-if (passwordval !== cpasswordval) {
-    error4id.style.display = "block";
-    error4id.innerHTML = "Passwords do not match";
-    return false;
-  } else {
-    error4id.style.display = "none";
-    error4id.innerHTML = "";
-    return true;
-  }
-}
+      if (passwordValue.length < 8) {
+        error3.style.display = "block";
+        error3.innerHTML = "Password must contain at least 8 characters";
+        return false;
+      } else if (!alpha.test(passwordValue) || !digit.test(passwordValue)) {
+        error3.style.display = "block";
+        error3.innerHTML = "Password must contain letters and numbers";
+        return false;
+      } else {
+        error3.style.display = "none";
+        error3.innerHTML = "";
+      }
 
-  document.addEventListener("DOMContentLoaded",function(){
-     signupform.addEventListener("submit",function(e){
-           const isNameValid = nameValidate();
-const isEmailValid = emailValidate();
-const isPasswordValid = passwordValidate();
-const isPhoneValid = phoneValidate();
+      if (passwordValue !== confirmPasswordValue) {
+        error4.style.display = "block";
+        error4.innerHTML = "Passwords do not match";
+        return false;
+      } else {
+        error4.style.display = "none";
+        error4.innerHTML = "";
+        return true;
+      }
+    }
 
-if (!isNameValid || !isEmailValid || !isPasswordValid || !isPhoneValid) {
-    e.preventDefault(); // Block form submission if any validation fails
-}
+    function phoneValidate() {
+      const phoneValue = phoneField.value.trim();
 
-          if(
-            error1id.innerHTML ||
-            error2id.innerHTML ||
+      if (phoneValue === "") {
+        error5.style.display = "block";
+        error5.innerHTML = "Enter a valid phone number";
+        return false;
+      } else if (phoneValue.length !== 10 || !/^\d+$/.test(phoneValue)) {
+        error5.style.display = "block";
+        error5.innerHTML = "Phone number must be 10 digits";
+        return false;
+      } else {
+        error5.style.display = "none";
+        error5.innerHTML = "";
+        return true;
+      }
+    }
 
-            error3id.innerHTML ||
+    // Form submission event listener
+    signupForm.addEventListener("submit", function (e) {
+      const isNameValid = nameValidate();
+      const isEmailValid = emailValidate();
+      const isPasswordValid = passwordValidate();
+      const isPhoneValid = phoneValidate();
 
-            error4id.innerHTML ||
+      // Check if all validations are successful
+      const isFormValid = isNameValid && isEmailValid && isPasswordValid && isPhoneValid;
 
-            error5id.innerHTML 
-          ){
-            e.preventDefault()// blocking the form submission if any errors are present there
-          }
+      // Debugging log
+      console.log("Form validation result:", isFormValid);
+
+      // Block submission if any validation fails
+      if (!isFormValid) {
+        e.preventDefault(); // Prevent the default form submission
+        console.log("Form submission blocked due to validation errors.");
+      }
+    });
+  });
+</script>
 
 
-     })
-  })
 
-
-
- 
-  </script>
     {{> userfooter}} <!-- Include the footer partial -->
 

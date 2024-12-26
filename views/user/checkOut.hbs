@@ -368,7 +368,7 @@
             {{/each}}
         </ul>
 
-        <h3 class="total-price">Total Price:₹ {{totalPrice}}</h3>
+        <h3 class="total-price">Total Price:₹ {{grandTotal}}</h3>
 
         <form action="/user/placeOrder" method="POST">
             <input type="hidden" name="cartId" value={{cartId}}>

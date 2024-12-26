@@ -240,6 +240,17 @@ body {
     padding: 40px 20px;
     max-width: 1200px;
   }
+  .fas.fa-user-circle {
+    margin-right: 8px; /* Space between icon and username */
+    font-size: 20px;   /* Icon size */
+    color: #333;       /* Icon color */
+}
+.fas.fa-shopping-cart {
+    margin-right: 8px; /* Space between icon and username */
+    font-size: 20px;   /* Icon size */
+    color: #333;       /* Icon color */
+}
+
   
   /* Watch Item Styling */
  /* Parent Container for the Watch Item */
@@ -356,6 +367,7 @@ body {
   .dropdown{
     position: relative;
     display: inline-block;
+    
   } 
   .dropdown-content{
     display: none;
@@ -400,6 +412,10 @@ body {
     
     .link-add-to-cart:hover {
       background-color: #0056b3;
+    }
+
+    .shopping-icon a{
+        text-decoration: none;
     }
     
     

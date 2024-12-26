@@ -91,6 +91,7 @@ const loadShop = async(req,res)=>{
     try {
         console.log(req.session.user)
         const user = req.session.user;
+        
         const categories = await Category.find({isListed:true});
 
         let productData = await Product.find(
@@ -340,7 +341,7 @@ const filterProduct= async (req, res) => {
       const products = await Product.find(filter); // No need for .exec()
   
       // Render the filtered products on the new page
-      res.render('user/filter', { products });
+      res.render('user/shop', { products });
     } catch (err) {
       console.error('Error retrieving filtered products:', err);
       return res.status(500).send('Error retrieving filtered products');
@@ -349,9 +350,10 @@ const filterProduct= async (req, res) => {
 
   const sortProduct = async(req,res)=>{
     try {
+        const userId = req.session.user
         const sortType = req.params.sortType; // Get the selected sorting option
         let sortOption = {}; // Default sorting option (empty)
-    
+        const user = await User.findById(userId)
         // Define sorting logic based on the criteria
         switch (sortType) {
           case 'popularity':
@@ -380,7 +382,7 @@ const filterProduct= async (req, res) => {
         const products = await Product.find().sort(sortOption);
     
         // Render the 'filter.hbs' page with sorted products
-        res.render('user/filter', { products });
+        res.render('user/shop', { products ,username:user.username});
       
     } catch (error) {
         console.log("error while sorting",error)
@@ -413,11 +415,138 @@ const filterProduct= async (req, res) => {
 
  } 
 
+ const getFilteredAndSortedProducts = async (req, res) => {
+    const { filter, sortType } = req.query; // Get filter and sort parameters from the query string
+    let filterCriteria = {};
+    let sortOption = {};
+  
+    // Define filtering criteria
+    switch (filter) {
+      case 'under-500':
+        filterCriteria.regularPrice = { $lt: 500 };
+        break;
+      case '500-1000':
+        filterCriteria.regularPrice = { $gte: 500, $lte: 1000 };
+        break;
+      case '1000-1500':
+        filterCriteria.regularPrice = { $gte: 1000, $lte: 1500 };
+        break;
+      case 'above-1500':
+        filterCriteria.regularPrice = { $gt: 1500 };
+        break;
+      default:
+        filterCriteria = {}; // No filter applied
+    }
+  
+    // Define sorting options
+    switch (sortType) {
+      case 'popularity':
+        sortOption = { popularity: -1 }; // Sort by popularity descending
+        break;
+      case 'price-low-high':
+        sortOption = { regularPrice: 1 }; // Sort by price ascending
+        break;
+      case 'price-high-low':
+        sortOption = { regularPrice: -1 }; // Sort by price descending
+        break;
+      case 'new-arrivals':
+        sortOption = { createdAt: -1 }; // Sort by newest first
+        break;
+      case 'a-z':
+        sortOption = { productName: 1 }; // Sort alphabetically A → Z
+        break;
+      case 'z-a':
+        sortOption = { productName: -1 }; // Sort alphabetically Z → A
+        break;
+      default:
+        sortOption = {}; // No sorting applied
+    }
+  
+    try {
+      // Fetch products from the database with both filtering and sorting
+      const products = await Product.find(filterCriteria).sort(sortOption);
+  
+      // Render the page with filtered and sorted products
+      res.render('user/shop', {
+        products,
+        selectedSort: sort || '', // Pass the current sorting option
+      });
+          } catch (err) {
+      console.error('Error while filtering and sorting products:', err);
+      res.status(500).send('Error while filtering and sorting products');
+    }
+  };
+
+  const filterAndSortProducts = async (req, res) => {
+    const { filter, sort } = req.query; // Get query parameters for filter and sort
+    let filterQuery = {};
+    let sortOption = {};
+  
+    // Define filters based on the filter type
+    switch (filter) {
+      case 'under-500':
+        filterQuery.regularPrice = { $lt: 500 };
+        break;
+      case '500-1000':
+        filterQuery.regularPrice = { $gte: 500, $lte: 1000 };
+        break;
+      case '1000-1500':
+        filterQuery.regularPrice = { $gte: 1000, $lte: 1500 };
+        break;
+      case 'above-1500':
+        filterQuery.regularPrice = { $gt: 1500 };
+        break;
+      default:
+        filterQuery = {}; // No filter applied
+    }
+  
+    // Define sorting options based on the sort type
+    switch (sort) {
+      case 'popularity':
+        sortOption = { popularity: -1 }; // Sort by popularity descending
+        break;
+      case 'price-low-high':
+        sortOption = { regularPrice: 1 }; // Sort by price ascending
+        break;
+      case 'price-high-low':
+        sortOption = { regularPrice: -1 }; // Sort by price descending
+        break;
+      case 'new-arrivals':
+        sortOption = { createdAt: -1 }; // Sort by newest first
+        break;
+      case 'a-z':
+        sortOption = { productName: 1 }; // Sort alphabetically A → Z
+        break;
+      case 'z-a':
+        sortOption = { productName: -1 }; // Sort alphabetically Z → A
+        break;
+      default:
+        sortOption = {}; // No sorting applied
+    }
+  
+    try {
+      // Fetch products with both filtering and sorting applied
+      const products = await Product.find(filterQuery).sort(sortOption);
+  
+      // Render the 'filter' page with filtered and sorted products
+      res.render('user/filter', { 
+        products, 
+        selectedFilter: filter, 
+        selectedSort: sort 
+      });
+    } catch (err) {
+      console.error('Error retrieving products:', err);
+      res.status(500).send('Error retrieving products');
+    }
+  };
+  
+  
+
 module.exports={loadLogin,
     loadHome,
     loadSignup,
     signup,verifyOtp,resendOtp,
     pageNotFound,login,logout,loadShop,
     filterProduct,sortProduct,searchProduct,
-    getuserProfile
+    getuserProfile,getFilteredAndSortedProducts 
 } 

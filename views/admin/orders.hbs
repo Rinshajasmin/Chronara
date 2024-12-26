@@ -1,59 +1,104 @@
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Order Management</title>
+    <title>Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+        .table .btn {
+            margin-right: 5px;
+        }
+        .table ul {
+            padding-left: 0;
+            list-style-type: none;
+        }
+        .confirm-delete {
+            color: red;
+        }
+        .table-responsive{
+            margin-top: -39px;
+        }
+    </style>
 </head>
+{{>adminheader}}
 <body>
-    <h1>Order Management</h1>
-    {{#if orders.length}}
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Customer</th>
-                    <th>Items</th>
-                    <th>Total Price</th>
-                    {{!-- <th>Final Amount</th> --}}
-                    <th>Status</th>
-                    <th>Payment Method</th>
-                    <th>Order Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each orders}}
-                    <tr>
-                        <td>{{this.orderId}}</td>
-                        <td>{{this.address.username}} {{this.address.email}}</td>
-                        <td>
-                            <ul>
-                                {{#each this.orderItems}}
-                                    <li>
-                                        {{this.product.productName}} 
-                                        - Quantity: {{this.quantity}}, Price: {{this.price}}
-                                    </li>
-                                {{/each}}
-                            </ul>
-                        </td>
-                        <td>{{this.totalPrice}}</td>
-                        {{!-- <td>{{this.finalAmount}}</td> --}}
-                        <td>{{this.status}}</td>
-                        <td>{{this.paymentMethod}}</td>
-                        <td>{{this.createdOn}}</td>
-<td>
-                    <a href="/admin/editOrder/{{this._id}}" class="btn btn-primary btn-sm">Edit</a>
-<form action="/admin/deleteOrder/{{this._id}}" method="POST" style="display:inline-block;">
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
-                </form>                </td>                    </tr>
-                {{/each}}
-            </tbody>
-        </table>
-    {{else}}
-        <p>No orders found.</p>
-    {{/if}}
+            <h1>Orders</h1>
+
+    <div class="container">
+        {{#if orders.length}}
+            <div class="table-responsive">
+                <table id="orderTable" class="table table-bordered table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total Price</th>
+                            <th>Status</th>
+                            <th>Payment Method</th>
+                            <th>Order Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each orders}}
+                            <tr>
+                                <td>{{this.orderId}}</td>
+                                <td>{{this.address.username}} <br> {{this.address.email}}</td>
+                                <td>
+                                    <ul>
+                                        {{#each this.orderItems}}
+                                            <li>
+                                               &bull; {{this.product.productName}} 
+                                            </li>
+                                        {{/each}}
+                                    </ul>
+                                </td>
+                                <td>₹{{this.totalPrice}}</td>
+                                
+        <td class="{{statusClass this.status}}">{{this.status}}</td>
+
+                                <td>{{this.paymentMethod}}</td>
+                                <td>{{formatDate order.createdOn "DD MMMM YYYY"}}</td>
+                                <td>
+                                    <a href="/admin/editOrder/{{this._id}}" class="btn btn-primary btn-sm">Details</a>
+                                    {{!-- <form action="/admin/deleteOrder/{{this._id}}" method="POST" style="display:inline-block;">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this order?')">
+                                            Delete
+                                        </button>
+                                    </form> --}}
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        {{else}}
+            <p class="text-center text-muted">No orders found.</p>
+        {{/if}}
+    </div>
 </body>
-<style>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Initialize DataTables
+        $('#orderTable').DataTable({
+             searching: true,  // Enable the built-in search box
+        paging: true,     // Enable pagination
+        lengthChange: false,
+        pageLength:5
+        });
+        
+    });
+</script>
+
+{{!-- <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -112,4 +157,4 @@
             color: #333;
             font-size: 1.2em;
         }
-    </style>
+    </style> --}}

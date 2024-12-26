@@ -18,7 +18,7 @@ const User = require('../models/usermodel')
         try {
             const products = await Product.find({ isDeleted: false }) // Filter out deleted products
             .populate('category', 'name') // Include the category name
-            .select('productName productDesc regularPrice  productImage'); // Specify the fields to include
+            .select('productName productDesc regularPrice quantity  productImage'); // Specify the fields to include
         
         res.render('admin/products', { products });;
         } catch (error) {
@@ -37,7 +37,7 @@ const User = require('../models/usermodel')
 };
 const addProduct = async (req, res) => {
     try {
-        const { productName, productDesc, category, regularPrice } = req.body;
+        const { productName, productDesc, category, regularPrice ,quantity} = req.body;
         console.log(req.body)
         const files = req.files || [];
 
@@ -60,6 +60,7 @@ const addProduct = async (req, res) => {
              productDesc,
               category,
              regularPrice,
+             quantity,
             productImage: imagePaths, // Save all paths directly to productImage
         });
 

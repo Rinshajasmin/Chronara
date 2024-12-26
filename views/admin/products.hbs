@@ -12,6 +12,7 @@
                 <th>Price</th>
                 
                 <th>Description</th>
+                <th>Quantity</th>
                 {{!-- <th>Image</th> --}}
                 <th>Actions</th>
             </tr>
@@ -23,6 +24,7 @@
                 <td>{{this.category.name}}</td>
                 <td>{{this.regularPrice}}</td>
                 <td>{{this.productDesc}}</td>
+                <td>{{this.quantity}}</td>
                 {{!-- //<td>{{this.productImage}}</td> --}}
                 <td>
                     <a href="/admin/editProduct/{{this._id}}" class="btn btn-primary btn-sm">Edit</a>
