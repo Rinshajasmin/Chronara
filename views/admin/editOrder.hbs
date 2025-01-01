@@ -41,6 +41,8 @@
                 <li><strong>Added:</strong>{{formatDate order.createdOn "DD MMMM YYYY"}}</li>
                 <li><strong>Payment Method:</strong> {{order.paymentMethod}}</li>
                 <li><strong>Shipping Method:</strong> Free Shipping</li>
+                 <li><strong>Payment Status:</strong> {{order.paymentStatus}}</li>
+
             </ul>
         </div>
 
@@ -66,19 +68,19 @@
 
         <!-- Address Details -->
          <div class="card">
-        <h2>Address</h2>
-        {{#each addressDetails}}
+        <h2>Delivery Details</h2>
+        {{!-- {{if addressDetails}} --}}
         <ul>
-            <li><strong>Address Type:</strong> {{this.addressType}}</li>
-            <li><strong>Name:</strong> {{this.name}}</li>
-            <li><strong>Phone:</strong> {{this.phone}}</li>
-            <li><strong>Alternative Phone:</strong> {{this.altPhone}}</li>
-            <li><strong>City:</strong> {{this.city}}</li>
-            <li><strong>Landmark:</strong> {{this.landMark}}</li>
-            <li><strong>State:</strong> {{this.state}}</li>
-            <li><strong>Pincode:</strong> {{this.pincode}}</li>
+            <li><strong>Address Type:</strong> {{addressDetails.addressType}}</li>
+            <li><strong>Name:</strong> {{addressDetails.name}}</li>
+            <li><strong>Phone:</strong> {{addressDetails.phone}}</li>
+            <li><strong>Alternative Phone:</strong> {{addressDetails.altPhone}}</li>
+            <li><strong>City:</strong> {{addressDetails.city}}</li>
+            <li><strong>Landmark:</strong> {{addressDetails.landMark}}</li>
+            <li><strong>State:</strong> {{addressDetails.state}}</li>
+            <li><strong>Pincode:</strong> {{addressDetails.pincode}}</li>
         </ul>
-        {{/each}}
+        {{!-- {{/if}} --}}
     </div>
     </div>
 

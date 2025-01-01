@@ -6,6 +6,7 @@ const profileController = require('../controllers/profileController')
 const productController = require('../controllers/productController')
 const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
+const paymentController = require('../controllers/paymentController')
 const {userAuth} = require('../middlewares/auth')
 
 router.get('/login',userController.loadLogin)
@@ -16,6 +17,7 @@ router.get('/filter/:filter',userController.filterProduct)
 router.get('/sort/:sortType',userController.sortProduct)
 router.get('/filter',userController.searchProduct)
 // router.get('/filter/:filter/:sortType', userController.getFilteredAndSortedProducts);
+router.get('/getAboutPage',userController.getAboutPage)
 
 
 
@@ -35,7 +37,7 @@ router.post('/forgotEmailValid',profileController.forgotEmailValid)
 router.post('/verify-passForget-otp',profileController.verifyForgotPassOtp)
 router.get('/reset-password',profileController.getResetPassPage)
 router.post('/resend-forgot-otp',profileController.resendOtp)//forgot password
-router.post('/reset-password',profileController.postNewPassword)
+router.post('/reset-password',userAuth,profileController.postNewPassword)
 router.get('/userProfile',userAuth,profileController.getUserProfile)
 router.get('/change-email',userAuth,profileController.changeEmail)
 router.post('/change-email',userAuth,profileController.changemailValid)
@@ -46,6 +48,7 @@ router.post('/change-password',userAuth,profileController.changePasswordValid)
 router.post('/verify-changepassword-otp',userAuth,profileController.verifyChangePassOtp)
 router.post('/resend-changepassword-otp',userAuth,profileController.resendOtp)//for password change
 router.post('/resend-otp',userAuth,profileController.resendOtp)//resend for email change
+router.post('/updateAccountDetails',userAuth,profileController.updateAccountDetails)
 //address management
 
 router.get('/addAddress',userAuth,profileController.getAddAddress)
@@ -53,6 +56,7 @@ router.post('/addAddress',userAuth,profileController.postAddAddress)
 router.post('/deleteAddress',userAuth,profileController.deleteAddress)
 router.get('/editAddress',userAuth,profileController.getEditAddress)
 router.post('/editAddress',userAuth,profileController.updateAddress)
+router.get('/getAllAddresses',userAuth,profileController.getAllAddresses)
 
 
 //product management
@@ -72,8 +76,16 @@ router.post('/checkOut',userAuth,cartController.getCheckOut)
 //order management
 
 router.post('/placeOrder',userAuth,cartController.placeOrders)
+router.get('/placeOrder',userAuth,cartController.razorpayPaymentSuccess)
 router.get('/getUserOrders',userAuth,orderController.getOrderslist)
-
+router.get('/cancelOrder/:id',userAuth,orderController.getCancelOrder)
+router.post('/cancelOrder/:id',userAuth,orderController.orderCancel)
+router.post('/returnOrder/:id',userAuth,orderController.returnOrder)
+//payment razorpay management
+router.post('/makePayment',userAuth,paymentController.createOrder)
+router.get('/getPaymentPage',userAuth,paymentController.getPaymentPage)
+router.get('/get-razorpay-key',userAuth,paymentController.getKey) 
+  
 
 
 router.get('/pageNotFound',userController.pageNotFound)

@@ -1,0 +1,481 @@
+
+{{>profilesidebar}}
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Account Settings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+       <link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .account-settings {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background-color: #5a67d8;
+            border-color: #5a67d8;
+        }
+        .changePasswordContainer{
+           max-width: 800px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .btn-outline-primary{
+          height:38px
+        }
+        .btn btn-link text-decoration-none{
+            margin-left: 601px;
+        }
+    </style>
+</head>
+<body>
+<div class="position-fixed top-0 end-0 p-3">
+    <a href="/user/change-email" class="btn btn-primary text-decoration-none ">
+        <i class="fa-solid fa-envelope"></i> Change Email
+    </a>
+</div>
+
+
+
+
+<div class="account-settings">
+    <h3 class="text-center mb-4">Account Settings</h3>
+    <div class="text-center">
+        <div class="profile-pic">
+            Profile Pic
+        </div>
+    </div>
+    {{!-- <form id="accountSettingsForm">
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" id="firstName" class="form-control" placeholder="Enter first name">
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="lastName" class="form-label">Second Name</label>
+                <input type="text" id="lastName" class="form-control" placeholder="Enter second name">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" class="form-control" placeholder="Enter username">
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter email">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label for="secondaryEmail" class="form-label">Secondary Email</label>
+                <input type="email" id="secondaryEmail" class="form-control" placeholder="Enter secondary email">
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="text" id="phone" class="form-control" placeholder="+91">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label for="country" class="form-label">Country/Region</label>
+                <select id="country" class="form-select">
+                    <option value="India">India</option>
+                    <option value="USA">USA</option>
+                    <option value="UK">UK</option>
+                </select>
+            </div>
+            <div class="col-md-6 form-group">
+                <label for="state" class="form-label">State</label>
+                <select id="state" class="form-select">
+                    <option value="Kerala">Kerala</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Karnataka">Karnataka</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label for="pincode" class="form-label">Pin Code</label>
+                <input type="text" id="pincode" class="form-control" placeholder="Enter pin code">
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </form> --}}
+
+    {{#if successMessage}}
+<div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+    {{successMessage}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+</div>
+{{/if}}
+    <form id="accountSettingsForm" action="/user/updateAccountDetails"  method="post"onsubmit="return validateAccountSettingsForm()">
+    <div class="row">
+        <div class="col-md-6 form-group">
+            <label for="firstName" class="form-label">First Name</label>
+            <input type="text" id="firstName"  name="firstName"class="form-control" placeholder="Enter first name">
+            <small id="firstNameError" class="text-danger"></small>
+        </div>
+        <div class="col-md-6 form-group">
+            <label for="lastName" class="form-label">Second Name</label>
+            <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Enter second name">
+            <small id="lastNameError" class="text-danger"></small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 form-group">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Enter username">
+            <small id="usernameError" class="text-danger"></small>
+        </div>
+       <div class="col-md-6 form-group">
+            <label for="pincode" class="form-label">Pin Code</label>
+            <input type="text" id="pincode" name="pincode" class="form-control" placeholder="Enter pin code">
+            <small id="pincodeError" class="text-danger"></small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 form-group">
+            <label for="secondaryEmail" class="form-label">Secondary Email</label>
+            <input type="email" id="secondaryEmail"  name="secondaryEmail"class="form-control" placeholder="Enter secondary email">
+            <small id="secondaryEmailError" class="text-danger"></small>
+        </div>
+        <div class="col-md-6 form-group">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="text" id="phone" name="phone"class="form-control" placeholder="+91">
+            <small id="phoneError" class="text-danger"></small>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 form-group">
+            <label for="country" class="form-label">Country/Region</label>
+            <select id="country" name="country" class="form-select">
+                <option value="India">India</option>
+                <option value="USA">USA</option>
+                <option value="UK">UK</option>
+            </select>
+        </div>
+        <div class="col-md-6 form-group">
+            <label for="state" class="form-label">State</label>
+            <select id="state"  name="state"class="form-select">
+                <option value="Kerala">Kerala</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Karnataka">Karnataka</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+       
+    </div>
+    <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+</form>
+
+</div>
+
+    {{!-- <div class="changePasswordContainer">
+    <h3 class="text-center mb-4">Change Password</h3>
+    <form id="changePasswordForm" action="/user/reset-password" method="post" onsubmit="return validateForm()">
+        <div class="form-group mb-3">
+            <label for="currentPassword" class="form-label">Current Password</label>
+            <div class="input-group">
+                <input type="password" id="currentPassword"  name="currentPassword"class="form-control" placeholder="Enter current password">
+                <button class="btn btn-outline-primary" type="button" onclick="togglePassword('currentPassword')">
+<i class="fa-regular fa-eye"></i>                </button>
+                <div id="currPasserr" class="text-danger position-absolute" style="bottom: -20px; left: 0;"></div>
+
+            </div>
+        </div>
+        <div class="form-group mb-3">
+            <label for="newPassword" class="form-label">New Password</label>
+            <div class="input-group">
+                <input type="password" id="newPass1"  name="newPassword"class="form-control" placeholder="8+ characters">
+
+                <button class="btn btn-outline-primary" type="button" onclick="togglePassword('newPassword')">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+                <div id="newPasserr" class="text-danger position-absolute" style="bottom: -20px; left: 0;"></div>
+            </div>
+        </div>
+        <div class="form-group mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <div class="input-group">
+                <input type="password" id="confirmPassword"  name="confirmPassworrd" class="form-control" placeholder="Re-enter new password">
+                <button class="btn btn-outline-primary" type="button" onclick="togglePassword('confirmPassword')">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+            <div id="confirmPasserr" class="text-danger position-absolute" style="bottom: -20px; left: 0;"></div>
+
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Change Password</button>
+        </div>
+        {{#if message}}
+        <div id="alertMessage" class="alert alert-danger text-center">{{message}}</div>{{/if}}
+    </form>
+</div> --}}
+
+  
+<div class="changePasswordContainer">
+    <h3 class="text-center mb-4">Change Password</h3>{{#if successMessage1}}
+<div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+    {{successMessage1}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+</div>
+{{/if}}
+
+    <form id="changePasswordForm" action="/user/reset-password" method="post" onsubmit="return validateForm()">
+        <div class="form-group mb-3">
+            <label for="currentPassword" class="form-label">Current Password</label>
+            <div class="input-group">
+                <input type="password" id="currentPassword"  name="currentPassword"class="form-control" placeholder="Enter current password" required>
+                <button class="btn btn-outline-primary" type="button" onclick="togglePassword('currentPassword')">
+<i class="fa-regular fa-eye"></i>                </button>
+                <div id="currentPasserr" class="text-danger position-absolute" style="bottom: -20px; left: 0;"></div>
+
+            </div>
+        </div>
+        <div class="form-group mb-3">
+            <label for="newPassword" class="form-label">New Password</label>
+            <div class="input-group">
+                <input type="password" id="newPass1"  name="newPass1"class="form-control" placeholder="6+ characters" required>
+
+                <button class="btn btn-outline-primary" type="button" onclick="togglePassword('newPass1')">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+                <div id="newPass1Error" class="text-danger position-absolute" style="bottom: -20px; left: 0;"></div>
+            </div>
+        </div>
+        <div class="form-group mb-3">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <div class="input-group">
+                <input type="password" id="newPass2"  name="newPass2" class="form-control" placeholder="Re-enter new password" required>
+                <button class="btn btn-outline-primary" type="button" onclick="togglePassword('newPass2')">
+                    <i class="fa-regular fa-eye"></i>
+                </button>
+            <div id="newPass2Error" class="text-danger position-absolute" style="bottom: -20px; left: 0;"></div>
+
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Change Password</button>
+        </div>
+        {{#if message}}
+        <div id="alertMessage" class="alert alert-danger text-center">{{message}}</div>{{/if}}
+    </form>
+</div>
+
+{{!-- <script>
+function validateForm() {
+   let valid = true;
+   const newPass1 = document.getElementById('newPass1');
+   const newPass2 = document.getElementById('newPass2');
+   const newPass1Error = document.getElementById('newPass1Error');
+   const newPass2Error = document.getElementById('newPass2Error');
+const currentPassword = document.getElementById('currentPassword')
+const currentPasserr = document.getElementById('currentPasserr')
+
+   newPass1Error.textContent = '';
+   newPass2Error.textContent = '';
+  currentPasserr.textContent = ''
+
+   if (!newPass1.value.trim()) {
+       newPass1Error.textContent = 'Password cannot be empty.';
+       valid = false;
+   } else if (newPass1.value.length < 6) {
+       newPass1Error.textContent = 'Password must be at least 6 characters long.';
+       valid = false;
+   } else if(newPass1.value === currentPassword.value){
+        newPass1Error.textContent = 'Please enter a new Password'
+      }
+      valid = false;
+
+
+   if (!newPass2.value.trim()) {
+       newPass2Error.textContent = 'Please re-enter your password.';
+       valid = false;
+   } else if (newPass2.value !== newPass1.value) {
+       newPass2Error.textContent = 'Passwords do not match.';
+       valid = false;
+   }
+   return valid;
+}
+</script> --}}
+
+<script>
+    function validateForm() {
+        let valid = true;
+        const newPass1 = document.getElementById('newPass1');
+        const newPass2 = document.getElementById('newPass2');
+        const currentPassword = document.getElementById('currentPassword');
+
+        const newPass1Error = document.getElementById('newPass1Error');
+        const newPass2Error = document.getElementById('newPass2Error');
+        const currentPasserr = document.getElementById('currentPasserr');
+
+        // Clear previous error messages
+        newPass1Error.textContent = '';
+        newPass2Error.textContent = '';
+        currentPasserr.textContent = '';
+
+        // Validate current password
+        if (!currentPassword.value.trim()) {
+            currentPasserr.textContent = 'Current password is required.';
+            valid = false;
+        }
+
+        // Validate new password
+        if (!newPass1.value.trim()) {
+            newPass1Error.textContent = 'New password cannot be empty.';
+            valid = false;
+        } else if (newPass1.value.length < 6) {
+            newPass1Error.textContent = 'New password must be at least 6 characters long.';
+            valid = false;
+        } else if (newPass1.value === currentPassword.value) {
+            newPass1Error.textContent = 'New password cannot be the same as the current password.';
+            valid = false;
+        }
+
+        // Validate confirm password
+        if (!newPass2.value.trim()) {
+            newPass2Error.textContent = 'Please re-enter your new password.';
+            valid = false;
+        } else if (newPass2.value !== newPass1.value) {
+            newPass2Error.textContent = 'Passwords do not match.';
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        field.type = field.type === 'password' ? 'text' : 'password';
+    }
+
+
+
+    function validateAccountSettingsForm() {
+    let isValid = true;
+
+    // Get form inputs
+    const firstName = document.getElementById('firstName');
+    const lastName = document.getElementById('lastName');
+    const username = document.getElementById('username');
+    const email = document.getElementById('email');
+    const secondaryEmail = document.getElementById('secondaryEmail');
+    const phone = document.getElementById('phone');
+    const pincode = document.getElementById('pincode');
+
+    // Error elements
+    const firstNameError = document.getElementById('firstNameError');
+    const lastNameError = document.getElementById('lastNameError');
+    const usernameError = document.getElementById('usernameError');
+    const emailError = document.getElementById('emailError');
+    const secondaryEmailError = document.getElementById('secondaryEmailError');
+    const phoneError = document.getElementById('phoneError');
+    const pincodeError = document.getElementById('pincodeError');
+
+    // Clear previous errors
+    firstNameError.textContent = '';
+    lastNameError.textContent = '';
+    usernameError.textContent = '';
+    emailError.textContent = '';
+    secondaryEmailError.textContent = '';
+    phoneError.textContent = '';
+    pincodeError.textContent = '';
+
+    // Validate First Name
+    if (!firstName.value.trim() || !/^[A-Za-z]+(?:\s[A-Za-z]+)*$/.test(firstName.value)) {
+        firstNameError.textContent = 'First name is required.';
+        isValid = false;
+    }
+
+    // Validate Last Name
+    if (!lastName.value.trim() || !/^[A-Za-z]+(?:\s[A-Za-z]+)*$/.test(lastName.value) ) {
+        lastNameError.textContent = 'Last name is required.';
+        isValid = false;
+    }
+
+    // Validate Username
+    if (!username.value.trim() || !/^[A-Za-z]+(?:\s[A-Za-z]+)*$/.test(username.value)) {
+        usernameError.textContent = 'Username is required.';
+        isValid = false;
+    }
+
+    // Validate Email
+    if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        emailError.textContent = 'Enter a valid email address.';
+        isValid = false;
+    }
+
+    // Validate Secondary Email
+    if (secondaryEmail.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(secondaryEmail.value)) {
+        secondaryEmailError.textContent = 'Enter a valid secondary email address.';
+        isValid = false;
+    }
+
+    // Validate Phone
+    if (!phone.value.trim() || !/^\+?[0-9]{10,13}$/.test(phone.value)) {
+        phoneError.textContent = 'Enter a valid phone number.';
+        isValid = false;
+    }
+
+    // Validate Pincode
+    if (!pincode.value.trim() || !/^\d{6}$/.test(pincode.value)) {
+        pincodeError.textContent = 'Enter a valid 6-digit pin code.';
+        isValid = false;
+    }
+
+    return isValid;
+}
+</script>
+
+</body>
+
+
+
+
+{{!-- <style>
+    .card{
+        margin-top: 70px;
+        width:500px
+    }
+</style> --}}

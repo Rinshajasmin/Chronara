@@ -10,7 +10,124 @@
 
 
 <!-- end of nav-->
+ <header id="header" class="navbar">
+        <div class="logo">chronara</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/user/home">Home</a></li>
+                <li><a href="/user/contact">Contact</a></li>
+                <li><a href="/user/about">About</a></li>
 
+                {{!-- <li><a href="/user/cart/?id={{_id}}" >Cart</a></li> --}}
+            </ul>
+        </nav>
+        
+         {{#if username}}
+         <div class="shopping-icon">
+              <a href="/user/cart/?id={{_id}}" class="cart-icon">
+              
+                <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
+              </a>
+        <div class="dropdown">
+          
+          <a class="sign-in-link" href="#">  
+            
+                   <i class="fas fa-user-circle"></i> <!-- Profile icon -->
+
+
+            {{username}}
+          </a>
+          <div class="dropdown-content">
+            <a  href="/user/userProfile">Profile</a>
+            <a  href="/user/logout">Logout</a>
+          </div>
+        </div>
+        </div>
+        
+        {{else}}
+        <div class="auth-links">
+            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+        </div>
+       {{/if}}  
+ 
+    </header> 
+    <style>
+      .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.auth-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}  
+ .fas.fa-user-circle {
+    margin-right: 8px; /* Space between icon and username */
+    font-size: 20px;   /* Icon size */
+    color: #333;       /* Icon color */
+}
+.fas.fa-shopping-cart {
+    margin-right: 8px; /* Space between icon and username */
+    font-size: 20px;   /* Icon size */
+    color: #333;       /* Icon color */
+}
+.dropdown{
+    position: relative;
+    display: inline-block;
+    
+  } 
+  .dropdown-content{
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    right: 0;
+  }
+  .dropdown-content a{
+    color: black;
+    padding: 12px 16px ;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    }
+    .dropdown-content a:hover{
+        background-color: #f1f1f1;
+    }
+    .dropdown:hover .dropdown-content{
+        display: block;
+    }
+    #header{
+        position: relative;
+        z-index: 500;
+    }
+     .shopping-icon a{
+        text-decoration: none;
+    }
+    </style>
 
 
 
@@ -51,13 +168,14 @@
 
 </div>
 </div>
+{{>userfooter}}
 <!-- end of main -->
 <style>
     /* Write page CSS here*/
 .message-box{
   display: flex;
   justify-content: center;
-  padding-top: 20vh;
+  padding-top: 9vh;
   padding-bottom: 20vh;
 }
 .success-container{

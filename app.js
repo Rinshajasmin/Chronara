@@ -61,7 +61,7 @@ app.engine(
       __dirname + '/views/admin',   // Admin-specific partials
     ], 
     helpers: {
-      formatDate: (date, format) => moment(date).format(format),
+      formatDate: (date, format) => moment(date).local().format(format),
       eq: (a, b) => {
         return a === b; // Return true or false for equality check
       },
@@ -74,6 +74,10 @@ app.engine(
           default: return 'text-secondary';
         }
       },
+      or: function (v1, v2) {
+        return v1 || v2;
+      },
+    
     },
     runtimeOptions: {
       allowProtoPropertiesByDefault: true

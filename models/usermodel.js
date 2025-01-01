@@ -53,7 +53,16 @@ const userSchema=new Schema({
     addresses: [{ // Add reference to the Address schema
         type: Schema.Types.ObjectId,
         ref: "Address"
-    }]
+    }],
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    
+    
+    secondaryEmail: { type: String },
+
+    country: { type: String },
+    state: { type: String },
+    pinCode: { type: String },
     // createdOn : {
     //     type:Date,
     //     default:Date.now,

@@ -33,6 +33,8 @@
           </a>
           <div class="dropdown-content">
             <a  href="/user/userProfile">Profile</a>
+                        <a href="/user/getUserOrders">My Orders</a>
+
             <a  href="/user/logout">Logout</a>
           </div>
         </div>
@@ -52,7 +54,7 @@
     <!-- Sidebar Section -->
     <aside class="sidebar" style="flex: 0 0 220px;"> <!-- Fixed smaller width -->
       <h3>Search</h3>
-      <form action="/user/shop" method="GET">
+      <form action="/user/filter" method="GET">
     <input type="text" name="query" placeholder="Search products..." class="search-bar" />
     {{!-- <button type="submit" class="search-btn">Search</button> --}}
   </form>
@@ -89,6 +91,7 @@
     <!-- Product Grid Section -->
     <div class="product-section" style="flex: 1;">
       <div class="product-grid" style="grid-template-columns: repeat(4, 1fr);"> 
+        {{#if products}}
         {{#each products}}
           <div class="product-card">
             <a href="/user/wishlist" class="wishlist-icon">
@@ -122,6 +125,10 @@
             </div>
           </div>
         {{/each}}
+        {{else}}
+        <div class="no-products">        <p>NO Products Found</p>
+</div>
+        {{/if}}
       </div>
     </div>
   </div>
@@ -402,6 +409,7 @@ body {
     padding: 20px 40px;
     background-color: #f8f9fa;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
 }
 
 .logo {
@@ -472,13 +480,25 @@ body {
     }
   
 /* Sidebar Styles */
+/* Sidebar Styles */
 .sidebar {
-  flex: 1 1 250px;
+  position: fixed; /* Make the sidebar fixed */
+  top: 0;
+  left: 0;
+  flex: 0 0 250px;
   background-color: #f1f1f1;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 100vh; /* Make the sidebar extend to full height */
+  overflow-y: auto; /* Add scrolling if content exceeds the sidebar's height */
+  margin-top: 75px;
+    margin-left: 35px;
 }
+
+/* Adjust the product section to account for the fixed sidebar */
+
+
 
 .sidebar h3,
 .sidebar h4 {
@@ -562,6 +582,8 @@ body {
 /* Product Section */
 .product-section {
   flex: 3 1 700px;
+  margin-left: 270px; /* Create space on the left for the fixed sidebar */
+  padding-top: 20px; /* To avoid overlap with the fixed sidebar */
 }
 
 .product-grid {
@@ -635,6 +657,14 @@ body {
 
 .wishlist-icon:hover {
   color: #e63946;
+}
+.no-products p{
+  width: 340px;
+  padding:37px;
+  background-color: #f1dbde;
+  color: red;
+  margin-top: 81px;
+    margin-left: 166px
 }
 
 /* Responsive Design */

@@ -95,10 +95,10 @@ const loadShop = async(req,res)=>{
         const categories = await Category.find({isListed:true});
 
         let productData = await Product.find(
-            {isBlocked:false})
+            {isDeleted:false})
             productData.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
         // productData=productData.slice(0,12)
-     
+       console.log("products",productData)
 
         if(user){
             const userData = await User.findOne({_id:user._id})
@@ -317,6 +317,8 @@ const logout = async (req,res)=>{
 const filterProduct= async (req, res) => {
     const filterType = req.params.filter;
     let filter = {};
+    const userId=req.session.user;
+    const user = await User.findById(userId)
   
     // Define filters based on the filterType
     switch (filterType) {
@@ -341,7 +343,7 @@ const filterProduct= async (req, res) => {
       const products = await Product.find(filter); // No need for .exec()
   
       // Render the filtered products on the new page
-      res.render('user/shop', { products });
+      res.render('user/shop', { products,username:user.username });
     } catch (err) {
       console.error('Error retrieving filtered products:', err);
       return res.status(500).send('Error retrieving filtered products');
@@ -405,7 +407,7 @@ const filterProduct= async (req, res) => {
     });
 
     // Render the results page with the filtered products
-    res.render('user/filter', { products });
+    res.render('user/shop', { products });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');
@@ -539,6 +541,14 @@ const filterProduct= async (req, res) => {
       res.status(500).send('Error retrieving products');
     }
   };
+
+  const getAboutPage = async(req,res)=>{
+    try {
+      res.render('user/aboutUs')
+    } catch (error) {
+      
+    }
+  }
   
   
 
@@ -548,5 +558,5 @@ module.exports={loadLogin,
     signup,verifyOtp,resendOtp,
     pageNotFound,login,logout,loadShop,
     filterProduct,sortProduct,searchProduct,
-    getuserProfile,getFilteredAndSortedProducts 
+    getuserProfile,getFilteredAndSortedProducts ,getAboutPage
 } 

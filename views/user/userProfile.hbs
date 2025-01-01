@@ -78,9 +78,15 @@
                    </a>
                  </li>
                  <li class="nav-item">
-                   <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false">
+                   <a class="nav-link" id="orders-tab" href="/user/getUserOrders" role="tab" aria-controls="orders" aria-selected="false">
                      <i class="fi-rs-shopping-bag mr-10"></i>Orders
                    </a>
+                   {{!-- <li class="nav-item">
+  <a class="nav-link" id="orders-tab" href="/user/getOrderslist" role="tab">
+    <i class="fi-rs-shopping-bag mr-10"></i>Orders
+  </a>
+</li> --}}
+
                  </li>
                  <li class="nav-item">
                    <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false">
@@ -217,22 +223,24 @@
                            </tr>
                          </thead>
                          <tbody>
-                          {{#each order}}
-                           <tr>
-                             <td>
-                              <ul>
-                                {{#each orderItems}}
-                                <li> &bull;{{this.product.productName}}</li>
-                                {{/each}}
-                              </ul>
-                             </td>
-                             <td>{{this.quantity}}</td>
-                             <td>{{this.price}}</td>
-                             <td>
-                               <a href="/user/cancelOrder/{{order._id}}" class="btn-small d-block">Cancel</a>
-                             </td>
-                           </tr>
-                         </tbody>
+  {{#each orders}}
+  <tr>
+    <td>
+      <ul>
+        {{#each orderItems}}
+        <li>&bull; {{this.product.productName}}</li>
+        {{/each}}
+      </ul>
+    </td>
+    <td>{{this.status}}</td>
+    <td>{{this.totalPrice}}</td>
+    <td>
+      <a href="/user/cancelOrder/{{this._id}}" class="btn-small d-block">Cancel</a>
+    </td>
+  </tr>
+  {{/each}}
+</tbody>
+
                        </table>
                      </div>
                    </div>

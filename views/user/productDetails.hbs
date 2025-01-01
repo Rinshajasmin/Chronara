@@ -17,35 +17,54 @@
             <span></span> {{product.productName}}
         </div>
     </div> --}}
-    <header id="header" class="navbar">
-  <div class="logo">chronara</div>
-  <nav>
-    <ul class="nav-links">
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Contact</a></li>
-      <li><a href="#">About</a></li>
-    </ul>
-  </nav>
-  {{#if username}}
-    <div class="dropdown">
-      <a class="sign-in-link" href="#">{{username}}</a>
-      <div class="dropdown-content">
-        <a href="/user/profile">Profile</a>
-        <a href="/user/logout">Logout</a>
-      </div>
-    </div>
-  {{else}}
-    <div class="auth-links">
-      <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
-    </div>
-  {{/if}}
-</header>
+     <header id="header" class="navbar">
+        <div class="logo">chronara</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/user/home">Home</a></li>
+                <li><a href="/user/contact">Contact</a></li>
+                <li><a href="/user/about">About</a></li>
+
+                {{!-- <li><a href="/user/cart/?id={{_id}}" >Cart</a></li> --}}
+            </ul>
+        </nav>
+        
+         {{#if username}}
+         <div class="shopping-icon">
+              <a href="/user/cart/?id={{_id}}" class="cart-icon">
+              
+                <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
+              </a>
+        <div class="dropdown">
+          
+          <a class="sign-in-link" href="#">  
+            
+                   <i class="fas fa-user-circle"></i> <!-- Profile icon -->
+
+
+            {{username}}
+          </a>
+          <div class="dropdown-content">
+            <a  href="/user/userProfile">Profile</a>
+            <a href="/user/getUserOrders">My Orders</a>
+            <a  href="/user/logout">Logout</a>
+          </div>
+        </div>
+        </div>
+        
+        {{else}}
+        <div class="auth-links">
+            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+        </div>
+       {{/if}}  
+ 
+    </header> 
 {{!-- //<section class="breadcrumb-section"> --}}
   {{!-- <div class="container"> --}}
     <nav class="breadcrumb-nav">
       <ul class="breadcrumb-list">
-        <li><a href="/">Home</a></li>
-        <li><a href="/category">Category</a></li>
+        <li><a href="/user/home">Home</a></li>
+        <li><a href="/user/shop">Shop</a></li>
         <li class="active">{{product.productName}}</li> <!-- Current Page -->
       </ul>
     </nav>
@@ -120,9 +139,10 @@
                             <div class="detail-info">
                                 <h2 class="title-detail">{{product.productName}}</h2>
                                 <div class="product-detail-rating">
-    <div class="pro-details-brand">
+    <div class="pro-details-brand">{{#if product.brand}}
         <span>Brand: {{product.brand}}</span>
     </div>
+    {{/if}}
     <div class="product-rate d-inline-block">
     <span class="star-rating">
         <i class="fas fa-star"></i>
@@ -138,20 +158,27 @@
     </div>
 
 
-                                <div class="clearfix product-price-cover">
-                                    <div class="product-price primary-color float-left">
-                                        <ins><span class="text-brand">₹{{product.salePrice}}</span></ins><br
-                                        <ins><span class="old-price font-md ml-15">₹{{product.regularPrice}}</span></ins>
-                                        <span class="save-price font-md color3 ml-15">
-                                            {{#if totalOffer}}
-                                           save  {{totalOffer}}%
-                                             
-                                             {{else}}
-                                             No offer
-                                             </span>
-                                             {{/if}}
-                                    </div>
-                                </div>
+                               <div class="clearfix product-price-cover">
+    <div class="product-price primary-color float-left">
+        {{#if totalOffer}} 
+            <!-- If there is a total offer, show the sale price -->
+            <ins><span class="text-brand">₹{{product.salePrice}}</span></ins><br>
+            <ins><span class="old-price font-md ml-15">₹{{product.regularPrice}}</span></ins>
+        {{else}} 
+            <!-- If there is no total offer, show the regular price -->
+            <ins><span class="text-brand">₹{{product.regularPrice}}</span></ins>
+        {{/if}}
+        
+        <span class="save-price font-md color3 ml-15">
+            {{#if totalOffer}}
+                Save {{totalOffer}}%
+            {{else}}
+                No offer
+            {{/if}}
+        </span>
+    </div>
+</div>
+
                                 <div class="bt-1 border-color-1 mt-15 mb-15"></div>
                                 <div class="short-desc mb-30">
                                     <p>{{product.productDesc}}</p>
@@ -171,9 +198,10 @@
                                         <a href="#" class="qty-up" onclick=""><i class="fi-rs-angle-small-up"></i></a>
                                     </div>
                                     <div class="product-extra-link2">
+                                      {{#if quantity}}
                                         {{!-- <button type="submit" class="button button-add-to-cart" onclick="">Add to cart</button> --}}
                                         <button class="add-to-cart-btn btn btn-primary" data-product-id="{{_id}}" onclick="addToCart('{{_id}}')">Add to Cart</button>
-
+                                       {{/if}}
                                         <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a>
                                     </div>
                                 </div>
@@ -507,6 +535,83 @@ thumbnails.forEach((thumbnail) => {
 .ml-10 {
     margin-left: 10px;
 }
+
+      .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.auth-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}  
+ .fas.fa-user-circle {
+    margin-right: 8px; /* Space between icon and username */
+    font-size: 20px;   /* Icon size */
+    color: #333;       /* Icon color */
+}
+.fas.fa-shopping-cart {
+    margin-right: 8px; /* Space between icon and username */
+    font-size: 20px;   /* Icon size */
+    color: #333;       /* Icon color */
+}
+.dropdown{
+    position: relative;
+    display: inline-block;
+    
+  } 
+  .dropdown-content{
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    right: 0;
+  }
+  .dropdown-content a{
+    color: black;
+    padding: 12px 16px ;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    }
+    .dropdown-content a:hover{
+        background-color: #f1f1f1;
+    }
+    .dropdown:hover .dropdown-content{
+        display: block;
+    }
+    #header{
+        position: relative;
+        z-index: 500;
+    }
+     .shopping-icon a{
+        text-decoration: none;
+    }
+  
 
 
 

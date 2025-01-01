@@ -452,12 +452,21 @@ try {
     const categoryOffer = findCategory?.categoryOffer || 0
     const productOffer = product.productOffer || 0;
     const totalOffer = categoryOffer + productOffer;
+    const regularPrice = product.regularPrice
+
+
+    const discountAmount = (totalOffer / 100) * regularPrice;  // Calculate the discount amount
+    const salePrice = regularPrice - discountAmount; 
     res.render("user/productDetails",{
+        _id:product._id,
         user:userData,
         product:product,
         quantity:product.quantity,
         category:findCategory,
-        totalOffer:totalOffer
+        totalOffer:totalOffer,
+        salePrice:salePrice,
+        username:userData.username,
+        
 
 
     });

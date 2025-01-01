@@ -196,7 +196,7 @@ try {
     }
 
     // Fetch the cart associated with the user
-    const cart = await Cart.findOne({ userId })
+    const cart = await Cart.findOne({ userId})
         .populate('items.productId', 'productName salePrice regularPrice productImage') // Populate product details
         .exec();
         console.log("Cart details from user:", cart);
@@ -256,11 +256,18 @@ const addToCart = async(req,res)=>{
     if (!cart) {
         cart = new Cart({ userId, items: [] });
     }
+    if (cart.items.length >= 3) {
+        return res.status(400).json({ message: "You can only add up to 3 items in your cart." });
+    }
 
     const existingItem = cart.items.find(item => item.productId.toString() === productId);
     if (existingItem) {
-        existingItem.quantity += 1;
-        
+        if (existingItem.quantity < 3) {
+            existingItem.quantity += 1;
+            existingItem.totalPrice = existingItem.quantity * (product.salePrice || product.regularPrice);
+        } else {
+            return res.status(400).json({ message: "You cannot add more than 3 of this product." });
+        }        
     } else {
         cart.items.push({
             productId,
@@ -427,6 +434,7 @@ const getCheckOut = async(req,res)=>{
             console.log(req.body)
             const userId = req.session.user
             const cart = await Cart.findById(cartId).populate('items.productId');
+            const userData=await User.findById(userId)
        
             if (!cart || cart.items.length === 0) {
                 return res.redirect('/user/cart'); // Redirect to cart if it's empty
@@ -453,7 +461,8 @@ const getCheckOut = async(req,res)=>{
                 addresses: addressDetails,
                 cartId,
                 totalPrice,
-                grandTotal
+                grandTotal,
+                username:userData.username
             });
             
         } catch (error) {
@@ -471,6 +480,7 @@ const placeOrders = async (req, res) => {
         console.log('Payment Method:', paymentMethod);
         
         const userId = req.session.user;
+        const userData = await User.findById(userId)
         
         // Fetch the cart using the cartId and populate the items with product details
         const cart = await Cart.findById(cartId).populate('items.productId');
@@ -478,7 +488,13 @@ const placeOrders = async (req, res) => {
         if (!cart) {
             return res.status(404).send('Cart not found');
         }
+        const addressId =  new mongoose.Types.ObjectId(address);
 
+        const selectedaddress1 = await Address.findOne(
+            { userId, "address._id": addressId }, // Match userId and address._id
+            { "address.$": 1 } // Project only the matching address element
+        );
+        console.log(selectedaddress1)
         // Calculate total price
         const totalPrice = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
 
@@ -491,9 +507,12 @@ const placeOrders = async (req, res) => {
                 return res.status(404).send(`Product not found: ${item.productId._id}`);
             }
 
-            // If there is not enough stock, return an error
-            if (product.quantity < item.quantity) {
-                return res.status(400).send(`Not enough stock for ${product.productName}`);
+            
+             if (product.quantity < item.quantity) {
+              console.log(product.quantity)
+                console.log("item quantity",item.quantity)
+
+              return res.status(400).send(`Not enough stock for ${product.productName}`);
             }
 
             // Decrease the product quantity by the ordered quantity
@@ -511,8 +530,10 @@ const placeOrders = async (req, res) => {
             totalPrice: totalPrice,
             finalAmount: totalPrice, // Adjust if there are discounts or other fees
             paymentMethod: paymentMethod,
+            selectedAddress:addressId,
             address: userId,
             status: 'Pending', // Set initial status as 'Pending'
+            paymentStatus: paymentMethod === 'Cash on Delivery' ?  'Pending':'Awaiting Payment',
             createdOn: new Date(), // Current date and time
         });
 
@@ -520,8 +541,11 @@ const placeOrders = async (req, res) => {
         const savedOrder = await newOrder.save();
 
         // Optionally mark the cart as deleted or clear its items
-        // cart.isDeleted = true; // Mark the cart as deleted
-        //await cart.save();
+         cart.items=[]
+        await cart.save();
+        if (paymentMethod !== "Cash on Delivery") {
+            return res.redirect(`/user/getPaymentPage?orderId=${savedOrder._id}&amount=${savedOrder.finalAmount}`);
+          }
 
         // Redirect to an order confirmation page or render a success page
         res.render('user/orderPlaced', {  
@@ -529,13 +553,61 @@ const placeOrders = async (req, res) => {
             totalPrice: savedOrder.totalPrice,  // Total price of the order
             paymentMethod: savedOrder.paymentMethod,  // Payment method
             createdOn: savedOrder.createdOn,
-            ordernumber: savedOrder.orderId
+            ordernumber: savedOrder.orderId,
+            username:userData.username
         });
     } catch (error) {
         console.error('Error placing order:', error);
         res.status(500).send('Server error');
     }
 };
+
+
+
+const razorpayPaymentSuccess = async(req,res)=>{
+
+    
+        try {
+            // Capture query parameters from the GET request
+            const { orderId, paymentId, paymentMethod } = req.query;
+            console.log(orderId)
+            
+    
+            // Fetch the order using the orderId from the database
+            const order = await Order.findById(orderId)
+                .populate('orderItems.product')  // Populate product details for each order item
+                .exec();
+    
+            // If the order is not found, return an error
+            if (!order) {
+                return res.status(404).send('Order not found');
+            }
+            order.paymentStatus='Paid'
+            await order.save()
+    
+            // Fetch the user who placed the order
+            const userData = await User.findById(order.address);
+    
+            // Render the 'orderPlaced' page and pass the details, including order items and user info
+            res.render('user/orderPlaced', {
+                orderId: order._id,              // Order ID
+                totalPrice: order.totalPrice,    // Total price of the order
+                paymentMethod: paymentMethod,    // Payment method from the GET request
+                paymentId: paymentId,            // Payment ID from Razorpay
+                paymentStatus: 'Success',        // Payment status (can be dynamic based on the response)
+                createdOn: order.createdOn,      // Order creation date
+                orderItems: order.orderItems,    // Order items populated with product details
+                username: userData.username,
+                ordernumber:order.orderId      
+
+            });
+        } catch (error) {
+            console.error('Error during Razorpay payment success:', error);
+            res.status(500).send('Server error');
+        }
+    };
+ 
+    
 
 
 
@@ -550,5 +622,6 @@ module.exports={
     changeQuantity,
     deleteProduct,
     getCheckOut,
-    placeOrders
+    placeOrders,
+    razorpayPaymentSuccess
 }

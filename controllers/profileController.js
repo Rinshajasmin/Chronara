@@ -153,16 +153,18 @@ try {
 }
 
 const postNewPassword = async (req,res)=>{
+    console.log("pswd",req.body)
     try {
         const{newPass1,newPass2}= req.body
-         const email=req.session.email
+        const userId = req.session.user
+         console.log(userId)
          if(newPass1 === newPass2){
             const passwordHash = await securePassword(newPass1)
             await User.updateOne(
-                {email:email},
+                {_id:userId},
                 {$set:{password:passwordHash}}
             )
-            res.redirect('/user/login')
+            res.render('user/profile',{successMessage1:"Password Updated Successfully"})
          }else{
             res.render("user/reset-password",{message:'passwords do not match'})
          }
@@ -193,7 +195,7 @@ const getUserProfile = async (req, res) => {
             return res.render('user/userProfile', { user: userData, userAddress: null }); // No addresses found
         }
 
-        res.render('user/userProfile', { user: userData, userAddress: addressData.address,username:userData.username }); // Pass only the array
+        res.render('user/profile', { user: userData, userAddress: addressData.address,username:userData.username }); // Pass only the array
     } catch (error) {
         console.error("Error while retrieving user profile:", error);
         res.redirect('/user/error');
@@ -326,6 +328,26 @@ const getAddAddress = async(req,res)=>{
     }
 }
 
+const getAllAddresses = async(req,res)=>{
+
+    try {
+        console.log("hello")
+        const userId = req.session.user; // Get user ID from session
+        const userData = await User.findById(userId); // Fetch user data
+        const addressData = await Address.findOne({ userId: userId ,isDeleted:false}); // Fetch the address document
+
+        if (!addressData || !addressData.address || addressData.address.length === 0) {
+            return res.render('user/userProfile', { user: userData, userAddress: null }); // No addresses found
+        }
+        console.log("addreaas details",addressData)
+        res.render('user/userAddresses', { user: userData, userAddress: addressData.address,username:userData.username }); // Pass only the array
+    } catch (error) {
+        console.error("Error while retrieving user profile:", error);
+        res.redirect('/user/error');
+    }
+};
+
+
 const postAddAddress = async(req,res)=>{
     try {
         const userId = req.session.user;
@@ -440,6 +462,43 @@ const updateAddress = async(req,res)=>{
     }
 }
 
+const updateAccountDetails = async(req,res)=>{
+    console.log("data received from the update form",req.body)
+    try {
+        const{firstName,lastName,username,phone,secondaryEmail,pincode,state,country}=req.body
+
+        const userId = req.session.user
+        const user = await User.findById(userId)
+
+        if(!user){
+          return   res.status(400).send('user not found')
+        }
+
+        const result = await User.updateOne(
+            {_id:userId},
+            {$set:{
+                firstName:firstName,
+                lastName:lastName,
+                username: username,
+            
+                    secondaryEmail: secondaryEmail,
+                    phone: phone,
+                    country: country,
+                    state: state,
+                    pincode: pincode,
+
+
+            }}
+
+        );
+ res.render('user/profile',{successMessage:"form submitted successfully"})
+
+    } catch (error) {
+    console.log("error while updating account details",error)  
+    res.redirect('/admin/error')  
+    }
+}
+
 
 
 
@@ -462,5 +521,5 @@ module.exports={
     verifyChangePassOtp,
     getAddAddress,
     postAddAddress,deleteAddress,
-    getEditAddress,updateAddress
+    getEditAddress,updateAddress,getAllAddresses,updateAccountDetails 
 }
