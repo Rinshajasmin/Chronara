@@ -40,7 +40,22 @@ const cartSchema = new Schema({
             type:String,
             default:"none"
         }
-    }]
+    }],
+    coupon: {
+        code: {
+            type: String,
+            default: null
+        },
+        discount: {
+            type: Number,
+            default: 0
+        }
+    },
+    grandTotal: {
+        type: Number,
+        required: true,
+        default: 0
+    }
 })
 
 const Cart = mongoose.model('Cart',cartSchema)

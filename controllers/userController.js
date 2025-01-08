@@ -1,8 +1,11 @@
 
 const adminmodel = require('../models/usermodel')
+const mongoose = require('mongoose')
 const User = require('../models/usermodel')
 const Category = require('../models/categorySchema')
 const Product = require('../models/productSchema')
+const Wallet = require('../models/walletSchema')
+const { v4: uuidv4 } = require('uuid');
 
 const env = require('dotenv').config();
 const nodemailer = require('nodemailer')
@@ -48,36 +51,93 @@ const login = async (req,res)=>{
 //     res.render('user/login',{ layout: 'layout', isUser: true })
 
 // }; 
-const loadHome= async(req,res)=>{
-    try {
-        console.log(req.session.user)
-        const user = req.session.user;
-        const categories = await Category.find({isListed:true});
+// const loadHome= async(req,res)=>{
+//     try {
+//         console.log(req.session.user)
+//         const user = req.session.user;
+//         const categories = await Category.find({isListed:true});
 
-        let productData = await Product.find(
-            {isBlocked:false,
-             category:{$in:categories.map(category=>category._id)},quantity:{$gt:0}
-        })
+//         let productData = await Product.find(
+//             {isBlocked:false,
+//              category:{$in:categories.map(category=>category._id)},quantity:{$gt:0}
+//         })
         
-        productData.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-         productData=productData.slice(0,4)
+//         productData.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+//          productData=productData.slice(0,4)
      
 
-        if(user){
-            const userData = await User.findOne({_id:user._id})
-            // console.log("Categories:", categories);
-            // console.log("Products:", productData);
-           return  res.render('user/home', { username: user.username ,user:userData,products:productData});
-        }else{
-            return res.render("user/home",{products:productData})
-        }
-        
-    } catch (error) {
-        console.log("Home page not found")
-        res.status(500).send("server error")
-    }
+//         if(user){
+//             const userData = await User.findOne({_id:user._id})
+//             const productsWithWishlistStatus = productData.map(product => ({
+//               ...product.toObject(),
+//               isWishlisted: userData.wishlist.includes(product._id.toString()),
+//           }));
 
-}
+//           return res.render('user/home', {
+//               username: user.username,
+//               user: userData,
+//               products: productsWithWishlistStatus,
+//           });
+//             // console.log("Categories:", categories);
+//           // return  res.render('user/home', { username: user.username ,user:userData,products:productData});
+//         }else{
+//             return res.render("user/home",{products:productData})
+//         }
+        
+//     } catch (error) {
+//         console.log("Home page not found",error)
+//         res.status(500).send("server error")
+//     }
+
+// }
+
+const loadHome = async (req, res) => {
+  try {
+      console.log(req.session.user);
+      const user = req.session.user; // Check if the user is logged in
+      const categories = await Category.find({ isListed: true });
+
+      // Fetch products
+      let productData = await Product.find({
+          isBlocked: false,
+          category: { $in: categories.map(category => category._id) },
+          quantity: { $gt: 0 }
+      });
+
+      // Sort and limit the products
+      productData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      productData = productData.slice(0, 4);
+
+      if (user) {
+          const userData = await User.findOne({ _id: user._id });
+
+          if (!userData) {
+              // If user data is not found, clear session and redirect
+              req.session.user = null;
+              return res.redirect('/user/login');
+          }
+
+          // Add `isWishlisted` property to products
+          const productsWithWishlistStatus = productData.map(product => ({
+              ...product.toObject(),
+              isWishlisted: userData.wishlist.includes(product._id.toString()),
+          }));
+
+          return res.render('user/home', {
+              username: userData.username,
+              user: userData,
+              products: productsWithWishlistStatus,
+          });
+      } else {
+          // For guests, render home without user-specific data
+          return res.render('user/home', { products: productData });
+      }
+  } catch (error) {
+      console.error("Home page not found", error);
+      res.status(500).send("Server error");
+  }
+};
+
 const loadSignup= async (req,res)=>{
     try {
        return  res.render('user/usersignup')
@@ -179,38 +239,116 @@ const securePassword = async(password)=>{
     }
 
 }
+const generateReferralCode = (name, userId) => {
+  return `${name.slice(0, 4).toUpperCase()}${userId.slice(-4)}`;
+};
 
  
-const verifyOtp= async(req,res)=>{  
-    try {
-        const {otp}=req.body
-    //    console.log(otp);
-    console.log('otp:', otp, typeof otp);
-console.log('req.session.userOtp:', req.session.userOtp, typeof req.session.userOtp);
+// const verifyOtp= async(req,res)=>{  
+//     try {
+//         const {otp}=req.body
+//     //    console.log(otp);
+//     console.log('otp:', otp, typeof otp);
+// console.log('req.session.userOtp:', req.session.userOtp, typeof req.session.userOtp);
 
-        if(otp === req.session.userOtp){
-            const user =req.session.userData
-            const passwordHash = await securePassword(user.password)
-            const userSaveData = new User({
-                username:user.username,
-                email:user.email,
-                phone:user.phone,
-                password:passwordHash
-            })
-            await userSaveData.save()
-            req.session.user=userSaveData._id
-            res.json({
-                success:true,
-                redirectUrl:"/user/login"
-            })
-        }else{
-            res.status(400).json({success:false,message:"invalid OTP ,Please try again "})
+//         if(otp === req.session.userOtp){
+//             const user =req.session.userData
+//             const passwordHash = await securePassword(user.password)
+//             const userSaveData = new User({
+//                 username:user.username,
+//                 email:user.email,
+//                 phone:user.phone,
+//                 password:passwordHash
+//             })
+//             await userSaveData.save()
+//             req.session.user=userSaveData._id
+//             res.json({
+//                 success:true,
+//                 redirectUrl:"/user/login"
+//             })
+//         }else{
+//             res.status(400).json({success:false,message:"invalid OTP ,Please try again "})
+//         }
+//     } catch (error) {
+//         console.error("error verifying otp",error)
+//         res.status(500).json({success:false,message:"An error occurred"})
+//     }
+// }
+
+const verifyOtp = async (req, res) => {
+  try {
+    const { otp } = req.body;
+
+    if (otp === req.session.userOtp) {
+      const user = req.session.userData;
+      const passwordHash = await securePassword(user.password);
+      const referralCode = generateReferralCode(user.username, new mongoose.Types.ObjectId().toString());
+
+      const userSaveData = new User({
+        username: user.username,
+        email: user.email,
+        phone: user.phone,
+        password: passwordHash,
+        referredBy: user.referredBy, // Save referrer info
+        referralCode: referralCode, // Generate and save referral code
+      });
+
+      await userSaveData.save();
+
+      // Handle referral bonus if a referral code was used
+      if (user.referredBy) {
+        const referrer = await User.findOne({ referralCode: user.referredBy });
+        if (referrer) {
+          // Reward the referrer with a bonus (Example: 100 units)
+          await Wallet.updateOne(
+            { userId: referrer._id },
+            {
+              $inc: { balance: 100 },
+              $push: {
+                transactions: {
+                  description: 'Referral Bonus',
+                  type: 'Deposit',
+                  amount: 100,
+                  date: new Date(),
+                },
+              },
+            }
+          );
+          
+          // Add credit to the new user's wallet as well
+          let wallet = await Wallet.findOne({ userId: userSaveData._id });
+          if (!wallet) {
+            wallet = new Wallet({ userId: userSaveData._id, balance: 0, transactions: [] });
+          }
+          
+          // Credit the new user's wallet with a bonus (Example: 50 units for signing up with a referral code)
+          wallet.balance += 50; // Adjust the bonus amount as needed
+          wallet.transactions.push({
+            transactionId: uuidv4(),
+            description: 'Referral Credit',
+            date: new Date(),
+            type: 'Deposit',
+            amount: 50, // The bonus amount
+          });
+
+          await wallet.save();
         }
-    } catch (error) {
-        console.error("error verifying otp",error)
-        res.status(500).json({success:false,message:"An error occurred"})
+      }
+
+      req.session.user = userSaveData._id;
+      res.json({
+        success: true,
+        redirectUrl: "/user/login",
+      });
+    } else {
+      res.status(400).json({ success: false, message: 'Invalid OTP, Please try again' });
     }
-}
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    res.status(500).json({ success: false, message: "An error occurred" });
+  }
+};
+
 
 function generateOtp(){
     return Math.floor(100000+Math.random()*900000).toString()//method to create a random 6 digit otp
@@ -245,7 +383,7 @@ async function sendVerificationEmail(email,otp){
 }
 const signup = async(req,res)=>{
     try {
-        const {email,password,confirmpassword,username,phone}=req.body
+        const {email,password,confirmpassword,username,phone,referralCode}=req.body
         if(password !== confirmpassword){
             return res.render("user/usersignup",{message:"passwords do not match"})
         }
@@ -253,13 +391,25 @@ const signup = async(req,res)=>{
         if(findUser){
            return res.render("user/usersignup",{message:"User already exists"})
         }
+
+        let referrer = null;
+
+    // Validate referral code if provided
+    if (referralCode) {
+      referrer = await User.findOne({ referralCode });
+      if (!referrer) {
+        return res.render("user/usersignup", { message: "Invalid referral code" });
+      }
+    }
+
         const otp =generateOtp()
         const emailSent = await sendVerificationEmail(email,otp);
         if(!emailSent){
           return  res.json("email-error")
         }
         req.session.userOtp=otp;
-        req.session.userData={email,password,username,phone}
+        req.session.userData={email,password,username,phone,referredBy: referrer ? referrer.referralCode : null, // Save referrer if valid
+        }
 
         res.render("user/verifyOtp")
         console.log("otp sent",otp);

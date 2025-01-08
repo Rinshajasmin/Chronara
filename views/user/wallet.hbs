@@ -1,0 +1,333 @@
+{{>profilesidebar}}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+  <title>Wallet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .wallet-balance {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #f9f9f9;
+      padding: 20px;
+      border: 1px solid #ddd;
+    }
+    .wallet-balance h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .wallet-balance button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+    .transaction-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .transaction-table th,
+    .transaction-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .pagination button {
+      border: 1px solid #ddd;
+      background-color: white;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+    .pagination .active {
+      background-color: #007bff;
+      color: white;
+    }
+     #addMoneyContainer {
+        display: none;
+        align-items: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    #addMoneyInput {
+        padding: 10px;
+        width: 150px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    #addMoneyInput:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    #addMoneySubmit {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #addMoneySubmit:hover {
+        background-color: #218838;
+    }
+
+    #addMoneyToggle {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #addMoneyToggle:hover {
+        background-color: #0056b3;
+    }
+
+    .wallet-balance {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .wallet-balance h1 {
+        margin: 0;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .wallet-icon {
+        font-size: 48px;
+        color: #151718;
+    }
+
+    .wallet-balance button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+    }
+    /* Target text inside the tbody */
+tbody td {
+    color: #b8b0b0 !important; /* Change to your desired color */
+}
+/* Override the Bootstrap border-light class */
+.border-light {
+    border-color: rgb(113, 111, 111) !important; /* Change to your desired color */
+
+}
+
+
+    
+</style>
+
+    
+
+</head>
+<body>
+<div class="wallet-balance">
+    <i class="fas fa-wallet wallet-icon"></i>
+    <h1>Wallet Balance: ₹{{wallet.balance}}</h1>
+    <button id="addMoneyToggle">Add Money</button>
+    
+    <div id="addMoneyContainer">
+        <input type="number" id="addMoneyInput" placeholder="Enter amount" min="1">
+        <button id="addMoneySubmit">Add Money</button>
+    </div>
+</div>
+
+
+
+
+  <div class="table-responsive">
+    <table id="transactionTable" class="table table-hover table-dark border-light ">
+        <thead>
+            <tr>
+                <th class="text-center">Transaction ID</th>
+                <th class="text-center">Description</th>
+                <th class="text-center">Date</th>
+                <th class="text-center">Withdrawal</th>
+                <th class="text-center">Deposit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each wallet.transactions}}
+                <tr>
+                    <td class="text-center">{{id}}</td>
+                    <td class="text-center">{{description}}</td>
+                    <td class="text-center">{{date}}</td>
+                    <td class="text-center">{{#if withdrawal}}₹{{withdrawal}}{{else}}-{{/if}}</td>
+                    <td class="text-center">{{#if deposit}}₹{{deposit}}{{else}}-{{/if}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+{{!-- <script type="text/javascript">
+    $(document).ready(function() {
+        // Initialize DataTables
+        var table = $('#transactionTable').DataTable({
+            searching: false,  // Enable the built-in search box
+            paging: true,      // Enable pagination
+            lengthChange: false,
+            pageLength: 5,     // Show 5 entries per page
+            ordering: false,    // Enable sorting
+            order: [[2, 'desc']], // Sort by the Date column (index 2) in descending order
+            columnDefs: [
+                {
+                    targets: 2, // Target the Date column
+                    type: 'date' // Ensure it's treated as a date
+                }
+            ],
+            pagingType: "simple", // Use detailed pagination (First, Previous, Next, Last)
+        language: {
+            paginate: {
+                first: '<i class="fas fa-angle-double-left"></i>', // Icon for 'First'
+                previous: '<i class="fas fa-chevron-left"></i>',   // Icon for 'Previous'
+                next: '<i class="fas fa-chevron-right"></i>',     // Icon for 'Next'
+                last: '<i class="fas fa-angle-double-right"></i>' // Icon for 'Last'
+            }
+        }
+        });
+
+        // After DataTable is initialized, format the date column
+        table.on('draw', function () {
+            $('#transactionTable tbody tr').each(function() {
+                var dateCell = $(this).find('td').eq(2); // Get the Date cell (index 2)
+                var rawDate = dateCell.text(); // Get the raw ISO date string
+                var date = new Date(rawDate); // Convert to Date object
+
+                // Format the date manually
+                var formattedDate = date.toLocaleString('en-US', {
+                    weekday: 'long', // "Monday"
+                    year: 'numeric', // "2025"
+                    month: 'long', // "January"
+                    day: 'numeric', // "6"
+                    hour: '2-digit', // "4 PM"
+                    minute: '2-digit', // "11"
+                    second: '2-digit', // "18"
+                    hour12: true // AM/PM
+                });
+
+                dateCell.text(formattedDate); // Set the formatted date back in the table
+            });
+        });
+    });
+</script> --}}
+<script>
+$(document).ready(function() {
+    var table = $('#transactionTable').DataTable({
+        searching: false,
+        paging: true,
+        lengthChange: false,
+        pageLength: 5,
+        ordering: true,
+        order: [[2, 'desc']], // Sort by the Date column (index 2) in descending order
+        columnDefs: [
+            {
+                targets: 2, // Date column index
+                render: function(data, type, row) {
+                    if (type === 'display' || type === 'filter') {
+                        const date = new Date(data); // Parse ISO date string
+                        return date.toLocaleString('en-US', {
+                            weekday: 'short',
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: true,
+                        });
+                    }
+                    return data; // Raw data for sorting
+                },
+                type: 'datetime',
+            },
+        ],
+        pagingType: "simple",
+        language: {
+            paginate: {
+                first: '<i class="fas fa-angle-double-left"></i>',
+                previous: '<i class="fas fa-chevron-left"></i>',
+                next: '<i class="fas fa-chevron-right"></i>',
+                last: '<i class="fas fa-angle-double-right"></i>',
+            },
+        },
+    });
+});
+</script>
+
+<script>
+    document.getElementById('addMoneyToggle').addEventListener('click', () => {
+        const container = document.getElementById('addMoneyContainer');
+        container.style.display = container.style.display === 'none' ? 'flex' : 'none';
+    });
+
+    document.getElementById('addMoneySubmit').addEventListener('click', async () => {
+        const amount = parseFloat(document.getElementById('addMoneyInput').value);
+        if (!amount || amount <= 0) {
+            alert('Please enter a valid amount.');
+            return;
+        }
+
+        try {
+            const response = await fetch('/user/addMoney', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ amount }),
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert('Money added successfully!');
+                location.reload(); // Reload the page to update the wallet balance
+            } else {
+                alert(result.message || 'Failed to add money.');
+            }
+        } catch (error) {
+            console.error('Error adding money:', error);
+            alert('Server error. Please try again later.');
+        }
+    });
+</script>
+
+
+
+  {{!-- <div class="pagination">
+    <button>01</button>
+    <button>02</button>
+    <button>03</button>
+    <button>04</button>
+    <button>05</button>
+  </div> --}}
+</body>
+</html>

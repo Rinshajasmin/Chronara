@@ -3,8 +3,12 @@ const Product = require("../models/productSchema");
 const Order = require('../models/orderSchema')
 const Address = require('../models/addressmodel')
 const Cart = require('../models/cartSchema')
+const Wallet = require('../models/walletSchema')
 const mongodb = require("mongodb");
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const shortid = require('shortid');
+const { v4: uuidv4 } = require('uuid');
+
 
 
 //admin side
@@ -275,11 +279,12 @@ const getCancelOrder = async(req,res)=>{
 const orderCancel = async (req, res) => {
     const orderId = req.params.id;
     const { status } = req.body;
-    const userId = req.session.user;  // Ensure this contains the user's ID
+    const user = req.session.user; // Get user object from session
+    const userId = user._id; // Extract the user ID (ObjectId)
 
     try {
         // Fetch the order to get the order items
-        const order = await Order.findById(orderId).populate('orderItems.product');
+        const order = await Order.findById(orderId).populate('orderItems.product','productName');
         if (!order) {
             return res.status(404).send('Order not found');
         }
@@ -296,6 +301,30 @@ const orderCancel = async (req, res) => {
         // Update the order status to cancelled
         order.status = status || 'Cancelled'; // Default status to 'Cancelled' if not provided
         await order.save();
+
+        const wallet = await Wallet.findOne({userId})
+        if(!wallet){
+            return res.status(400).send("wallet not find")
+        }
+
+        const refundAmount = order.finalAmount;
+        wallet.balance+=refundAmount;
+         // Add a refund transaction to the wallet
+         const productNames = order.orderItems
+         .map(item => item.product.productName) // Extract product names
+         .join(', '); // Create a comma-separated string
+     
+     wallet.transactions.unshift({
+         transactionId:uuidv4(), // Unique transaction ID
+         description: `Refund for cancelled order: ${productNames}`, // Include product names
+         type: 'Deposit',
+         amount: refundAmount,
+         orderId, // Reference to the cancelled order
+         date: new Date(),
+     });
+        // Save the updated wallet
+        await wallet.save();
+
 
         // Fetch updated user and order details
         const userData = await User.findById(userId);

@@ -7,6 +7,9 @@ const productController = require('../controllers/productController')
 const cartController = require('../controllers/cartController')
 const orderController = require('../controllers/orderController')
 const paymentController = require('../controllers/paymentController')
+const couponController = require('../controllers/couponController')
+const wishlistController = require('../controllers/wishlistController')
+const walletController = require('../controllers/walletController')
 const {userAuth} = require('../middlewares/auth')
 
 router.get('/login',userController.loadLogin)
@@ -87,6 +90,22 @@ router.get('/getPaymentPage',userAuth,paymentController.getPaymentPage)
 router.get('/get-razorpay-key',userAuth,paymentController.getKey) 
   
 
+//coupon Management
+router.get('/viewAllCoupons',userAuth,couponController.viewAllCoupons)
+router.post('/applyCoupon',userAuth,couponController.applyCoupon)
+router.post('/removeCoupon',userAuth,couponController.removeCoupon)
+
+//wishlist Management
+router.post('/toggleWishlist',userAuth,wishlistController.toggleWishlist);
+router.get('/wishlist',userAuth,wishlistController.viewWishlist)
+router.post('/removeFromWishlist',userAuth,wishlistController.removeFromWishlist)
+
+//wallet management
+router.get('/wallet',userAuth,walletController.getWallet)
+router.post('/addMoney',userAuth,walletController.addMoney)
+
+//Referrals
+router.get('/referrals',userAuth,walletController.getReferrals)
 
 router.get('/pageNotFound',userController.pageNotFound)
 router.get('/logout',userController.logout)

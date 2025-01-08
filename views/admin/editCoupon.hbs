@@ -1,0 +1,57 @@
+{{> adminheader}}
+
+<div class="form-container">
+    <h2>Edit Coupon</h2>
+    <form id="editCouponForm" method="post" action="/admin/editCoupon/{{coupon._id}}">
+        <label for="name">Coupon Code</label>
+        <input type="text" id="name" name="name" value="{{coupon.name}}" required />
+
+        <label for="offerPrice">Offer Price</label>
+        <input type="number" id="offerPrice" name="offerPrice" value="{{coupon.offerPrice}}" required />
+
+        <label for="minimumPrice">Minimum Price</label>
+        <input type="number" id="minimumPrice" name="minimumPrice" value="{{coupon.minimumPrice}}" required />
+
+        <label for="start">Start Date</label>
+        <input type="date" id="start" name="start" value="{{formatDate coupon.createdOn "YYYY-MM-DD"}}" required />
+
+        <label for="end">End Date</label>
+        <input type="date" id="end" name="end" value="{{formatDate coupon.expireOn "YYYY-MM-DD"}}" required />
+
+        <button class="btn btn-primary " type="submit">Update</button>
+    </form>
+</div>
+ <script>
+  document.getElementById("couponForm").addEventListener("submit", function (event) {
+    const coupon = document.getElementById("name").value.trim();
+    const offerPrice = parseFloat(document.getElementById("offerPrice").value);
+    const minimumPrice = parseFloat(document.getElementById("minimumPrice").value);
+    const startDate = new Date(document.getElementById("start").value);
+    const endDate = new Date(document.getElementById("end").value);
+
+    // Check if offer price is less than the minimum price
+    if (offerPrice >= minimumPrice) {
+      alert("Offer price must be less than the minimum price!");
+      event.preventDefault(); // Prevent form submission
+      return;
+    }
+
+    // Check if end date is after the start date
+    if (endDate <= startDate) {
+      alert("End date must be after the start date!");
+      event.preventDefault(); // Prevent form submission
+      return;
+    }
+
+    // Additional custom validation logic can go here
+  });
+</script>
+<style>
+    .form-container{
+        width: 356px;
+    margin-left: 381px;
+    margin-top: 63px;
+    }
+</style>
+
+{{!-- {{> adminfooter}} --}}

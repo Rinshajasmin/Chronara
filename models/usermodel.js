@@ -54,8 +54,8 @@ const userSchema=new Schema({
         type: Schema.Types.ObjectId,
         ref: "Address"
     }],
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    firstName: { type: String },
+    lastName: { type: String },
     
     
     secondaryEmail: { type: String },
@@ -63,10 +63,19 @@ const userSchema=new Schema({
     country: { type: String },
     state: { type: String },
     pinCode: { type: String },
-    // createdOn : {
-    //     type:Date,
-    //     default:Date.now,
-    // },
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }], // Referencing Product collection
+    referralCode: { type: String, unique: true }, // Unique referral code for the user
+    referredBy: { type: String, default: null }, // Referral code of the user who referred this user
+
+    wallet: {
+        type: Schema.Types.ObjectId,
+        ref: 'Wallet'
+    },
+    
+    createdOn : {
+        type:Date,
+        default:Date.now,
+    },
     // referalCode:{
     //     type:String
     // },

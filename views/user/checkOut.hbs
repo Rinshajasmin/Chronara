@@ -509,6 +509,7 @@
             <h2>Billing Information</h2>
             <form id="checkoutform" action="/user/placeOrder" method="POST">
                         <input type="hidden" name="cartId" value={{cartId}}>
+                        
 
 
                 <label for="address">Select Address:</label>
@@ -536,6 +537,7 @@
         <option value="UPI">UPI</option>
                 <option value="Net Banking">Net Banking</option>
 
+        <option value="Wallet">Wallet</option>
         <option value="Razorpay">Razorpay</option>
         <option value="Cash on Delivery">Cash on Delivery</option>
     </select>
@@ -546,7 +548,7 @@
 
 
         <!-- Order Summary Section -->
-        <div class="section order-summary-section">
+        {{!-- <div class="section order-summary-section">
             <h2>Order Summary</h2>
             <table>
                 <thead>
@@ -557,17 +559,17 @@
                         <th>Total </th>
                     </tr>
                 </thead>
-                <tbody>
+                 <tbody>
                     {{#each items}}
                     <tr>
                         <td>{{productId.productName}}</td>
                         <td>{{quantity}}</td>
-                        <td>{{price}}</td>
-                        <td>{{totalPrice}}</td>
+                        <td>{{productId.regularPrice}}</td>
+                        <td>{{originalPrice}}</td> 
                     </tr>
                     {{/each}}
                 </tbody>
-                <tfoot>
+                {{!-- <tfoot>
                 <tr>
                     <td colspan="4">Subtotal:</td>
                     <td>₹{{grandTotal}}</td>
@@ -581,11 +583,102 @@
                     <td colspan="4"><strong>Total:</strong></td>
                     <td><strong>₹{{grandTotal}}</strong></td>
                 </tr>
-            </tfoot>
+            </tfoot> --}}
+
+            {{!-- <tfoot>
+    <tr>
+        <td colspan="4">Subtotal:</td>
+        <td>₹{{grandTotal}}</td>
+    </tr>
+    
+    {{#if discount}}
+    <tr>
+        <td colspan="4">Coupon Discount:</td>
+        <td>- ₹{{discount}}</td>
+    </tr>
+    {{/if}}
+     {{#if totalSaved}}
+    <tr>
+        <td colspan="4">You saved:</td>
+        <td>- ₹{{totalSaved}}</td>
+    </tr>
+    {{/if}}
+
+    <tr>
+        <td colspan="4">Shipping Rate:</td>
+        <td>Free Shipping</td>
+    </tr>
+
+    <tr>
+        <td colspan="4"><strong>Total:</strong></td>
+        <td><strong>₹{{finalTotal}}</strong></td>
+    </tr>
+</tfoot>
+
             </table>
                             <button type="submit">Confirm and Place Order</button>
-               </form>
-        </div>
+               </form> --}}
+        {{!-- </div>  --}}
+
+        <div class="section order-summary-section">
+    <h2>Order Summary</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Original Total</th> <!-- Display original total -->
+                {{!-- <th>Total</th> --}}
+            </tr>
+        </thead>
+        <tbody>
+            {{#each items}}
+            <tr>
+                <td>{{productId.productName}}</td>
+                <td>{{quantity}}</td>
+                <td>₹{{productId.regularPrice}}</td>
+                <td>₹{{this.originalTotal}}</td> <!-- Display original total -->
+                {{!-- <td>₹{{this.totalPrice}}</td> <!-- Display total after discount --> --}}
+            </tr>
+            {{/each}}
+        </tbody>
+
+        <tfoot>
+             {{#if totalSaved}}
+            <tr>
+                <td colspan="4">You saved(offers):</td>
+                <td> ₹{{totalSaved}}</td>
+            </tr>
+            {{/if}}
+
+            <tr>
+                <td colspan="4">Subtotal:</td>
+                <td>₹{{grandTotal}}</td>
+            </tr>
+            
+            {{#if discount}}
+            <tr>
+                <td colspan="4">Coupon Discount:</td>
+                <td>- ₹{{discount}}</td>
+            </tr>
+            {{/if}}
+
+           
+            <tr>
+                <td colspan="4">Shipping Rate:</td>
+                <td>Free Shipping</td>
+            </tr>
+
+            <tr>
+                <td colspan="4"><strong>Total:</strong></td>
+                <td><strong>₹{{finalTotal}}</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+    <button type="submit">Confirm and Place Order</button>
+</div>
+
         
     </div>
 </body>

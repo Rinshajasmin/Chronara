@@ -1,0 +1,178 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referral Page</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: white;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.referral-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 20px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.referral-summary,
+.referral-information,
+.referred-users {
+  margin-bottom: 20px;
+}
+
+.referral-summary p span {
+  font-weight: bold;
+}
+
+.referral-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.referral-item label {
+  flex: 0 0 150px;
+  font-weight: bold;
+}
+
+.referral-item input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.copy-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.copy-btn:hover {
+  background-color: #0056b3;
+}
+
+.copy-btn:active {
+  background-color: #003f7f;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f4f4f4;
+}
+
+table td[colspan] {
+  text-align: center;
+  font-style: italic;
+}
+
+
+</style>
+<body>
+    {{>profilesidebar}}
+  <div class="referral-container">
+    <div class="referral-summary">
+      <h2>Referral Summary</h2>
+      <p>Total Rewards Earned: <span>{{totalEarnings}}</span></p>
+      <p>Total Referred Users: <span>{{totalReferredUsers}}</span></p>
+    </div>
+    <div class="referral-information">
+      <h2>Your Referral Information</h2>
+      <div class="referral-item">
+        <label>Referral Code:</label>
+  <input type="text" id="referral-code-input" value="{{referralCode}}" disabled >
+  <button class="copy-btn" id="copy-referral-code-btn">Copy</button>
+      </div>
+      {{!-- <div class="referral-item">
+        <label>Referral Link:</label>
+        <input type="text" value="https://www.kalarikkal.shop/user/signUp?ref=D9TGC8F5S0" readonly>
+        <button class="copy-btn">Copy Link</button>
+      </div> --}}
+    </div>
+    <div class="referred-users">
+      <h2>Referred Users</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Date Referred</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#if referees.length}}
+        {{#each referees}}
+          <tr>
+            <td>{{this.name}}</td>
+            <td>{{this.email}}</td>
+            <td>{{this.dateReferred}}</td>
+          </tr>
+        {{/each}}
+      {{else}}
+        <tr>
+          <td colspan="3">No users referred yet.</td>
+        </tr>
+      {{/if}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+  // Add event listener to the copy button
+ document.getElementById('copy-referral-code-btn').addEventListener('click', (event) => {
+  const referralCode = document.getElementById('referral-code-input').value;
+
+  navigator.clipboard
+    .writeText(referralCode)
+    .then(() => {
+      // Change button text to show success
+      event.target.textContent = 'Copied!';
+      setTimeout(() => {
+        event.target.textContent = 'Copy'; // Revert after 2 seconds
+      }, 2000);
+    })
+    .catch(err => {
+      console.error('Failed to copy text: ', err);
+    });
+});
+
+</script>
+</body>
+
+</html>

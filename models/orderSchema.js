@@ -61,7 +61,7 @@ const orderSchema = new mongoose.Schema({
     paymentMethod: {
         type: String,
         required: true,  // Make it required since the user selects a payment method at checkout
-        enum: ['Cards', 'UPI', 'Net Banking', 'Cash on Delivery']  // Add payment options as per your requirement
+        enum: ['Cards', 'UPI', 'Net Banking', 'Cash on Delivery','Razorpay','Wallet']  // Add payment options as per your requirement
     },
     paymentStatus: { // New field for payment status
         type: String,
@@ -74,7 +74,11 @@ const orderSchema = new mongoose.Schema({
         default:false
     },
     selectedAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'Address' ,required:true}, // Reference to Address
-
+    couponCode: {
+        type: String,
+        default: null
+    }
+    
     
     
 })

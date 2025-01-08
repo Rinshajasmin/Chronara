@@ -3,6 +3,7 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   />
+
 </head>
  <header id="header" class="navbar">
         <div class="logo">chronara</div>
@@ -87,6 +88,8 @@
 </div>
 
     </aside>
+          <div id="toast" class="toast"></div>
+
 
     <!-- Product Grid Section -->
     <div class="product-section" style="flex: 1;">
@@ -94,9 +97,9 @@
         {{#if products}}
         {{#each products}}
           <div class="product-card">
-            <a href="/user/wishlist" class="wishlist-icon">
-          <i class="fa-solid fa-heart"></i>
-            </a>
+             <a href="javascript:void(0)" class="wishlist-icon" data-product-id="{{_id}}" onclick="toggleWishlist(this)">
+    <i class="fa-solid fa-heart {{#if isWishlisted}}wishlist-active{{/if}}"></i>
+</a>
             <a href="/user/productDetails/?id={{_id}}" class="product-image">
               {{#if productImage.[0]}}
                 <img src="{{productImage.[0]}}" alt="{{productName}}" />
@@ -188,6 +191,54 @@
 </script>
 
 
+<script>
+  async function toggleWishlist(element) {
+    const productId = element.getAttribute('data-product-id');
+
+    try {
+        const response = await fetch('/user/toggleWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const icon = element.querySelector('i');
+            const toast = document.getElementById('toast');
+
+            if (data.isWishlisted) {
+                icon.classList.add('wishlist-active'); // Make heart red
+                showToast('Item added to wishlist');
+
+            } else {
+                icon.classList.remove('wishlist-active'); // Revert to gray
+                showToast('Item removed from wishlist')
+            }
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error('Error toggling wishlist:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    // Hide the toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+</script>
 
 
 
@@ -666,6 +717,30 @@ body {
   margin-top: 81px;
     margin-left: 166px
 }
+ .toast {
+    opacity: 0;
+    visibility: hidden;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #7d7a7a  !important; /* Dark gray background */
+    color: #fff  !important; /* White text for contrast */
+    padding: 15px 25px;
+    border-radius: 8px;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 1000;
+    text-align: center;
+    font-size: 1rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.4); /* Slight shadow for depth */
+}
+
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+    transition: 3ms;
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

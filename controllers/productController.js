@@ -464,6 +464,8 @@ try {
         quantity:product.quantity,
         category:findCategory,
         totalOffer:totalOffer,
+        categoryOffer:categoryOffer,
+        productOffer:productOffer,
         salePrice:salePrice,
         username:userData.username,
         

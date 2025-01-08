@@ -192,7 +192,7 @@ const getUserProfile = async (req, res) => {
         const addressData = await Address.findOne({ userId: userId ,isDeleted:false}); // Fetch the address document
 
         if (!addressData || !addressData.address || addressData.address.length === 0) {
-            return res.render('user/userProfile', { user: userData, userAddress: null }); // No addresses found
+            return res.render('user/profile', { user: userData, userAddress: null }); // No addresses found
         }
 
         res.render('user/profile', { user: userData, userAddress: addressData.address,username:userData.username }); // Pass only the array
@@ -337,7 +337,7 @@ const getAllAddresses = async(req,res)=>{
         const addressData = await Address.findOne({ userId: userId ,isDeleted:false}); // Fetch the address document
 
         if (!addressData || !addressData.address || addressData.address.length === 0) {
-            return res.render('user/userProfile', { user: userData, userAddress: null }); // No addresses found
+            return res.render('user/userAddresses', { user: userData, userAddress: null }); // No addresses found
         }
         console.log("addreaas details",addressData)
         res.render('user/userAddresses', { user: userData, userAddress: addressData.address,username:userData.username }); // Pass only the array
@@ -359,7 +359,7 @@ const postAddAddress = async(req,res)=>{
         if(!userAddress){
             const newAddress = new Address({
                 userId:userData._id,
-                address: [{addressType,name,city,landMark,state,pincode,phone, altphone}]
+                address: [{addressType,name,city,landMark,state,pincode,phone, altPhone}]
 
             })
             await newAddress.save();

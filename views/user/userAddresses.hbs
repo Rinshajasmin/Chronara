@@ -5,7 +5,7 @@
       <!-- Check if user has any address -->
       {{#if userAddress.length}}
         {{#each userAddress}}
-          <div class="col-lg-6 col-md-8 mb-4">
+          <div class="col-lg-12 col-md-8 mb-4">
             <div class="card shadow-sm border-light">
               <div class="card-header bg-dark text-white">
                 <h5 class="mb-0">{{this.addressType}}</h5>
@@ -41,7 +41,7 @@
               <address>
                 <em>No address available. Please add an address to proceed.</em>
               </address>
-              <a href="/user/addAddress" class="btn btn-primary w-100 mt-3">Add Address</a>
+              {{!-- <a href="/user/addAddress" class="btn btn-primary w-100 mt-3">Add Address</a> --}}
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ const categoryController = require('../controllers/categoryController')
 const productController = require('../controllers/productController')
 const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
+const salesController = require('../controllers/salesController')
 const multer = require('multer')
 const storage = require('../helpers/multer')
 const uploads = multer({storage:storage})
@@ -46,6 +47,14 @@ router.post('/statusUpdate/:id',adminAuth,orderController.updateStatus)
 
 //coupon management
 router.get('/coupons',adminAuth,couponController.getAllCoupons)
+router.get('/addCoupons',adminAuth,couponController.getAddCoupons)
+router.post('/addCoupons',adminAuth,couponController.addCoupons)
+router.post('/deleteCoupon/:id',adminAuth,couponController.deleteCoupon)
+router.get('/editCoupon/:id',adminAuth,couponController.getEditCoupon)
+router.post('/editCoupon/:id',adminAuth,couponController.editCoupon)
 
+
+//sales-report management
+router.get('/getSalesReport',adminAuth,salesController.getSalesPage)
 
 module.exports=router

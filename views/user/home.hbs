@@ -95,6 +95,7 @@
 
 
     
+  
 
     <!-- Banner Section -->
     <div class="containerbanner">
@@ -113,13 +114,19 @@
         </div>
     </section>
     </div>
+      <div id="toast" class="toast"></div>
+
     <section class="watch-section">
   <div class="container">
     {{#each products}}
       <div class="watch-item">
-        <a href="/user/wishlist" class="wishlist-icon">
+        {{!-- <a href="/user/wishlist" class="wishlist-icon">
           <i class="fa-solid fa-heart"></i>
-        </a>
+        </a> --}}
+        <a href="javascript:void(0)" class="wishlist-icon" data-product-id="{{_id}}" onclick="toggleWishlist(this)">
+    <i class="fa-solid fa-heart {{#if isWishlisted}}wishlist-active{{/if}}"></i>
+</a>
+
 
         <!-- Product Image with Link -->
         <a href="/user/productDetails/?id={{_id}}">
@@ -157,7 +164,12 @@
       </div>
     {{/each}}
   </div>
+  <div id="toast" class="toast"></div>
+  <div id="toast" class="toast">Item added to wishlist!</div>
+
+ 
 </section>
+
 
 
     {{!-- <section class="watch-section">
@@ -268,6 +280,55 @@
 
 
 
+
+</script>
+
+<script>
+  async function toggleWishlist(element) {
+    const productId = element.getAttribute('data-product-id');
+
+    try {
+        const response = await fetch('/user/toggleWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const icon = element.querySelector('i');
+            const toast = document.getElementById('toast');
+
+            if (data.isWishlisted) {
+                icon.classList.add('wishlist-active'); // Make heart red
+                showToast('Item added to wishlist');
+
+            } else {
+                icon.classList.remove('wishlist-active'); // Revert to gray
+                showToast('Item removed from wishlist')
+            }
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error('Error toggling wishlist:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    // Hide the toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
 
 </script>
 

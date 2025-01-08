@@ -46,6 +46,10 @@
         <input type="tel" id="phone" placeholder="Enter your phone number" name="phone">
                         <div id="error5" class="error-message"></div>
 
+        <label for="referralCode">Referral Code</label> 
+        <input type="text" id="referralCode" placeholder="Optional" name="referralCode">
+        <div id="error6" class="error-message"></div>
+
             {{#if message}}
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <strong>Error!</strong> {{message}}
@@ -278,15 +282,37 @@
       }
     }
 
+    function referralCodeValidate() {
+  const referralCodeField = document.getElementById("referralCode");
+  const referralCodeValue = referralCodeField.value.trim();
+
+  // Assuming referral codes are alphanumeric and have a specific length (e.g., 6-10 characters)
+  const referralCodePattern = /^[A-Za-z0-9]{6,10}$/;
+
+  if (referralCodeValue !== "" && !referralCodePattern.test(referralCodeValue)) {
+    // Show error if the referral code format is invalid
+    error6.style.display = "block";
+    error6.innerHTML = "Invalid referral code format. Must be 6-10 alphanumeric characters.";
+    return false;
+  } else {
+    // Clear error if the field is valid or empty
+    error6.style.display = "none";
+    error6.innerHTML = "";
+    return true;
+  }
+}
+
     // Form submission event listener
     signupForm.addEventListener("submit", function (e) {
       const isNameValid = nameValidate();
       const isEmailValid = emailValidate();
       const isPasswordValid = passwordValidate();
       const isPhoneValid = phoneValidate();
+      const isReferralCodeValid = referralCodeValidate(); // Validate referral code
+
 
       // Check if all validations are successful
-      const isFormValid = isNameValid && isEmailValid && isPasswordValid && isPhoneValid;
+      const isFormValid = isNameValid && isEmailValid && isPasswordValid && isPhoneValid && isReferralCodeValid;
 
       // Debugging log
       console.log("Form validation result:", isFormValid);

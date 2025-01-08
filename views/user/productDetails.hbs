@@ -162,7 +162,7 @@
     <div class="product-price primary-color float-left">
         {{#if totalOffer}} 
             <!-- If there is a total offer, show the sale price -->
-            <ins><span class="text-brand">₹{{product.salePrice}}</span></ins><br>
+            <ins><span class="text-brand">₹{{salePrice}}</span></ins><br>
             <ins><span class="old-price font-md ml-15">₹{{product.regularPrice}}</span></ins>
         {{else}} 
             <!-- If there is no total offer, show the regular price -->
@@ -212,6 +212,12 @@
                                         <a href="#" rel="tag">{{this}}</a>
                                         {{/each}} --}}
                                     </li>
+                                    {{#if categoryOffer}}
+                                    <li class="mb-5">categoryOffer: {{categoryOffer}}%
+                                      {{/if}}
+                                      {{#if productOffer}}
+                                    <li class="mb-5">productOffer: {{productOffer}}% 
+                                      {{/if}}
                                     <li>Availability: 
                                         <span class="in-stock text-success ml-5">{{product.status}}</span>
                                     </li>
@@ -293,7 +299,7 @@ thumbnails.forEach((thumbnail) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            },
+            }, 
             body: JSON.stringify({ productId })
         })
         .then(response => response.json())
@@ -373,6 +379,11 @@ thumbnails.forEach((thumbnail) => {
   flex-wrap: wrap;
   gap: 10px;
 }
+.mb-5  {
+    margin-bottom: 9px !important;
+}
+
+
 
 .thumbnail-container {
   flex: 0 1 calc(20% - 10px); /* Adjust percentage for number of thumbnails per row */

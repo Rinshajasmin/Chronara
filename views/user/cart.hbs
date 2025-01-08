@@ -53,7 +53,8 @@
         <li><a href="/user/shop">Shop</a></li>
         <li class="active">add to cart</li> <!-- Current Page -->
       </ul>
-    </nav><section class="mt-50 mb-50">
+    </nav>
+    <section class="mt-50 mb-50">
     <div class="container">
         <div class="row">
             <div class="col-9">
@@ -126,10 +127,10 @@
 
 
 
-             <td class="action" data-title="Remove">
+            <td class="action" data-title="Remove">
         <a class="btn btn-danger" href="javascript:void(0);" onclick="confirmRemove('{{this.productId}}')">
             <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
-        </a>
+        </a> 
     </td>
         </tr>
     {{/each}}
@@ -159,10 +160,11 @@
                                     <td class="cart_total_label">Shipping</td>
                                     <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
                                 </tr>
+                                
                                 <tr>
                                     <td class="cart_total_label">Total</td>
                                     <td class="cart_total_amount">
-                                        <span class="font-lg fw-900 text-brand"> ₹{{grandTotal}}</span>
+                                        <span id="cartTotal" class="font-lg fw-900 text-brand"> ₹{{grandTotal}}</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -176,7 +178,55 @@
     <button type="submit"class="btn">Proceed to Checkout</button>
 </form>
                 </div>
-            </div>
+                <div class="coupon-section mt-3">
+
+     <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Coupon Code</h5>
+        <a 
+            href="#" 
+            class="text-decoration-none" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#availableCoupons" 
+            aria-expanded="false" 
+            aria-controls="availableCoupons"
+            onClick="fetchCoupons()"
+        >
+            View All
+        </a>
+    </div>
+
+    <div class="collapse mt-2" id="availableCoupons">
+        <div class="card card-body">
+            <ul class="couponList">
+                 
+            </ul>
+        </div>
+    </div>
+    
+    <form id="applyCouponForm" action="/user/applyCoupon" method="POST">
+        <div class="input-group">
+            <input
+                type="text"
+                name="couponCode"
+                class="form-control"
+                placeholder="Coupon Code"
+                required
+            />
+ <button 
+            id="applyCouponButton" 
+            type="submit" 
+            class="btn btn-primary" 
+            data-coupon-applied="false"
+        >
+            Apply Coupon
+        </button>        </div>
+    </form>
+</div>
+
+
+
+           
+
             
         </div>
         {{/if}}
@@ -185,7 +235,163 @@
 
 </main>
 {{>userfooter}}
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{!-- <script>
+function fetchCoupons() {
+    fetch('/user/viewAllCoupons')
+        .then(response => response.json())
+        .then(data => {
+            const couponList = document.querySelector('.couponList');
+            couponList.innerHTML = ''; // Clear any previous data
+
+            if (data.success && data.data.length > 0) {
+                data.data.forEach(coupon => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<strong>${coupon.name}</strong> - ₹${coupon.offerPrice} off on order above ₹${coupon.minimumPrice}`;
+
+                    couponList.appendChild(listItem);
+                });
+            } else {
+                couponList.innerHTML = '<li>No active coupons available.</li>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching coupons:', error);
+        });
+}
+</script> --}}
+<script>
+ 
+function copyCouponCode(event) {
+    const couponCode = event.target.textContent.trim(); // Use the name field as the coupon code
+
+    if (couponCode) {
+        // Create a temporary input field to hold the coupon code and copy it
+        const tempInput = document.createElement('input');
+        document.body.appendChild(tempInput);
+        tempInput.value = couponCode;
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+
+        // Display copied message
+        const copiedMessage = event.target.nextElementSibling;
+        copiedMessage.style.display = 'inline'; // Show the "Copied" message
+        setTimeout(() => {
+            copiedMessage.style.display = 'none'; // Hide it after 2 seconds
+        }, 2000);
+    }
+}
+
+// Fetch and render coupons in the list
+function fetchCoupons() {
+    fetch('/user/viewAllCoupons')
+        .then(response => response.json())
+        .then(data => {
+            const couponList = document.querySelector('.couponList');
+            couponList.innerHTML = ''; // Clear any previous data
+
+            if (data.success && data.data.length > 0) {
+                data.data.forEach(coupon => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <strong>${coupon.name}</strong> - ₹${coupon.offerPrice} off on order above ₹${coupon.minimumPrice}
+<span class="copied-message" style="display: none; background-color: black; color: white; padding: 5px 10px; border-radius: 5px; margin-left: 10px;">Copied</span>
+                    `;
+                    // Attach the double-click event to copy the coupon code
+                    listItem.addEventListener('dblclick', copyCouponCode);
+                    couponList.appendChild(listItem);
+                });
+            } else {
+                couponList.innerHTML = '<li>No active coupons available.</li>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching coupons:', error);
+        });
+}
+</script>
+
+
+
+{{!-- <script>
+document.getElementById('applyCouponForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const couponCode = document.querySelector('input[name="couponCode"]').value;
+
+    try {
+        const response = await fetch('/user/applyCoupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ couponCode }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Update cart details dynamically
+            document.getElementById('cartTotal').textContent = `₹${result.cartDetails.grandTotal}`;
+            alert(result.message);
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error('Error applying coupon:', error);
+        alert('An error occurred.');
+    }
+});
+</script> --}}
+<script>
+
+document.getElementById('applyCouponForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const couponCodeInput = document.querySelector('input[name="couponCode"]');
+    const applyButton = document.querySelector('#applyCouponButton'); // Add ID to your button
+    const isCouponApplied = applyButton.getAttribute('data-coupon-applied') === 'true';
+
+        const cartId = '{{cartId}}';  // If cartId is available in the template
+
+
+    try {
+        const url = isCouponApplied ? '/user/removeCoupon' : '/user/applyCoupon';
+        const method = isCouponApplied ? 'POST' : 'POST';
+
+        const response = await fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ couponCode: couponCodeInput.value,  cartId:cartId }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Update cart details dynamically
+            document.getElementById('cartTotal').textContent = `₹${result.cartDetails.grandTotal}`;
+            applyButton.setAttribute('data-coupon-applied', !isCouponApplied);
+            applyButton.textContent = isCouponApplied ? 'Apply Coupon' : 'Remove Coupon';
+
+            // Display success message
+            alert(result.message);
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error('Error applying/removing coupon:', error);
+        alert('An error occurred.');
+    }
+});
+</script>
+
+
+
+
 {{!-- <script>
     function changeQuantity(productId, cartQuantity, count, productPrice, i, productQuantity) {
         const abc = document.getElementById("totalabc").value
@@ -639,6 +845,29 @@ function confirmRemove(productId) {
     margin-top: 20px;
     width: 304px;
 }
+
+.coupon-section {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #fff;
+    width: 314px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.coupon-section h5 {
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #2575fc;
+}
+.input-group .form-control {
+    border-right: none;
+    margin-top: 12px;
+}
+.input-group .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 
 /* Optionally, style the 'Your Cart is Empty' text */
 .empty-cart-message p {

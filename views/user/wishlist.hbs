@@ -1,0 +1,304 @@
+{{>profilesidebar}}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .wishlist-container {
+            margin: 50px auto;
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table thead {
+            background-color: #f0f0f0;
+        }
+        table thead th {
+            text-align: left;
+            padding: 10px;
+        }
+        table tbody td {
+            padding: 10px;
+            vertical-align: middle;
+        }
+        .product-image img {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+        }
+        .price-strike {
+            text-decoration: line-through;
+            color: gray;
+            margin-right: 5px;
+        }
+        .status {
+            font-weight: bold;
+        }
+        .in-stock {
+            color: green;
+        }
+        .out-of-stock {
+            color: red;
+        }
+        .add-to-cart-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .add-to-cart-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .remove-btn {
+            color: red;
+            cursor: pointer;
+            font-size: 18px;
+        }
+    </style>
+</head>
+{{!-- <body>
+    <div class="wishlist-container">
+        <h2>Wishlist</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product</th>
+
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                                        <th>REMOVE</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {{#each products}}
+                <tr>
+                    <td class="product-image">
+                        <img src="{{this.productImage.[0]}}" alt="{{this.name}}">
+                        <span>{{this.name}}</span>
+                    </td>
+                    <td class="product-name">
+                        
+                        <span>{{this.productName}}</span>
+                    </td>
+                    <td>
+                        {{!-- <span class="price-strike">₹{{this.originalPrice}}</span> --}}
+                        {{!-- ₹{{this.regularPrice}}
+                    </td>
+                    <td>
+                      {{#if quantity}}
+            <span class="text-success">In Stock</span>
+          {{else}}
+            <span class="text-danger">Out of Stock</span>
+          {{/if}}
+          </td>
+                    <td>
+                        {{#if this.quantity}}
+<button class="add-to-cart-btn btn btn-primary" data-product-id="{{_id}}" onclick="addToCart('{{_id}}')">Add to Cart</button>
+                        {{else}}
+                        <button class="add-to-cart-btn" disabled>Add to Cart</button>
+                        {{/if}}
+                    </td>
+                    <td>
+<button class="remove-btn" onclick="removeFromWishlist('{{this._id}}')">&times;</button>
+
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</body> --}} 
+<body>
+    <div class="wishlist-container">
+        <h2>Wishlist</h2>
+
+        {{#if products.length}}
+        <!-- Table displaying wishlist items -->
+        <table class="text-center">
+            <thead class="text-center">
+                <tr>
+                    <th class="text-center">Image</th>
+                    <th class="text-center">Product</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Action</th>
+                    {{!-- <th>Remove</th> --}}
+                </tr>
+            </thead>
+            <tbody>
+                {{#each products}}
+                <tr>
+                    <td class="product-image">
+                        <img src="{{this.productImage.[0]}}" alt="{{this.name}}">
+                        <span>{{this.name}}</span>
+                    </td>
+                    <td class="product-name">
+                        <span>{{this.productName}}</span>
+                    </td>
+                    <td>
+                        ₹{{this.regularPrice}}
+                    </td>
+                    <td>
+                        {{#if this.quantity}}
+                        <span class="text-success">In Stock</span>
+                        {{else}}
+                        <span class="text-danger">Out of Stock</span>
+                        {{/if}}
+                    </td>
+                    <td>
+                        {{#if this.quantity}}
+                        <button class="add-to-cart-btn btn btn-primary" data-product-id="{{_id}}" onclick="addToCart('{{_id}}')">Add to Cart</button>
+                        {{else}}
+                        <button class="add-to-cart-btn" disabled>Add to Cart</button>
+                        {{/if}}
+                        
+                    </td>
+                    <td>
+                        <button class="remove-btn" onclick="removeFromWishlist('{{this._id}}')">&times;</button>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        {{else}}
+        <!-- Message when the wishlist is empty -->
+        <div class="empty-wishlist-message">
+            <p>Your wishlist is empty. Start adding your favorite products!</p>
+        </div>
+        {{/if}}
+    </div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function removeFromWishlist(productId) {
+        try {
+            const response = await fetch('/user/removeFromWishlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId }),
+            });
+
+            
+
+            const result = await response.json();
+
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Removed!',
+                    text: result.message,
+                    timer: 2000,
+                    showConfirmButton: false,
+                }).then(() => {
+                    location.reload(); // Reload the page to reflect changes
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Failed to remove the product. Please try again.',
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+</script>
+
+ 
+<script>
+    function addToCart(productId) {
+        // You can use AJAX here to send the productId to your backend
+        fetch('/user/addToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Item Added!',
+                    text: 'The item has been added to your cart.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+                console.log(data.cartDetails);
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message || 'Something went wrong.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An unexpected error occurred.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    }
+
+
+
+
+</script>
+<style>
+    .empty-wishlist-message {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+    color: #555;
+}
+/* Style the remove button */
+.remove-btn {
+    background-color: transparent; /* Remove default button background */
+    border: none; /* Remove border */
+    cursor: pointer; /* Change cursor to pointer */
+    font-size: 24px; /* Adjust size */
+    color: #e63946; /* Red color for the icon */
+    transition: transform 0.2s ease, color 0.2s ease; /* Add smooth transitions */
+    margin-left: 27px;
+}
+
+/* Add hover effect */
+.remove-btn:hover {
+    transform: scale(1.2); /* Slightly enlarge the icon */
+    color: #d62828; /* Darker red on hover */
+}
+
+/* Style the icon if separate class is used */
+.remove-icon {
+    font-weight: bold; /* Make the icon bold */
+}
+
+
+</style>
+</html>

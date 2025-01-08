@@ -46,20 +46,44 @@ const userAuth = async (req, res, next) => {
   };
   
 
-const adminAuth = async(req,res,next)=>{
-   if(req.session && req.session.admin)//checking wether the admin is present in the session to ensure while logout
-    admin.findOne({isAdmin:true})
-    .then(data=>{
-        if(data){
-        next()
-        }else{
-            res.redirect('/admin/login')
-        }
-    })
-    .catch(error=>{
-        console.log("error in admin auth middleware",error)
-        res.status(500).send("internal server error")
+// const adminAuth = async(req,res,next)=>{
+//    if(req.session && req.session.admin)//checking wether the admin is present in the session to ensure while logout
+//     admin.findOne({isAdmin:true})
+//     .then(data=>{
+//         if(data){
+//         next()
+//         }else{
+//             res.redirect('/admin/login')
+//         }
+//     })
+//     .catch(error=>{
+//         console.log("error in admin auth middleware",error)
+//         res.status(500).send("internal server error")
 
-    })
-}
+//     })
+// }
+
+const adminAuth = async (req, res, next) => {
+  try {
+      // Check if session exists and admin is logged in
+      if (req.session && req.session.admin) {
+          const adminExists = await admin.findOne({ isAdmin: true });
+          
+          if (adminExists) {
+              // Proceed if admin is valid
+              return next();
+          } else {
+              // Redirect to login if no admin found
+              return res.redirect('/admin/login');
+          }
+      } else {
+          // Redirect to login if session or admin is missing
+          return res.redirect('/admin/login');
+      }
+  } catch (error) {
+      console.error("Error in admin auth middleware:", error);
+      return res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports={adminAuth,userAuth}

@@ -77,6 +77,11 @@ app.engine(
       or: function (v1, v2) {
         return v1 || v2;
       },
+      isActive: function(expiryDate) {
+        const currentDate = moment(); // Get the current date
+        const expiry = moment(expiryDate); // Convert expiry date to moment object
+        return currentDate.isBefore(expiry); // Return true if the current date is before expiry date
+      },
     
     },
     runtimeOptions: {
