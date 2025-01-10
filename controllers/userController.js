@@ -543,6 +543,8 @@ const filterProduct= async (req, res) => {
 
   }
   const searchProduct = async(req,res)=>{
+    const userId=req.session.user;
+    const user = await User.find(userId)
     const searchQuery = req.query.query;  // Get the search query from URL
 
   // If no search term is provided, return all products
@@ -551,18 +553,66 @@ const filterProduct= async (req, res) => {
   }
 
   try {
+    const user = await User.findById(userId)
+
     // Search the database for products matching the search query (case-insensitive)
     const products = await Product.find({
       productName: { $regex: searchQuery, $options: 'i' }  // 'i' for case-insensitive search
     });
 
     // Render the results page with the filtered products
-    res.render('user/shop', { products });
+    res.render('user/shop', { products,username:user.username });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');
   }
   }
+
+  const filterAndSort= async (req, res) => {
+    try {
+      const userId = req.session.user
+      const user = await User.findById(userId)
+
+      const { price, sort } = req.query;
+  
+      // Build the query object
+      let query = {};
+
+      
+  
+      if (price !== 'all' && price) {
+        if (price === 'under-500') query.regularPrice = { $lt: 500 };
+        if (price === '500-1000') query.regularPrice = { $gte: 500, $lte: 1000 };
+        if (price === '1000-1500') query.regularPrice = { $gte: 1000, $lte: 1500 };
+        if (price === 'above-1500') query.regularPrice = { $gt: 1500 };
+      }
+  
+      // Sorting
+      let sortOptions = {};
+      if (sort) {
+        if (sort === 'price-low-high') sortOptions.regularPrice = 1;
+        if (sort === 'price-high-low') sortOptions.regularPrice = -1;
+        if (sort === 'popularity') sortOptions.popularity = -1;
+        if (sort === 'new-arrivals') sortOptions.createdAt = -1;
+        if (sort === 'a-z') sortOptions.productName = 1;
+        if (sort === 'z-a') sortOptions.productName = -1;
+      }
+  
+      // Fetch filtered and sorted products
+      const products = await Product.find(query).sort(sortOptions);
+  
+      res.render('user/shop', {username:user.username,
+        products,
+        price,
+        sort,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+  
+  
  const getuserProfile = async(req,res)=>{
 
  } 
@@ -708,5 +758,5 @@ module.exports={loadLogin,
     signup,verifyOtp,resendOtp,
     pageNotFound,login,logout,loadShop,
     filterProduct,sortProduct,searchProduct,
-    getuserProfile,getFilteredAndSortedProducts ,getAboutPage
+    getuserProfile,getFilteredAndSortedProducts ,getAboutPage,filterAndSort
 } 

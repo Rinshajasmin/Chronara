@@ -653,19 +653,104 @@ const deleteProduct = async(req,res)=>{
     
 // }
 
+// const getCheckOut = async (req, res) => {
+//     try {
+//         const { cartId, totalPrice } = req.body;  // Retrieve cartId from URL
+//         console.log(req.body);
+//         const userId = req.session.user;
+//         const cart = await Cart.findById(cartId)
+//     .populate({
+//         path: 'items.productId',
+//         populate: { path: 'category', select: 'categoryOffer' },
+//     });
+
+//         const userData = await User.findById(userId);
+        
+//         if (!cart || cart.items.length === 0) {
+//             return res.redirect('/user/cart'); 
+//         }
+
+//         // Fetch the user's address details
+//         const user = await User.findById(userId).populate('addresses');
+//         const addressDetails = user.addresses.map(address => ({
+//             ...address.toObject(),
+//             address: address.address.map(addr => ({
+//                 _id: addr._id,
+//                 name: addr.name,
+//                 city: addr.city,
+//                 state: addr.state,
+//                 pincode: addr.pincode,
+//                 landMark: addr.landMark,
+//                 phone: addr.phone
+//             }))
+//         }));
+
+        
+//         let totalSaved = 0;
+
+//         // Calculate the total price and the amount saved from offers
+//         const grandTotal = cart.items.reduce((acc, item) => {
+//             const product = item.productId;
+//             const categoryOffer = product.category?.categoryOffer || 0;  // Access the categoryOffer field from category
+//             const productOffer = product.productOffer || 0;
+//             console.log("category offer",categoryOffer)
+//             // Sum of both offers
+//             const totalOffer = categoryOffer + productOffer;
+//             const discountAmount = (totalOffer / 100) * product.regularPrice;
+
+            
+//             const salePrice = product.regularPrice - discountAmount;
+//             item.totalPrice = salePrice * item.quantity; // Total price for the item
+//              // Calculate original total (before discount)
+//              const originalTotal = product.regularPrice * item.quantity;
+
+//              // Store originalTotal in the item
+//              item.originalTotal = originalTotal;
+//              item.totalPrice = salePrice * item.quantity; // Total price for the item
+ 
+
+//             // Accumulate discount for the user
+//             totalSaved += discountAmount * item.quantity;
+
+//             return acc + item.totalPrice; // Add item total price to grand total
+//         }, 0);
+
+//         // Calculate final total price after applying any coupon (if present)
+//         const discount = cart.coupon?.discount || 0;  // Coupon discount (if any)
+//         const finalTotal = grandTotal - discount; // Final total after coupon
+
+//         res.render('user/checkOut', {
+//             items: cart.items,
+//             quantity: cart.quantity,
+//             addresses: addressDetails,
+//             cartId,
+//             totalPrice,
+//             grandTotal,
+//             finalTotal,
+//             discount,
+//             totalSaved:parseFloat(totalSaved.toFixed(2)),// Pass the total amount saved from offers
+//             username: userData.username
+//         });
+//         console.log("totalPrice: and grand total", totalPrice,grandTotal);
+        
+//     } catch (error) {
+//         console.error('Error loading checkout page:', error);
+//         res.status(500).send('Error loading checkout page.');
+//     }
+// };
+
 const getCheckOut = async (req, res) => {
     try {
-        const { cartId, totalPrice } = req.body;  // Retrieve cartId from URL
-        console.log(req.body);
+        const { cartId, totalPrice } = req.body; // Retrieve cartId from request body
         const userId = req.session.user;
-        const cart = await Cart.findById(cartId)
-    .populate({
-        path: 'items.productId',
-        populate: { path: 'category', select: 'categoryOffer' },
-    });
+
+        const cart = await Cart.findById(cartId).populate({
+            path: 'items.productId',
+            populate: { path: 'category', select: 'categoryOffer' },
+        });
 
         const userData = await User.findById(userId);
-        
+
         if (!cart || cart.items.length === 0) {
             return res.redirect('/user/cart'); 
         }
@@ -685,38 +770,40 @@ const getCheckOut = async (req, res) => {
             }))
         }));
 
-        
         let totalSaved = 0;
+        let originalTotalPrice = 0; // To store the sum of original prices for all items
 
-        // Calculate the total price and the amount saved from offers
+        // Calculate the total price, amount saved from offers, and the original total price
         const grandTotal = cart.items.reduce((acc, item) => {
             const product = item.productId;
-            const categoryOffer = product.category?.categoryOffer || 0;  // Access the categoryOffer field from category
+            const categoryOffer = product.category?.categoryOffer || 0;
             const productOffer = product.productOffer || 0;
-            console.log("category offer",categoryOffer)
+
             // Sum of both offers
             const totalOffer = categoryOffer + productOffer;
             const discountAmount = (totalOffer / 100) * product.regularPrice;
 
-            
+            // Sale price after discount
             const salePrice = product.regularPrice - discountAmount;
-            item.totalPrice = salePrice * item.quantity; // Total price for the item
-             // Calculate original total (before discount)
-             const originalTotal = product.regularPrice * item.quantity;
 
-             // Store originalTotal in the item
-             item.originalTotal = originalTotal;
-             item.totalPrice = salePrice * item.quantity; // Total price for the item
- 
+            // Calculate original total (before discount)
+            const originalTotal = product.regularPrice * item.quantity;
 
-            // Accumulate discount for the user
+            // Accumulate the original total price
+            originalTotalPrice += originalTotal;
+
+            // Store originalTotal and totalPrice in the item
+            item.originalTotal = originalTotal;
+            item.totalPrice = salePrice * item.quantity;
+
+            // Accumulate the total discount
             totalSaved += discountAmount * item.quantity;
 
             return acc + item.totalPrice; // Add item total price to grand total
         }, 0);
 
         // Calculate final total price after applying any coupon (if present)
-        const discount = cart.coupon?.discount || 0;  // Coupon discount (if any)
+        const discount = cart.coupon?.discount || 0; // Coupon discount (if any)
         const finalTotal = grandTotal - discount; // Final total after coupon
 
         res.render('user/checkOut', {
@@ -728,10 +815,14 @@ const getCheckOut = async (req, res) => {
             grandTotal,
             finalTotal,
             discount,
-            totalSaved:parseFloat(totalSaved.toFixed(2)),// Pass the total amount saved from offers
+            totalSaved: parseFloat(totalSaved.toFixed(2)), // Pass the total amount saved from offers
+            originalTotalPrice: parseFloat(originalTotalPrice.toFixed(2)), // Pass the sum of original prices
             username: userData.username
         });
-        console.log("totalPrice:", totalPrice);
+
+        console.log("Total Price:", totalPrice);
+        console.log("Grand Total:", grandTotal);
+        console.log("Original Total Price:", originalTotalPrice);
         
     } catch (error) {
         console.error('Error loading checkout page:', error);
@@ -870,7 +961,7 @@ const getCheckOut = async (req, res) => {
 
 const placeOrders = async (req, res) => {
     try {
-        const { cartId, paymentMethod, address } = req.body;
+        const { cartId, paymentMethod, address ,totalSaved,discount,originalTotalPrice} = req.body;
         console.log("req.body while order placing", req.body);
         console.log('Payment Method:', paymentMethod);
         
@@ -896,7 +987,8 @@ const placeOrders = async (req, res) => {
         // Calculate total price
         const totalPrice = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
         const grandTotal = cart.grandTotal;
-
+      console.log("grandtotal and totalPrice in order:::",grandTotal,totalPrice);
+      
 
         // Check stock for each product and update inventory
         for (const item of cart.items) {
@@ -919,6 +1011,12 @@ const placeOrders = async (req, res) => {
             await product.save(); // Save the updated product
         }
 
+        const couponApplied = cart.coupon && cart.coupon.code ? true : false;
+        const couponCode = couponApplied ? cart.coupon.code : null;
+
+        const totalDiscounts = parseFloat(totalSaved) + parseFloat(discount);
+
+
         // Create a new order
         const newOrder = new Order({
             orderItems: cart.items.map(item => ({
@@ -926,14 +1024,18 @@ const placeOrders = async (req, res) => {
                 quantity: item.quantity,
                 price: item.price,
             })),
-            totalPrice: grandTotal, // Use grandTotal from the cart
-            finalAmount: grandTotal, // Adjust if there are discounts or other fees
+            totalPrice: totalPrice, // Use grandTotal from the cart
+            finalAmount: totalPrice, // Adjust if there are discounts or other fees
             paymentMethod: paymentMethod,
             selectedAddress: addressId,
             address: userId,
             status: 'Pending', // Set initial status as 'Pending'
             paymentStatus: paymentMethod === 'Cash on Delivery' ? 'Pending' : 'Awaiting Payment', // Update to 'Paid' later if Wallet
             createdOn: new Date(), // Current date and time
+            couponApplied, // Set the couponApplied field
+            couponCode, 
+            discounts:totalDiscounts,
+            originalTotalPrice
         });
 
         // Save the new order to the database
@@ -1029,6 +1131,7 @@ const placeOrders = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
 
 
 

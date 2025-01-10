@@ -55,11 +55,11 @@
     <!-- Sidebar Section -->
     <aside class="sidebar" style="flex: 0 0 220px;"> <!-- Fixed smaller width -->
       <h3>Search</h3>
-      <form action="/user/filter" method="GET">
+      <form action="/user/search" method="GET">
     <input type="text" name="query" placeholder="Search products..." class="search-bar" />
     {{!-- <button type="submit" class="search-btn">Search</button> --}}
   </form>
-      <!-- Filter by Price -->
+      {{!-- <!-- Filter by Price -->
       <!-- Filter by Price -->
 <div class="filter-section">
   <h4>Filter by Price</h4>
@@ -70,6 +70,7 @@
     <li><a href="/user/filter/above-1500">Above ₹1500</a></li>
   </ul>
 </div>
+
 
 
       <!-- Sort Options -->
@@ -87,7 +88,117 @@
   </select>
 </div>
 
-    </aside>
+  </aside> --}}
+
+<div class="filter-section">
+  <h4>Filter by Price</h4>
+  <form action="/user/filter" method="GET" id="filterForm">
+    <!-- Price Filters -->
+    <div class="price-filters">
+      <ul>
+        <li class="filter-item">
+          <label>
+            <input
+              type="radio"
+              name="price"
+              value="all"
+              {{#ifCond price "all"}}checked{{/ifCond}}
+              onchange="document.getElementById('filterForm').submit()"
+            />
+            <span>All Products</span>
+          </label>
+        </li>
+        <li class="filter-item">
+          <label>
+            <input
+              type="radio"
+              name="price"
+              value="under-500"
+              {{#ifCond price "under-500"}}checked{{/ifCond}}
+              onchange="document.getElementById('filterForm').submit()"
+            />
+            Under ₹500
+          </label>
+        </li>
+        <li class="filter-item">
+          <label>
+            <input
+              type="radio"
+              name="price"
+              value="500-1000"
+              {{#ifCond price "500-1000"}}checked{{/ifCond}}
+              onchange="document.getElementById('filterForm').submit()"
+            />
+            ₹500 - ₹1000
+          </label>
+        </li>
+        <li class="filter-item">
+          <label>
+            <input
+              type="radio"
+              name="price"
+              value="1000-1500"
+              {{#ifCond price "1000-1500"}}checked{{/ifCond}}
+              onchange="document.getElementById('filterForm').submit()"
+            />
+            ₹1000 - ₹1500
+          </label>
+        </li>
+        <li class="filter-item">
+          <label>
+            <input
+              type="radio"
+              name="price"
+              value="above-1500"
+              {{#ifCond price "above-1500"}}checked{{/ifCond}}
+              onchange="document.getElementById('filterForm').submit()"
+            />
+            Above ₹1500
+          </label>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Sort Filters -->
+    <div class="sort-filters">
+      <h5>Sort by</h5>
+      <select
+        name="sort"
+        class="sort-dropdown"
+        onchange="document.getElementById('filterForm').submit()"
+      >
+        <option value="">Select</option>
+        <option value="popularity" {{#ifCond sort "popularity"}}selected{{/ifCond}}>
+          Popularity
+        </option>
+        <option value="price-low-high" {{#ifCond sort "price-low-high"}}selected{{/ifCond}}>
+          Price: Low to High
+        </option>
+        <option value="price-high-low" {{#ifCond sort "price-high-low"}}selected{{/ifCond}}>
+          Price: High to Low
+        </option>
+        <option value="new-arrivals" {{#ifCond sort "new-arrivals"}}selected{{/ifCond}}>
+          New Arrivals
+        </option>
+        <option value="a-z" {{#ifCond sort "a-z"}}selected{{/ifCond}}>A → Z</option>
+        <option value="z-a" {{#ifCond sort "z-a"}}selected{{/ifCond}}>Z → A</option>
+      </select>
+    </div>
+  </form>
+</div>
+
+  </aside>
+
+
+
+
+
+
+
+
+
+
+
           <div id="toast" class="toast"></div>
 
 
@@ -136,6 +247,8 @@
     </div>
   </div>
 </section>
+
+
   {{> userfooter}} <!-- Include the footer partial -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  
@@ -739,6 +852,45 @@ body {
     opacity: 1;
     visibility: visible;
     transition: 3ms;
+}
+.filter-section {
+  margin-bottom: 20px;
+}
+
+.price-filters ul {
+  list-style: none;
+  padding: 0;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  white-space: nowrap; /* Prevent wrapping */
+}
+
+.filter-item label {
+  display: flex;
+  align-items: center;
+}
+
+.filter-item input[type="radio"] {
+  margin-right: 10px;
+}
+
+.filter-item span {
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.sort-filters select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.sort-filters h5 {
+  margin-bottom: 10px;
 }
 
 

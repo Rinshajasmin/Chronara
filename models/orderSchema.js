@@ -19,6 +19,7 @@ const orderSchema = new mongoose.Schema({
             type:Number,
             required:true
         },
+        
         price:{
             type:Number,
             default:0
@@ -28,11 +29,15 @@ const orderSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    discount:{
+    discounts:{
         type:Number,
         default:0
     },
     finalAmount:{
+        type:Number,
+        required:true
+    },
+    originalTotalPrice:{
         type:Number,
         required:true
     },

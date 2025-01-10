@@ -55,6 +55,13 @@ router.post('/editCoupon/:id',adminAuth,couponController.editCoupon)
 
 
 //sales-report management
-router.get('/getSalesReport',adminAuth,salesController.getSalesPage)
+router.post('/getSalesReport', adminAuth, salesController.postSalesReport);
+router.get('/getSalesReport', adminAuth, salesController.getSalesPage); // Default weekly view
+
+router.post('/downloadPDF',adminAuth,salesController.generateSalesPDF)
+router.post('/downloadExcel',adminAuth,salesController.generateSalesExcel)
+
+
+
 
 module.exports=router
