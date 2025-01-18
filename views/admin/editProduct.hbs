@@ -11,6 +11,11 @@
         <textarea id="productDesc" name="productDesc" class="form-control" rows="3" required>{{product.productDesc}}</textarea>
     </div>
 
+    <div>
+        <label for="quantity" class="form-label fw-bold">Quantity</label>
+        <input type="number" id="quantity" name="quantity" class="form-control" value="{{product.quantity}}">
+    </div>
+
    <div class="form-group mb-3">
     <label for="category" class="form-label fw-bold">Category</label>
     <select id="category" name="category" class="form-select" required>
@@ -24,15 +29,137 @@
 
     <!-- Product Price -->
     <div class="form-group mb-3">
-        <label for="price" class="form-label fw-bold">Price</label>
-        <input type="number" id="price" name="price" class="form-control" value="{{product.regularPrice}}" required>
+        <label for="regularPrice" class="form-label fw-bold">Price</label>
+        <input type="number" id="regularPrice" name="regularPrice" class="form-control" value="{{product.regularPrice}}" required>
     </div>
+
+    <div class="form-group mb-3">
+    <label class="form-label fw-bold">Existing Images</label>
+    <div id="existingImagesContainer" class="d-flex flex-wrap gap-2">
+        {{#each product.productImage}}
+        <div class="position-relative">
+            <img src="{{this}}" alt="Product Image" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-image-btn" data-image="{{this}}">X</button>
+        </div>
+        {{/each}}
+    </div>
+    <input type="hidden" id="removedImages" name="removedImages" value="[]"> <!-- Hidden input to store removed images -->
+</div>
+
+    
+   <div class="form-group mb-3">
+    <label for="newProductImage" class="form-label fw-bold">Upload New Images</label>
+    <input type="file" id="newProductImage" name="newProductImage" class="form-control" multiple accept="image/*">
+    <small class="text-muted">You can upload and crop new images. Supported formats: jpg, png, gif.</small>
+</div>
+<!-- Cropping Modal -->
+<div id="cropModal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Crop Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <canvas id="cropCanvas"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cropSave" class="btn btn-success">Crop & Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{!-- <div id="imageCropContainer" style="display:none; margin-top: 20px;">
+    <h5>Crop New Image:</h5>
+    <img id="cropPreview" src="#" style="max-width: 100%; display: block;">
+    <button type="button" id="cropNewImageButton" class="btn btn-primary mt-3">Crop & Save Image</button>
+</div> --}}
+
+
+
+    
 
     <!-- Submit Button -->
     <div class="text-center">
         <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">Update Product</button>
     </div>
 </form>
+<script>
+    document.querySelectorAll('.remove-image-btn').forEach((button) => {
+    button.addEventListener('click', function () {
+        const imageUrl = this.getAttribute('data-image');
+        const removedImages = JSON.parse(document.getElementById('removedImages').value);
+        removedImages.push(imageUrl);
+        document.getElementById('removedImages').value = JSON.stringify(removedImages);
+        this.closest('div').remove(); // Remove the image from UI
+    });
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+
+<script>
+    let cropper;
+    const productImageInput = document.getElementById('productImage');
+    const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
+    const cropCanvas = document.getElementById('cropCanvas');
+    const cropSaveButton = document.getElementById('cropSave');
+
+    productImageInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // Load the image into the canvas
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function () {
+                    const ctx = cropCanvas.getContext('2d');
+                    cropCanvas.width = img.width;
+                    cropCanvas.height = img.height;
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+
+                    // Initialize Cropper.js
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    cropper = new Cropper(cropCanvas, {
+                        aspectRatio: 1, // Adjust aspect ratio as needed
+                        viewMode: 1,
+                    });
+
+                    // Show the cropping modal
+                    cropModal.show();
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    cropSaveButton.addEventListener('click', function () {
+        if (cropper) {
+            // Get the cropped image data
+            const croppedCanvas = cropper.getCroppedCanvas();
+            const croppedImage = croppedCanvas.toDataURL('image/jpeg');
+
+            // You can now send the cropped image to the server or replace the original
+            console.log('Cropped Image:', croppedImage);
+
+            // Close the modal
+            cropModal.hide();
+
+            // Optionally append the cropped image to the form or display it
+            const preview = document.createElement('img');
+            preview.src = croppedImage;
+            preview.className = 'img-thumbnail';
+            document.body.appendChild(preview); // Replace with your desired DOM manipulation
+        }
+    });
+</script>
+
+
+
 <style>
 /* General Form Styling */
 form {

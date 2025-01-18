@@ -1,0 +1,400 @@
+<head>
+       <!-- Include Cropper.js CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+
+<!-- Include Cropper.js JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+</head>
+
+    <!-- Add Product Form -->
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <form action="/admin/editProduct/{{product._id}}" method="POST" id="editproduct" name="editproduct"  enctype="multipart/form-data">
+                <!-- Product Name -->
+                <div class="form-group mb-3">
+                    <label for="productName" class="form-label fw-bold">Product Name</label>
+                    <input type="text" id="productName" name="productName" class="form-control" value="{{product.productName}}" required>
+                </div>
+
+                <!-- Product Description -->
+                <div class="form-group mb-3">
+                    <label for="productDesc" class="form-label fw-bold">Description</label>
+        <textarea id="productDesc" name="productDesc" class="form-control" rows="3" required>{{product.productDesc}}</textarea>
+                </div>
+
+                <!-- Product Category -->
+                 <div class="form-group mb-3">
+    <label for="category" class="form-label fw-bold">Category</label>
+    <select id="category" name="category" class="form-select" required>
+        <option value="" disabled>Select a category</option>
+        {{#each categories}}
+            <option value="{{this._id}}" {{#if this.isSelected}}selected{{/if}}>{{this.name}}</option>
+        {{/each}}
+    </select>
+</div>
+                {{!-- <div class="form-group mb-3">
+                    <label for="salePrice" class="form-label fw-bold">SalePrice</label>
+                    <input type="number" id="salePrice" name="salePrice" class="form-control" placeholder="sale price" required>
+                </div> --}}
+
+                <!-- Product Price -->
+                <div class="form-group mb-3">
+                    <label for="regularPrice" class="form-label fw-bold">Price</label>
+                    <input type="number" id="regularPrice" name="regularPrice" class="form-control" value="{{product.regularPrice}}" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="quantity" class="form-label fw-bold">Quantity</label>
+                    <input type="number" id="quantity" name="quantity" class="form-control" value="{{product.quantity}}" required>
+                </div>
+{{!-- 
+                 <div class="form-group mb-3">
+    <label class="form-label fw-bold">Existing Images</label>
+    <div id="existingImagesContainer" class="d-flex flex-wrap gap-2">
+        {{#each product.productImage}}
+        <div class="position-relative">
+            <img src="{{this}}" alt="Product Image" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-image-btn" data-image="{{this}}">X</button>
+        </div>
+        {{/each}}
+    </div>
+    <input type="hidden" id="removedImages" name="removedImages" value="[]"> <!-- Hidden input to store removed images -->
+</div> --}}
+
+<div class="form-group mb-3">
+    <label class="form-label fw-bold">Existing Images</label>
+    <div id="existingImagesContainer" class="d-flex flex-wrap gap-2">
+        {{#each product.productImage}}
+        <div class="position-relative" id="image-{{@index}}">
+            <img src="{{this}}" alt="Product Image" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-image-btn" data-image-index="{{@index}}" data-image-path="{{this}}">X</button>
+        
+        </div>
+        {{/each}}
+    </div>
+    <input type="hidden" id="removedImages" name="removedImages" value="[]">
+</div>
+
+                <!-- Product Images -->
+     <div class="form-group mb-3">
+    <label for="productImage" class="form-label fw-bold">Upload Images</label>
+<input type="file" id="productImage" name="productImage" class="form-control" multiple accept="image/*" required>
+    <small class="text-muted">Minimum 3 images. Supported formats: jpg, png, gif.</small>
+     </div>
+    <!-- Image Preview Area -->
+
+    <div  class="form-group mb-3" id="imagePreviewContainer" style="display:none; margin-top: 20px;">
+        <h5>Crop Your Image:</h5>
+        
+        <img id="imagePreview" src="/uploads/re-image/" style="max-width: 100%; display: block;" />
+        <button type="button" id="cropImageButton" class="btn btn-primary mt-3">Crop & Save Image</button>
+    </div> 
+
+
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" id="submitProductButton" name="submitProductButton"class="btn btn-primary px-5 py-2 fw-bold">Update Product</button>
+                </div>
+            </form>
+        </div>
+
+
+        <script>
+    // Handle removing an image
+    function removeImage(imageIndex, imagePath) {
+        // Find and remove the image element from the DOM
+        const imageElement = document.getElementById(`image-${imageIndex}`);
+        if (imageElement) {
+            imageElement.remove();
+        }
+
+        // Add the image path to the hidden input for backend processing
+        const removedImagesInput = document.getElementById('removedImages');
+        const removedImages = JSON.parse(removedImagesInput.value || '[]');
+        removedImages.push(imagePath); // Add the image path to the array
+        removedImagesInput.value = JSON.stringify(removedImages);
+    }
+
+    // Attach event listener to dynamically generated remove buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-image-btn')) {
+            const imageIndex = e.target.dataset.imageIndex;
+            const imagePath = e.target.dataset.imagePath;
+
+            // Call the removeImage function
+            removeImage(imageIndex, imagePath);
+        }
+    });
+</script>
+     
+<script>
+    let cropper;
+    const imageInput = document.getElementById('productImage');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const cropImageButton = document.getElementById('cropImageButton');
+    const submitProductButton = document.querySelector('button[type="submit"]');
+    const croppedImagesArray = []; // To store cropped images as Blobs
+
+    // Handle image upload and preview
+    imageInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                imagePreview.src = event.target.result; // Show selected image
+                imagePreviewContainer.style.display = 'block'; // Display cropper container
+
+                // Initialize Cropper.js
+                if (cropper) {
+                    cropper.destroy(); // Destroy previous instance if exists
+                }
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: 1, // Adjust ratio as needed
+                    viewMode: 1,
+                    autoCropArea: 0.8,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: true,
+                    scalable: true,
+                });
+            };
+            reader.readAsDataURL(file); // Trigger `onload`
+        }
+    });
+
+    // Handle crop and save
+    cropImageButton.addEventListener('click', function () {
+        if (cropper) {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            croppedCanvas.toBlob(function (blob) {
+                if (blob) {
+                    croppedImagesArray.push(blob); // Add cropped image Blob to array
+                    alert('Image cropped and saved!');
+                    console.log('Cropped Images Array:', croppedImagesArray);
+                }
+            }, 'image/jpeg');
+        }
+    });
+
+    // Handle product submission
+    submitProductButton.addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData();
+        formData.append('productName', document.getElementById('productName').value);
+        formData.append('productDesc', document.getElementById('productDesc').value);
+        formData.append('category', document.getElementById('category').value);
+        formData.append('regularPrice', document.getElementById('regularPrice').value);
+        formData.append('quantity', document.getElementById('quantity').value);
+
+
+        // Add original images to FormData
+        const files = imageInput.files;
+        for (let i = 0; i < files.length; i++) {
+            formData.append('productImage', files[i]); // Append original images under "images"
+        }
+
+        // Add cropped images to FormData
+        croppedImagesArray.forEach((blob) => {
+            formData.append('productImage', blob); // Append cropped images under "images"
+        });
+
+
+         // Add removed images to FormData
+    const removedImages = document.getElementById('removedImages').value;
+    formData.append('removedImages', removedImages);
+
+    // Send the form data via fetch
+    fetch('/admin/editProduct/{{product._id}}', {
+        method: 'POST',
+        body: formData,
+    })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                alert('Product added successfully!');
+                console.log('Server response:', data);
+            })
+            
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to save the product. Please try again.');
+            });
+    });
+
+    document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-image-btn')) {
+        const imageToRemove = e.target.dataset.image;
+        const removedImagesInput = document.getElementById('removedImages');
+        const currentRemovedImages = JSON.parse(removedImagesInput.value) || [];
+
+        // Add the removed image to the list
+        currentRemovedImages.push(imageToRemove);
+        removedImagesInput.value = JSON.stringify(currentRemovedImages);
+
+        // Remove the image from the UI
+        e.target.closest('.position-relative').remove();
+    }
+});
+</script>
+
+
+{{!-- <script>
+    let cropper;
+    const imageInput = document.getElementById('productImage');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const cropImageButton = document.getElementById('cropImageButton');
+    const submitProductButton = document.getElementById('submitProductButton');
+    const croppedImagesArray = []; // To store cropped images
+
+    // Handle image upload and preview
+    imageInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                imagePreview.src = event.target.result; // Show selected image
+                imagePreviewContainer.style.display = 'block'; // Display cropper container
+
+                // Initialize Cropper.js
+                if (cropper) {
+                    cropper.destroy(); // Destroy previous instance if exists
+                }
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: 1, // Adjust ratio as needed
+                    viewMode: 1,
+                    autoCropArea: 0.8,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: true,
+                    scalable: true,
+                });
+            };
+            reader.readAsDataURL(file); // Trigger `onload`
+        }
+    });
+
+    // Handle crop and save
+    cropImageButton.addEventListener('click', function () {
+        if (cropper) {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            const croppedImage = croppedCanvas.toDataURL('image/jpeg');
+            croppedImagesArray.push(croppedImage); // Save cropped image
+            alert('Image cropped and saved!'); // Confirmation for cropping
+            console.log('Cropped Images Array:', croppedImagesArray);
+        }
+    });
+
+    // Handle product submission
+    submitProductButton.addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData();
+        formData.append('productName', document.getElementById('productName').value);
+        formData.append('productDesc', document.getElementById('productDescription').value);
+        formData.append('category', document.getElementById('productCategory').value);
+        formData.append('regularPrice', document.getElementById('regularPrice').value);
+
+        // Append cropped images to the form data
+        croppedImagesArray.forEach((image, index) => {
+            formData.append('croppedImage', image); // Use a separate field for cropped images
+        });
+
+        // Append original product images from file input
+        const fileInput = document.getElementById('productImage');
+        const files = fileInput.files;
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append('productImage', files[i]); // Match the field name expected by multer
+        }
+
+        formData.forEach((value, key) => {
+            console.log(key, value); // Log form data for debugging
+        });
+
+        // Send the form data via fetch
+        fetch('/admin/addProducts', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            alert('Product added successfully!');
+            console.log('Server response:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to save the product. Please try again.');
+        });
+    });
+</script> --}}
+
+
+    
+<style>
+    /* General styling for the container */
+.card {
+    max-width: 600px;
+    margin: 30px auto;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: #ffffff;
+    border: none;
+}
+
+.card-body {
+    padding: 30px;
+}
+
+/* Form labels */
+.form-label {
+    font-size: 16px;
+    color: #333333;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Input fields */
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    font-size: 14px;
+    padding: 10px 15px;
+    color: #555555;
+    box-shadow: none;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Select dropdown */
+.form-select {
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    font-size: 14px;
+    padding: 10px 15px;
+    color: #555555;
+}
+#imagePreviewContainer {
+    position: relative;
+    margin-top: 20px;
+    border: 2px dashed #ccc;
+    padding: 10px;
+    text-align: center;
+}
+#imagePreview {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+}
+</style>

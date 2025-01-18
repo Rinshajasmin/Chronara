@@ -7,6 +7,7 @@ const Cart = require('../models/cartSchema')
 const mongodb = require("mongodb");
 const mongoose = require('mongoose')
 const Coupons = require('../models/couponSchema')
+const moment = require('moment')
 
 
 
@@ -34,12 +35,30 @@ const addCoupons = async(req,res)=>{
         const{start,end,name,offerPrice,minimumPrice}=req.body
         console.log("req.body while coupon creation",req.body)
 
+        const existingCoupon = await Coupons.findOne({ name, isList:true});
+
+        if (existingCoupon) {
+          return res.render('admin/addCoupon',{ message: 'Coupon name already exists!' });
+        }
+
+        const currentDateTime = moment();
+        let expiryTime = moment(end);
+        
+        if (moment(start).isSame(moment(end), 'day')) {
+            expiryTime.set({ hour: 23, minute: 59, second: 59, millisecond: 999 });
+        }
+
+
+// Use Moment.js to parse the 'end' (expireOn) date
+const status = currentDateTime.isBefore(expiryTime) ? 'active' : 'expired';
+    
         const newCoupon = new Coupons({
             name:name,
             createdOn:start,
            expireOn:end,
            offerPrice:offerPrice,
-           minimumPrice:minimumPrice 
+           minimumPrice:minimumPrice ,
+           status:status
             })
 
         await newCoupon.save();
@@ -61,7 +80,10 @@ const deleteCoupon = async(req,res)=>{
         if(!coupon){
             res.status(400).send("Coupon not find")
         }
-        res.render('admin/couponManagement',{coupon})
+        const coupons = await Coupons.find({ isList: true });
+
+
+        res.render('admin/couponManagement',{coupons})
     } catch (error) {
        console.log("error while deleting the coupon",error) 
        res.redirect('/admin/error')
@@ -87,18 +109,55 @@ const editCoupon = async(req,res)=>{
     const {id}= req.params
     const {start,end,minimumPrice,offerPrice,name} = req.body
     try{
+        const existingCoupon = await Coupons.findOne({ name, _id: { $ne: id } });
+        const coupon = await Coupons.findById(id)
+        if (existingCoupon) {
+            return res.render('admin/editCoupon', {
+              message: 'Coupon name already exists!',
+              coupon
+            });
+          }
+
+          const today = new Date();
+    const startDate = new Date(start);
+    const endDate = new Date(end)
+    if (startDate < today.setHours(0, 0, 0, 0)) {
+      return res.render('admin/editCoupon', {
+        message1: 'Start date must be today or a future date!',
+        coupon,
+      });
+    }
+    if (endDate < startDate) {
+        return res.render('admin/editCoupon', {
+          message2: 'End date must be after the start date!',
+          coupon,
+        });
+      }
+
+      let expiryTime = new Date(endDate);
+      if (startDate.toDateString() === endDate.toDateString()) {
+        expiryTime.setHours(23, 59, 59, 999); // Set to the end of the day
+      }
+  
+      // Determine the coupon status based on the current time
+      const currentDateTime = new Date();
+      const status = currentDateTime < expiryTime ? 'active' : 'expired';
+
+
     const updatedData = {
         name: name, // Map 'name' to 'couponCode'
         offerPrice: offerPrice, // Map 'offerPrice' to 'discountAmount'
         minimumPrice: minimumPrice, // Map 'minimumPrice' to 'minPurchase'
         createdOn: new Date(start), // Map 'start' to 'validFrom'
         expireOn: new Date(end), // Map 'end' to 'validUntil'
+        status
     };
 
     // Update the coupon in the database
     await Coupons.findByIdAndUpdate(id, updatedData);
 
     res.redirect('/admin/coupons'); // Redirect to the coupon management page
+    
 } catch (error) {
     console.log("Error while updating coupon", error);
     res.redirect('/admin/error');
@@ -295,7 +354,8 @@ const applyCoupon = async (req, res) => {
                         };
                     }),
                     grandTotal: finalTotal,
-                    discount,
+                    discount: coupon ? discount : null, // Include discount only if a coupon is applied
+                    
                 },
             });
                 } catch (error) {
@@ -412,6 +472,7 @@ const removeCoupon = async (req, res) => {
                     };
                 }),
                 grandTotal,
+                discount:null
             },
         });
     } catch (error) {

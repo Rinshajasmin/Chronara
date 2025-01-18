@@ -312,7 +312,7 @@ const geteditProduct = async (req, res) => {
         }
 
         // Fetch all categories
-        const categories = await Category.find();
+        const categories = await Category.find({isListed:true});
 
         // Add isSelected property to each category
         const updatedCategories = categories.map(category => {
@@ -324,7 +324,7 @@ const geteditProduct = async (req, res) => {
         });
 
         // Render the edit form
-        res.render('admin/editProduct', {
+        res.render('admin/editProImage', {
             product,
             categories: updatedCategories
         });
@@ -333,40 +333,191 @@ const geteditProduct = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
-const editProduct = async (req, res) => {
-    const { id } = req.params; // Extract product ID from route parameters
-    const { productName, productDesc, category, regularPrice } = req.body; // Extract form data
-    // const images = req.files?.map(file => file.filename); // Extract uploaded files (if any)
+// const editProduct = async (req, res) => {
+//     const { id } = req.params; // Extract product ID from route parameters
+//     const { productName, productDesc, category,quantity, regularPrice } = req.body; // Extract form data
+//     // const images = req.files?.map(file => file.filename); // Extract uploaded files (if any)
 
+//     try {
+//         // Find the product by ID
+//         const product = await Product.findById(id);
+
+//         if (!product) {
+//             return res.status(404).send('Product not found');
+//         }
+
+//         // Update product fields
+//         product.productName = productName || product.productName;
+//         product.productDesc = productDesc || product.productDesc;
+//         product.category = category || product.category;
+//         product.regularPrice = regularPrice || product.regularPrice;
+//         product.quantity = quantity || product.quantity
+//         // product.productImage=productImage || product.productImage;
+        
+//         // if ( productImage&& productImage.length >= 1) {
+//         //     product.productImage = productImage; // Update image array
+//         // }
+
+//         // Save the updated product
+//         await product.save();
+
+//         // Redirect to the products list
+//         res.redirect('/admin/products');
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Server Error');
+//     }
+// };
+
+
+
+
+ // Adjust the path as per your project structure
+ 
+//  const editProduct = async (req, res) => {
+//      try {
+//          const { id } = req.params; // Product ID from request params
+//          const { productName, productDesc, category, regularPrice, quantity, deleteImages } = req.body;
+//          const files = req.files || [];
+ 
+//          // Find the product by ID
+//          const product = await Product.findById(id);
+//          if (!product) {
+//              return res.status(404).json({ error: 'Product not found' });
+//          }
+ 
+//          // Handle deletion of images
+//          if (deleteImages && Array.isArray(deleteImages)) {
+//              for (const imagePath of deleteImages) {
+//                  // Construct the absolute path of the image
+//                  const absolutePath = path.join(__dirname, "../public/uploads/re-image", path.basename(imagePath));
+ 
+//                  // Remove the image from the filesystem
+//                  if (fs.existsSync(absolutePath)) {
+//                      fs.unlinkSync(absolutePath);
+//                  }
+ 
+//                  // Remove the image path from the product's productImage array
+//                  product.productImage = product.productImage.filter(img => img !== imagePath);
+//              }
+//          }
+ 
+//          // Handle new image uploads
+//          const imagePaths = [];
+//          for (const file of files) {
+//              const fileName = `${Date.now()}_${file.originalname}`;
+//              const destinationPath = path.join(__dirname, "../public/uploads/re-image", fileName);
+ 
+//              // Move the file from Multer's temporary location to the desired location
+//              await fs.promises.rename(file.path, destinationPath);
+ 
+//              // Add the new image path to the array
+//              imagePaths.push(`/uploads/re-image/${fileName}`);
+//          }
+ 
+//          // Update product image array with new image paths
+//          product.productImage = [...product.productImage, ...imagePaths];
+ 
+//          // Update other product fields
+//          product.productName = productName || product.productName;
+//          product.productDesc = productDesc || product.productDesc;
+//          product.category = category || product.category;
+//          product.regularPrice = regularPrice || product.regularPrice;
+//          product.quantity = quantity || product.quantity;
+ 
+//          // Save the updated product to the database
+//          await product.save();
+ 
+//          res.status(200).json({ message: 'Product updated successfully!', product });
+//      } catch (err) {
+//          console.error(err);
+//          res.status(500).json({ error: 'Failed to update product.' });
+//      }
+//  };
+
+
+
+const editProduct = async (req, res) => {
     try {
-        // Find the product by ID
-        const product = await Product.findById(id);
+        const productId = req.params.id;
+        const { productName, productDesc, category, regularPrice, quantity } = req.body;
+        const files = req.files || [];
+
+
+        // Parse removedImages safely
+        const removedImages = req.body.removedImages ? JSON.parse(req.body.removedImages) : [];
+
+        // Update product details
+        const product = await Product.findById(productId);
 
         if (!product) {
-            return res.status(404).send('Product not found');
+            return res.status(404).json({ message: 'Product not found' });
         }
 
-        // Update product fields
-        product.productName = productName || product.productName;
-        product.productDesc = productDesc || product.productDesc;
-        product.category = category || product.category;
-        product.regularPrice = regularPrice || product.regularPrice;
-        // product.productImage=productImage || product.productImage;
-        
-        // if ( productImage&& productImage.length >= 1) {
-        //     product.productImage = productImage; // Update image array
-        // }
+        product.productName = productName;
+        product.productDesc = productDesc;
+        product.category = category;
+        product.regularPrice = regularPrice;
+        product.quantity = quantity;
 
-        // Save the updated product
+        // Remove images from the filesystem
+        for (const imagePath of removedImages) {
+            if (imagePath && typeof imagePath === 'string') {
+                
+                const absolutePath = path.join(__dirname, '../public', imagePath); // Adjust base path as needed
+                if (fs.existsSync(absolutePath)) {
+                    fs.unlinkSync(absolutePath);
+                }
+
+                // Remove the image from the database
+                product.productImage = product.productImage.filter((img) => img !== imagePath);
+            } else {
+                console.warn('Invalid image path encountered:', imagePath);
+            }
+        }
+
+        // Handle new image uploads
+         const imagePaths = [];
+         for (const file of files) {
+             const fileName = `${Date.now()}_${file.originalname}`;
+             const destinationPath = path.join(__dirname, "../public/uploads/re-image", fileName);
+ 
+             // Move the file from Multer's temporary location to the desired location
+             //await fs.promises.rename(file.path, destinationPath);
+             await fs.promises.copyFile(file.path, destinationPath);
+
+ 
+             // Add the new image path to the array
+             imagePaths.push(`/uploads/re-image/${fileName}`);
+         }
+ 
+         // Update product image array with new image paths
+         product.productImage = [...product.productImage, ...imagePaths];
+
         await product.save();
 
-        // Redirect to the products list
-        res.redirect('/admin/products');
+        res.json({ message: 'Product updated successfully', product ,redirectUrl: '/admin/products'});
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Server Error');
+        console.error('Error in editProduct:', error);
+        res.status(500).json({ message: 'Failed to update product', error: error.message });
     }
 };
+
+
+ 
+
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
 const deleteProduct = async (req, res) => {
     const { id } = req.params; // Extract product ID from route parameters
 

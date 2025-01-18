@@ -31,11 +31,10 @@
                 <td class="text-center">{{formatDate this.expireOn "DD MMMM YYYY"}}</td>
                 {{!-- //<td>{{this.productImage}}</td> --}}
                 <td class="text-center">
-                    {{#if (isActive this.expireOn)}}
-                    <span class="badge bg-success">Active</span>
-                    {{else}}
-                    <span class="badge bg-danger">Expired</span>
-                    {{/if}}
+                   <span class="badge {{#if (eq status 'active')}}bg-success{{else}}bg-danger{{/if}}">
+                   {{this.status}}
+                  </span>
+
                 </td>
                 <td class="text-center">
                     <a href="/admin/editCoupon/{{this._id}}" class="btn btn-primary btn-sm">Edit</a>

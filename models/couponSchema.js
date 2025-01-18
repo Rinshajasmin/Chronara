@@ -5,7 +5,9 @@ const couponSchema = new mongoose.Schema({
     name:{
         type:String,
         required:true,
-        unique:true
+        
+        
+        
     },
     createdOn:{
         type:Date,
@@ -31,7 +33,11 @@ const couponSchema = new mongoose.Schema({
     userId:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
-    }]
+    }],
+    status:{
+        type:String,
+        default: 'active'
+    }
 
 })
 

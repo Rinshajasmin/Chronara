@@ -71,6 +71,7 @@ router.get('/productDetails',userAuth,productController.getProductDetails)
 router.get("/cart", userAuth, cartController.getCartPage)
 router.post("/addToCart",userAuth, cartController.addToCart)
 router.post("/changeQuantity", userAuth,cartController.changeQuantity)
+router.post("/checkStock",userAuth,cartController.checkStock)
 router.post("/deleteItem", userAuth, cartController.deleteProduct)
 
 

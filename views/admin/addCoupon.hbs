@@ -12,7 +12,11 @@
     <form id="couponForm" method="post" action="/admin/addCoupons">
       <label for="name">Coupon code</label>
       <input type="text" id="name" name="name"  required/>
+     {{#if message}}
 
+    <span style="color: red;">{{message}}</span>
+
+     {{/if}}
       {{!-- <label for="discount">Discount</label>
       <input type="number" id="discount" name="discount" /> --}}
 
@@ -48,19 +52,37 @@
     const startDate = new Date(document.getElementById("start").value);
     const endDate = new Date(document.getElementById("end").value);
 
+     const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0); 
+
+
     // Check if offer price is less than the minimum price
     if (offerPrice >= minimumPrice) {
       alert("Offer price must be less than the minimum price!");
       event.preventDefault(); // Prevent form submission
       return;
     }
-
-    // Check if end date is after the start date
-    if (endDate <= startDate) {
-      alert("End date must be after the start date!");
+     if (startDate < currentDate) {
+      alert("Start date must be today or a future date!");
       event.preventDefault(); // Prevent form submission
       return;
     }
+
+    // Check if end date is after the start date
+    if (endDate < startDate) {
+  // End date is before the start date (invalid)
+  alert("End date must be after the start date!");
+  event.preventDefault(); // Prevent form submission
+  return;
+} else if (endDate.getTime() === startDate.getTime()) {
+  // Start date and end date are the same (valid one-day coupon)
+  console.log("One-day coupon is valid.");
+  // Allow form submission
+} else {
+  // Valid date range (regular coupon)
+  console.log("Valid date range.");
+  // Allow form submission
+}
 
     // Additional custom validation logic can go here
   });

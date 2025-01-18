@@ -135,9 +135,10 @@
 {{>userfooter}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    document.getElementById('cancelOrderBtn').addEventListener('click', function(event) {
-        const cancellationReason = document.getElementById('cancellationReason').value.trim();
-
+    const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+    if (cancelOrderBtn) { // Check if the cancel button exists
+        cancelOrderBtn.addEventListener('click', function (event) {
+       
         // Check if the cancellation reason is provided
         if (!cancellationReason) {
             Swal.fire({
@@ -189,61 +190,78 @@
             }
         });
     });
+    }
     
-    document.getElementById('returnOrderBtn').addEventListener('click', function(event) {
-        const returnReason = document.getElementById('returnReason').value.trim();
 
-        // Check if the return reason is provided
-        if (!returnReason) {
-            Swal.fire({
-                title: 'Error!',
-                text: 'Please provide a reason for returning the order.',
-                icon: 'error',
-                confirmButtonColor: '#d33'
-            });
-            return; // Don't proceed if no reason is entered
-        }
+   document.addEventListener('DOMContentLoaded', function () {
+    // Get the return order button element
+    const returnOrderBtn = document.getElementById('returnOrderBtn');
+    if (returnOrderBtn) { // Check if the button exists
+        returnOrderBtn.addEventListener('click', function (event) {
+            const returnReason = document.getElementById('returnReason').value.trim();
 
-        // Confirm return with SweetAlert
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You want to return this order!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, return it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Update the form to include status and returnReason fields
-                const form = document.getElementById('returnOrderForm');
-                
-                // Create and append hidden status input field
-                const statusInput = document.createElement('input');
-                statusInput.type = 'hidden';
-                statusInput.name = 'status';
-                statusInput.value = 'Returned';
-                form.appendChild(statusInput);
-                
-                // Create and append hidden returnReason input field
-                const reasonInput = document.createElement('input');
-                reasonInput.type = 'hidden';
-                reasonInput.name = 'returnReason';
-                reasonInput.value = returnReason;
-                form.appendChild(reasonInput);
-
-                // Submit the form
-                form.submit();
-
-                // Show success message
-                Swal.fire(
-                    'Returned!',
-                    'The order has been marked as returned.',
-                    'success'
-                );
+            // Check if the return reason is provided
+            if (!returnReason) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please provide a reason for returning the order.',
+                    icon: 'error',
+                    confirmButtonColor: '#d33'
+                });
+                return; // Don't proceed if no reason is entered
             }
+
+            // Confirm return with SweetAlert
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to return this order!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, return it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Update the form to include status and returnReason fields
+                    const form = document.getElementById('returnOrderForm');
+
+                    if (form) { // Check if the form exists
+                        // Create and append hidden status input field
+                        const statusInput = document.createElement('input');
+                        statusInput.type = 'hidden';
+                        statusInput.name = 'status';
+                        statusInput.value = 'Returned';
+                        form.appendChild(statusInput);
+
+                        // Create and append hidden returnReason input field
+                        const reasonInput = document.createElement('input');
+                        reasonInput.type = 'hidden';
+                        reasonInput.name = 'returnReason';
+                        reasonInput.value = returnReason;
+                        form.appendChild(reasonInput);
+
+                        // Submit the form
+                        form.submit();
+
+                        // Show success message
+                        Swal.fire(
+                            'Returned!',
+                            'The order has been marked as returned.',
+                            'success'
+                        );
+                    } else {
+                        console.error('Return form not found.');
+                    }
+                }
+            });
         });
-    });
+    } else {
+        console.error('Return order button not found.');
+    }
+});
+
+
+  
 </script>
 
 

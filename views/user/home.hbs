@@ -74,19 +74,19 @@
     {{/if}}
     <h2>Newest Collection Available</h2>
     <div class="category-list">
-        <a href="/user/filter" class="category-item">
+        <a href="/user/shop?category=Men" class="category-item">
             <img src="/images/menwatch.png" alt="Men Watches">
             <p>Men</p>
         </a>
-        <a href="/user/filter" class="category-item">
+        <a href="/user/shop?category=Women" class="category-item">
             <img src="/images/womenwatch.png" alt="Women Watches">
             <p>Women</p>
         </a>
-        <a href="/user/shop" class="category-item">
+        <a href="/user/shop?category=Luxury Watches" class="category-item">
             <img src="/images/casuals.png" alt="Casual Watches">
             <p>Casuals</p>
         </a>
-        <a href="/user/shop" class="category-item">
+        <a href="/user/shop?category=Smart Watches" class="category-item">
             <img src="/images/smartwatch.png" alt="Smart Watches">
             <p>Smart Watches</p>
         </a>
@@ -131,11 +131,21 @@
         <!-- Product Image with Link -->
         <a href="/user/productDetails/?id={{_id}}">
           {{#if productImage.[0]}}
-            <img src="{{productImage.[0]}}" alt="{{productName}}" />
+            <img src="{{productImage.[0]}}" alt="{{productName}}" style="width: 300px; height: 300px; object-fit: cover;"/>
           {{else}}
             <img src="/images/default-watch.jpg" alt="Default Image" />
           {{/if}}
         </a>
+        <!-- Product Image with Link -->
+{{!-- <a href="/user/productDetails/?id={{_id}}">
+  {{#each productImage}}
+    <!-- Check if the image file is in .webp format (original image) -->
+    {{#if (contains this ".webp")}}
+      <img src="{{this}}" alt="{{productName}}" style="width: 300px; height: 300px; object-fit: cover;" />
+    {{/if}}
+  {{/each}}
+</a> --}}
+
 
         <!-- Product Details -->
         <p>{{productName}}</p>
@@ -238,7 +248,7 @@
   {{> userfooter}} <!-- Include the footer partial -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  
-<script>
+{{!-- <script>
     function addToCart(productId) {
         // You can use AJAX here to send the productId to your backend
         fetch('/user/addToCart', {
@@ -281,7 +291,58 @@
 
 
 
+</script> --}}
+
+<script>
+    function addToCart(productId) {
+        // Send a request to the backend to add the product to the cart
+        fetch('/user/addToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // If the product is successfully added
+                Swal.fire({
+                    title: 'Item Added!',
+                    text: 'The item has been added to your cart.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+                console.log(data.cartDetails); // Optional: Use this to update the cart UI
+            } else if (data.message === 'No enough stock available.') {
+                // If stock is insufficient, show an appropriate message
+                Swal.fire({
+                    title: 'Insufficient Stock!',
+                    text: data.message, // Message from the backend, e.g., "Only 2 items are available in stock."
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                // Handle other errors
+                Swal.fire({
+                    text: data.message || 'Something went wrong.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An unexpected error occurred.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    }
 </script>
+
 
 <script>
   async function toggleWishlist(element) {

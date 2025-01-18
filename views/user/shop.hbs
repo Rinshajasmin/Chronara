@@ -91,8 +91,49 @@
   </aside> --}}
 
 <div class="filter-section">
-  <h4>Filter by Price</h4>
   <form action="/user/filter" method="GET" id="filterForm">
+    <h4>Filter by Category</h4>
+
+    <div class="category-filters">
+      <ul>
+      <!-- "All Categories" Option -->
+                    <li class="category-item">
+
+      <label>
+        <input
+          type="radio"
+          name="category"
+          value="all"
+          onchange="document.getElementById('filterForm').submit()"
+          {{#ifCond category "all"}}checked{{/ifCond}}
+        />
+        All Categories
+      </label></li>
+
+      <!-- Dynamic Categories -->
+      {{#each categories}}
+              <li class="category-item">
+
+      <label>
+        <input
+          type="radio"
+          name="category"
+          value="{{this._id}}"
+          {{!-- onchange="document.getElementById('filterForm').submit()" --}}
+      {{#ifEquals ../category this._id}}checked{{/ifEquals}}
+                    onchange="document.getElementById('filterForm').submit()"
+
+        />
+        {{this.name}}
+</label></li>
+      {{/each}}
+      </ul>
+    </div>
+
+ 
+  <h4>Filter by Price</h4>
+
+ 
     <!-- Price Filters -->
     <div class="price-filters">
       <ul>
@@ -642,6 +683,11 @@ body {
      .shopping-icon a{
         text-decoration: none;
     }
+
+    input[type="radio"]:checked {
+  accent-color: #007bff !important; /* Change this to your desired color */
+}
+
   
 /* Sidebar Styles */
 /* Sidebar Styles */
@@ -654,11 +700,14 @@ body {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  height: 100vh; /* Make the sidebar extend to full height */
+  height:auto; /* Make the sidebar extend to full height */
   overflow-y: auto; /* Add scrolling if content exceeds the sidebar's height */
   margin-top: 75px;
     margin-left: 35px;
 }
+
+
+
 
 /* Adjust the product section to account for the fixed sidebar */
 
@@ -697,6 +746,7 @@ body {
 /* Filter Section */
 .filter-section {
   margin-bottom: 25px;
+  margin-top: 9px;
 }
 
 .filter-section ul {
@@ -705,6 +755,7 @@ body {
 
 .filter-section li {
   margin: 10px 0;
+  margin-top: -9px;
 }
 
 .filter-section a {
@@ -857,28 +908,33 @@ body {
   margin-bottom: 20px;
 }
 
-.price-filters ul {
+.price-filters ul,
+.category-filters ul{
   list-style: none;
   padding: 0;
 }
 
-.filter-item {
+.filter-item,
+.category-item{
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  white-space: nowrap; /* Prevent wrapping */
+  white-space: nowrap; /* Prevent wrapping */ 
 }
 
-.filter-item label {
+.filter-item label,
+.category-item label {
   display: flex;
   align-items: center;
 }
 
-.filter-item input[type="radio"] {
+.filter-item input[type="radio"],
+.category-item input[type="radio"] {
   margin-right: 10px;
 }
 
-.filter-item span {
+.filter-item span ,
+.category-item span{
   white-space: nowrap; /* Prevent text wrapping */
 }
 
@@ -892,7 +948,6 @@ body {
 .sort-filters h5 {
   margin-bottom: 10px;
 }
-
 
 /* Responsive Design */
 @media (max-width: 768px) {

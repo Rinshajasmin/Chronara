@@ -85,6 +85,30 @@ app.engine(
       ifCond: function (value1, value2, options) {
         return value1 === value2 ? options.fn(this) : options.inverse(this);
       },
+      neq: function (a, b) {
+        return a !== b; // Return true if not equal
+      },
+      // New helper to perform logical AND
+      and: function () {
+        const args = Array.prototype.slice.call(arguments, 0, -1); // Exclude the options object
+        return args.every(Boolean); // Return true if all arguments are truthy
+      },
+      contains: function(value, substring) {
+        return value && value.includes(substring); // Check if value contains substring
+      },
+      ifEquals: function (value1, value2, options) {
+        // Ensure both values are defined before comparison
+        if (value1 == null || value2 == null) {
+          return options.inverse(this); // Render the "else" block if either value is undefined or null
+        }
+      
+        // Compare their string representations
+        if (value1.toString() === value2.toString()) {
+          return options.fn(this); // Render the "if" block if they are equal
+        }
+        return options.inverse(this); // Render the "else" block otherwise
+      },
+      
     
     },
     runtimeOptions: {

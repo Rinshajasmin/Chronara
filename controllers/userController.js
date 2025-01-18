@@ -147,34 +147,89 @@ const loadSignup= async (req,res)=>{
         res.status(500).send("server error")
     }
 }
-const loadShop = async(req,res)=>{
-    try {
-        console.log(req.session.user)
-        const user = req.session.user;
+// const loadShop = async(req,res)=>{
+//     try {
+//         console.log(req.session.user)
+//         const user = req.session.user;
         
-        const categories = await Category.find({isListed:true});
+//         const categories = await Category.find({isListed:true});
 
-        let productData = await Product.find(
-            {isDeleted:false})
-            productData.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-        // productData=productData.slice(0,12)
-       console.log("products",productData)
+//         let productData = await Product.find(
+//             {isDeleted:false})
+//             productData.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+//         // productData=productData.slice(0,12)
+//        console.log("products",productData)
 
-        if(user){
-            const userData = await User.findOne({_id:user._id})
-            //console.log("Categories:", categories);
-            //console.log("Products:", productData);
-           return  res.render('user/shop', { username: user.username ,user:userData,products:productData});
-        }else{
-            return res.render("user/home",{products:productData})
-        }
-       // return  res.render('user/shop');
+//         if(user){
+//             const userData = await User.findOne({_id:user._id})
+//             //console.log("Categories:", categories);
+//             //console.log("Products:", productData);
+//            return  res.render('user/shop', { username: user.username ,user:userData,products:productData});
+//         }else{
+//             return res.render("user/home",{products:productData})
+//         }
+//        // return  res.render('user/shop');
         
-    } catch (error) {
-        console.error("error in loading shop page",error)
-        res.redirect('/user/shop')
-    }
-}
+//     } catch (error) {
+//         console.error("error in loading shop page",error)
+//         res.redirect('/user/shop')
+//     }
+// }
+
+
+const loadShop = async (req, res) => {
+  try {
+      const user = req.session.user;
+      const selectedCategory = req.query.category;
+
+      // Fetch all listed categories for the sidebar/menu
+      const categories = await Category.find({ isListed: true });
+
+      let productData;
+
+      if (selectedCategory) {
+          // Fetch products that belong to the selected category
+          const category = await Category.findOne({ name: selectedCategory });
+
+          if (category) {
+              productData = await Product.find({
+                  category: category._id,
+                  isDeleted: false,
+              }).populate("category");
+          } else {
+              productData = []; // No products if category doesn't exist
+          }
+      } else {
+          // Fetch all products if no category is selected
+          productData = await Product.find({ isDeleted: false }).populate("category");
+      }
+
+      // Sort products by creation date (newest first)
+      productData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      // Render the shop page with filtered or all products
+      if (user) {
+          const userData = await User.findOne({ _id: user._id });
+          return res.render('user/shop', {
+              username: user.username,
+              user: userData,
+              products: productData,
+              categories,
+              selectedCategory,
+          });
+      } else {
+          return res.render('user/home', {
+              products: productData,
+              categories,
+              selectedCategory,
+          });
+      }
+  } catch (error) {
+      console.error("Error in loading shop page:", error);
+      res.redirect('/user/shop');
+  }
+};
+;
 
 // const signup= async(req,res)=>{
 //     const{username,email,password,phone}=req.body
@@ -546,6 +601,8 @@ const filterProduct= async (req, res) => {
     const userId=req.session.user;
     const user = await User.find(userId)
     const searchQuery = req.query.query;  // Get the search query from URL
+    const categories = await Category.find({ isListed: true });
+
 
   // If no search term is provided, return all products
   if (!searchQuery) {
@@ -561,30 +618,80 @@ const filterProduct= async (req, res) => {
     });
 
     // Render the results page with the filtered products
-    res.render('user/shop', { products,username:user.username });
+    res.render('user/shop', { products,username:user.username,categories });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');
   }
   }
 
-  const filterAndSort= async (req, res) => {
-    try {
-      const userId = req.session.user
-      const user = await User.findById(userId)
+  // const filterAndSort= async (req, res) => {
+  //   try {
+  //     const userId = req.session.user
+  //     const user = await User.findById(userId)
 
-      const { price, sort } = req.query;
+  //     const { price, sort } = req.query;
   
-      // Build the query object
-      let query = {};
+  //     // Build the query object
+  //     let query = { isDeleted: false }; // Only fetch non-deleted products
 
       
   
+  //     if (price !== 'all' && price) {
+  //       if (price === 'under-500') query.regularPrice = { $lt: 500 };
+  //       if (price === '500-1000') query.regularPrice = { $gte: 500, $lte: 1000 };
+  //       if (price === '1000-1500') query.regularPrice = { $gte: 1000, $lte: 1500 };
+  //       if (price === 'above-1500') query.regularPrice = { $gt: 1500 };
+  //     }
+  
+  //     // Sorting
+  //     let sortOptions = {};
+  //     if (sort) {
+  //       if (sort === 'price-low-high') sortOptions.regularPrice = 1;
+  //       if (sort === 'price-high-low') sortOptions.regularPrice = -1;
+  //       if (sort === 'popularity') sortOptions.popularity = -1;
+  //       if (sort === 'new-arrivals') sortOptions.createdAt = -1;
+  //       if (sort === 'a-z') sortOptions.productName = 1;
+  //       if (sort === 'z-a') sortOptions.productName = -1;
+  //     }
+  
+  //     // Fetch filtered and sorted products
+  //     const products = await Product.find(query).sort(sortOptions);
+  
+  //     res.render('user/shop', {username:user.username,
+  //       products,
+  //       price,
+  //       sort,
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //     res.status(500).send('Internal Server Error');
+  //   }
+  // };
+
+  const filterAndSort = async (req, res) => {
+    try {
+      const userId = req.session.user;
+      const user = await User.findById(userId);
+      const categories = await Category.find({ isListed: true });
+
+  
+      const { price, sort, category } = req.query;
+  
+      // Build the query object
+      let query = { isDeleted: false }; // Only fetch non-deleted products
+  
+      // Price filter
       if (price !== 'all' && price) {
         if (price === 'under-500') query.regularPrice = { $lt: 500 };
         if (price === '500-1000') query.regularPrice = { $gte: 500, $lte: 1000 };
         if (price === '1000-1500') query.regularPrice = { $gte: 1000, $lte: 1500 };
         if (price === 'above-1500') query.regularPrice = { $gt: 1500 };
+      }
+  
+      // Category filter
+      if (category !== 'all' && category) {
+        query.category = category; // Match the category field in your Product schema
       }
   
       // Sorting
@@ -601,16 +708,20 @@ const filterProduct= async (req, res) => {
       // Fetch filtered and sorted products
       const products = await Product.find(query).sort(sortOptions);
   
-      res.render('user/shop', {username:user.username,
+      res.render('user/shop', {
+        username: user.username,
         products,
         price,
         sort,
+        categories,
+        category // Pass the selected category back to the frontend
       });
     } catch (err) {
       console.error(err);
       res.status(500).send('Internal Server Error');
     }
   };
+  
   
   
  const getuserProfile = async(req,res)=>{

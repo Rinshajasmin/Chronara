@@ -21,7 +21,7 @@
 
 
              <div class="status">
-              <form method="POST" action="/admin/statusUpdate/{{order._id}}">
+              {{!-- <form method="POST" action="/admin/statusUpdate/{{order._id}}">
     <div class="form-group">
         <label for="status">Order Status</label>
         <select id="status" name="status" class="form-select form-select-lg mb-3">
@@ -32,7 +32,23 @@
         </select>
     </div>
     <button type="submit" class="btn btn-primary">Update Status</button>
-</form>
+</form> --}}
+{{#if (and (neq order.status "Delivered") (neq order.status "Cancelled") (neq order.status "Returned"))}}
+                <form method="POST" action="/admin/statusUpdate/{{order._id}}">
+                    <div class="form-group">
+                        <label for="status">Order Status</label>
+                        <select id="status" name="status" class="form-select form-select-lg mb-3">
+                            <option value="Pending" {{#if (eq order.status "Pending")}}selected{{/if}}>Pending</option>
+                            <option value="Shipped" {{#if (eq order.status "Shipped")}}selected{{/if}}>Shipped</option>
+                            <option value="Delivered" {{#if (eq order.status "Delivered")}}selected{{/if}}>Delivered</option>
+                            {{!-- <option value="Cancelled" {{#if (eq order.status "Cancelled")}}selected{{/if}}>Cancelled</option> --}}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </form>
+            {{else}}
+                <p class="text-muted">Status cannot be updated as the order is already {{order.status}}.</p>
+            {{/if}}
 
 
     </div>
