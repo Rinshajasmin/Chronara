@@ -200,6 +200,8 @@ const getCartPage = async (req, res) => {
                 const categoryOffer = item.productId.category?.categoryOffer || 0;
                 const productOffer = item.productId.productOffer || 0;
                 const totalOffer = categoryOffer + productOffer;
+                const actualTotal = item.productId.regularPrice*item.quantity;
+                const OfferDiscount = actualTotal - salePrice
 
                 return {
                     productId: item.productId._id,
@@ -210,17 +212,28 @@ const getCartPage = async (req, res) => {
                     totalPrice: item.quantity * salePrice, // Use sale price for total price
                     productImage: item.productId.productImage[0], // Assuming multiple images
                     status: item.status,
-                    totalOffer
+                    totalOffer,
+                    actualTotal,
+                    OfferDiscount
                 };
             });
 
         const grandTotal = cartDetails.reduce((acc, item) => acc + item.totalPrice, 0);
+        const actualCartTotal = cartDetails.reduce((acc, item) => acc + item.actualTotal, 0);
+        const actualCartOfferDiscount = cartDetails.reduce((acc,item)=>acc + item.OfferDiscount,0);
+        const netQuantity = cartDetails.reduce((acc,item)=>acc + item.quantity,0);
 
+
+         console.log("cart details kandolooo",cartDetails);
+         
         // Render the cart page with the cart details
         res.render('user/cart', {
             message: "Cart details retrieved successfully.",
             data: cartDetails,
             grandTotal,
+            actualCartTotal,
+            actualCartOfferDiscount,
+            netQuantity,
             username: user.username,
             cartId: cart._id,
         });
@@ -541,6 +554,7 @@ const addToCart = async (req, res) => {
             if (existingItem.quantity < 3) {
                 existingItem.quantity += 1;
                 existingItem.totalPrice = existingItem.quantity * salePrice;
+                
         
                 // Decrease stock in the Product collection
                 product.quantity -= 1;
@@ -559,6 +573,7 @@ const addToCart = async (req, res) => {
                 quantity: 1,
                 price: salePrice,
                 totalPrice: salePrice,
+                
             });
         
             // Decrease stock in the Product collection
@@ -600,12 +615,14 @@ const addToCart = async (req, res) => {
 
 
         const grandTotal = cartDetails.reduce((acc, item) => acc + item.totalPrice, 0);
+        const actualCartTotal = cartDetails.reduce((acc,item)=>acc+item.actualTotal,0)
 
         res.json({
             success: true,
             message: "Item added to cart",
             data: cartDetails,
             grandTotal,
+            actualCartTotal
         });
     } catch (error) {
         console.error("Error adding to cart:", error);
@@ -731,6 +748,7 @@ const changeQuantity = async (req, res) => {
         // Calculate sale price
         const salePrice = calculateSalePrice(product); // Use the function to calculate sale price
         const totalPrice = salePrice * quantity;
+
 
         if (quantity === 0) {
             // Remove item from the cart if quantity is 0

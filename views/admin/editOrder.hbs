@@ -109,7 +109,9 @@
                     <th>Product</th>
                     {{!-- <th>SKU</th> --}}
                     <th>Quantity</th>
-                    <th>Price</th>
+                    <th>Actual Price</th>
+
+                    <th>Offer Price</th>
                     <th>Total</th>
                 </tr>
             </thead>
@@ -119,6 +121,7 @@
                     <td>{{this.product.productName}} <br> <small>{{this.product.productDetails}}</small></td>
                     
                     <td>{{this.quantity}}</td>
+                    <td>{{this.product.regularPrice}}</td>
                     <td>₹{{this.price}}</td>
                    
                     <td>₹{{this.totalPrice}}</td>
@@ -132,13 +135,24 @@
                     <td>₹{{order.totalOrderPrice}}</td>
                 </tr>
                 
+                
+                  <tr>
+                    <td colspan="4">Coupon Discount:</td>
+                    <td>{{couponDiscount}}</td>
+                </tr>
+                
+                 <tr>
+                    <td colspan="4">You Saved:</td>
+                    <td>{{order.discounts}}</td>
+                </tr>
+                
                 <tr>
                     <td colspan="4">Shipping Rate:</td>
                     <td>free Shipping</td>
                 </tr>
                 <tr>
                     <td colspan="4"><strong>Total:</strong></td>
-                    <td><strong>₹{{order.totalOrderPrice}}</strong></td>
+                    <td><strong>₹{{order.finalAmount}}</strong></td>
                 </tr>
             </tfoot>
         </table>

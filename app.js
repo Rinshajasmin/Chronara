@@ -108,7 +108,17 @@ app.engine(
         }
         return options.inverse(this); // Render the "else" block otherwise
       },
-      
+      add: (a, b) => a + b, // Add two numbers
+      subtract: (a, b) => a - b, // Subtract one number from another
+      range: (start, end) => {
+        const range = [];
+        for (let i = start; i <= end; i++) {
+          range.push(i);
+        }
+        return range; // Return an array of numbers from start to end
+      },
+      gt: (a, b) => a > b, // Greater than comparison
+      lt: (a, b) => a < b, // Less than comparison
     
     },
     runtimeOptions: {

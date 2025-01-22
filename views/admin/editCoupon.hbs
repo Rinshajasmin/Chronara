@@ -2,7 +2,7 @@
 
 <div class="form-container">
     <h2>Edit Coupon</h2>
-    <form id="editCouponForm" method="post" action="/admin/editCoupon/{{coupon._id}}">
+    <form id="editCouponForm" method='POST' action="/admin/editCoupon/{{coupon._id}}">
         <label for="name">Coupon Code</label>
         <input type="text" id="name" name="name" value="{{coupon.name}}" required />
         {{#if message}}
@@ -33,7 +33,7 @@
     </form>
 </div>
  <script>
-  document.getElementById("couponForm").addEventListener("submit", function (event) {
+  document.getElementById("editCouponForm").addEventListener("submit", function (event) {
     const coupon = document.getElementById("name").value.trim();
     const offerPrice = parseFloat(document.getElementById("offerPrice").value);
     const minimumPrice = parseFloat(document.getElementById("minimumPrice").value);
@@ -42,6 +42,14 @@
 
      const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0); 
+
+   const couponRegex = /^[A-Z0-9]+$/
+
+    if(!couponRegex.test(coupon)){
+      alert("Coupon code must contain only uppercase letters and numbers!")
+     event.preventDefault()
+     return;
+    }
 
 
     // Check if offer price is less than the minimum price
@@ -84,3 +92,4 @@
 </style>
 
 {{!-- {{> adminfooter}} --}}
+ 

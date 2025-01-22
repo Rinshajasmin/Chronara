@@ -130,6 +130,8 @@
       </ul>
     </div>
 
+    
+
  
   <h4>Filter by Price</h4>
 
@@ -225,6 +227,8 @@
         <option value="z-a" {{#ifCond sort "z-a"}}selected{{/ifCond}}>Z → A</option>
       </select>
     </div>
+
+    
   </form>
 </div>
 
@@ -288,6 +292,74 @@
     </div>
   </div>
 </section>
+
+{{!-- <div class="pagination">
+  <!-- Previous Arrow -->
+  {{#if (gt currentPage 1)}}
+    <a href="/user/filter?page={{subtract currentPage 1}}" class="pagination-arrow">
+      <i class="fa-solid fa-chevron-left"></i>
+    </a>
+  {{else}}
+    <span class="pagination-arrow disabled">
+      <i class="fa-solid fa-chevron-left"></i>
+    </span>
+  {{/if}}
+
+  <!-- Page Numbers -->
+  {{#each (range 1 totalPages)}}
+    <a href="/user/shop?page={{this}}" class="pagination-btn {{#ifEquals this currentPage}}active{{/ifEquals}}">
+      {{this}}
+    </a>
+  {{/each}}
+
+  <!-- Next Arrow -->
+  {{#if (lt currentPage totalPages)}}
+    <a href="/user/shop?page={{add currentPage 1}}" class="pagination-arrow">
+      <i class="fa-solid fa-chevron-right"></i>
+    </a>
+  {{else}}
+    <span class="pagination-arrow disabled">
+      <i class="fa-solid fa-chevron-right"></i>
+    </span>
+  {{/if}}
+
+
+  
+</div> --}}
+
+<div class="pagination">
+  {{#if (gt currentPage 1)}}
+    <a href="/user/filter?page={{subtract currentPage 1}}&limit=8&price={{price}}&sort={{sort}}&category={{category}}" class="pagination-arrow">
+      <i class="fa-solid fa-chevron-left"></i>
+    </a>
+  {{else}}
+    <span class="pagination-arrow disabled">
+      <i class="fa-solid fa-chevron-left"></i>
+    </span>
+  {{/if}}
+{{!-- 
+  {{!-- {{#each (range 1 totalPages)}}
+    <a href="/user/filter?page={{this}}&limit=8&price={{price}}&sort={{sort}}&category={{category}}" class="pagination-btn {{#ifEquals this currentPage}}active{{/ifEquals}}">
+      {{this}}
+    </a>
+  {{/each}} --}} 
+
+  {{#if (lt currentPage totalPages)}}
+    <a href="/user/filter?page={{add currentPage 1}}&limit=8&price={{price}}&sort={{sort}}&category={{category}}" class="pagination-arrow">
+      <i class="fa-solid fa-chevron-right"></i>
+    </a>
+  {{else}}
+    <span class="pagination-arrow disabled">
+      <i class="fa-solid fa-chevron-right"></i>
+    </span>
+  {{/if}}
+</div>
+
+
+
+
+
+
 
 
   {{> userfooter}} <!-- Include the footer partial -->
@@ -691,20 +763,7 @@ body {
   
 /* Sidebar Styles */
 /* Sidebar Styles */
-.sidebar {
-  position: fixed; /* Make the sidebar fixed */
-  top: 0;
-  left: 0;
-  flex: 0 0 250px;
-  background-color: #f1f1f1;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  height:auto; /* Make the sidebar extend to full height */
-  overflow-y: auto; /* Add scrolling if content exceeds the sidebar's height */
-  margin-top: 75px;
-    margin-left: 35px;
-}
+
 
 
 
@@ -797,7 +856,7 @@ body {
 /* Product Section */
 .product-section {
   flex: 3 1 700px;
-  margin-left: 270px; /* Create space on the left for the fixed sidebar */
+/*  margin-left: 270px; /* Create space on the left for the fixed sidebar */
   padding-top: 20px; /* To avoid overlap with the fixed sidebar */
 }
 
@@ -947,6 +1006,46 @@ body {
 
 .sort-filters h5 {
   margin-bottom: 10px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  margin-left: 1071px;
+}
+
+.pagination-btn,
+.pagination-arrow {
+  text-decoration: none;
+  padding: 8px 12px;
+  color: #333;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination-btn.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.pagination-arrow i {
+  font-size: 16px;
+}
+
+.pagination-arrow.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.pagination-btn:hover,
+.pagination-arrow:hover {
+  background-color: #007bff;
+  color: #fff;
 }
 
 /* Responsive Design */

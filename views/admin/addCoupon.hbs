@@ -55,6 +55,14 @@
      const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0); 
 
+    couponRegex = /^[A-Z0-9]+$/
+
+    if(!couponRegex.test(coupon)){
+      alert("Coupon code must contain only uppercase letters and numbers!")
+     event.preventDefault()
+     return;
+    }
+
 
     // Check if offer price is less than the minimum price
     if (offerPrice >= minimumPrice) {

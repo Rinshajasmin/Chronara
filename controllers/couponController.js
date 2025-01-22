@@ -14,7 +14,19 @@ const moment = require('moment')
 const getAllCoupons = async(req,res)=>{
     try {
         const coupons = await Coupons.find({isList:true}).sort({ createdOn: -1 })
-        res.render('admin/couponManagement',{coupons})
+
+        const updatedCoupons = coupons.map((coupon)=>{
+            const currentDateTime = moment();
+            const expiryTime = moment(coupon.expireOn).endOf('day')
+
+            const status = currentDateTime.isBefore(expiryTime)?'active':'expired';
+
+            return {
+                ...coupon._doc,
+                status
+            };
+        })
+        res.render('admin/couponManagement',{coupons:updatedCoupons})
     } catch (error) {
        console.log("error while loading all coupons",error)
        res.redirect('/admin/error') 
@@ -117,6 +129,14 @@ const editCoupon = async(req,res)=>{
               coupon
             });
           }
+        //   const couponRegex = /^[A-Z0-9]+$]/
+        //   if (!couponRegex.test(name)) {
+        //     return res.status(400).render('admin/editCoupon', {
+        //         message: 'Coupon code must contain only uppercase letters and numbers!!!!',
+        //         coupon: req.body, // To prefill the form with existing data
+        //     });
+        //}
+
 
           const today = new Date();
     const startDate = new Date(start);
@@ -155,8 +175,21 @@ const editCoupon = async(req,res)=>{
 
     // Update the coupon in the database
     await Coupons.findByIdAndUpdate(id, updatedData);
+    const coupons = await Coupons.find({ isList: true }).sort({ createdOn: -1 });
 
-    res.redirect('/admin/coupons'); // Redirect to the coupon management page
+    const updatedCoupons = coupons.map((coupon) => {
+        const currentDateTime = moment();
+        const expiryTime = moment(coupon.expireOn).endOf('day');
+
+        const calculatedStatus = currentDateTime.isBefore(expiryTime) ? 'active' : 'expired';
+
+        return {
+            ...coupon._doc,
+            status: calculatedStatus,
+        };
+    });
+
+    res.render('admin/couponManagement',{coupons:updatedCoupons}); // Redirect to the coupon management page
     
 } catch (error) {
     console.log("Error while updating coupon", error);

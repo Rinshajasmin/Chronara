@@ -215,8 +215,12 @@
                 return response.json();
             })
             .then(data => {
-                alert('Product added successfully!');
+                alert('Product Updated  successfully!');
                 console.log('Server response:', data);
+
+                 if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;  // Perform the redirection
+    }
             })
             
             .catch(error => {

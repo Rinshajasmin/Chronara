@@ -3,6 +3,8 @@
     {{!-- <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet"> --}}
 <!-- Ficons CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fiicons@latest/dist/fi-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 
     <link
     rel="stylesheet"
@@ -72,6 +74,8 @@
 {{!-- </section> --}}
 <section class="mt-50 mb-50">
     <div class="container">
+            <div id="toast" class="toast"></div>
+
         <div class="row">
             <div class="col-lg-9">
                 <div class="product-detail accordion-detail">
@@ -121,6 +125,10 @@
     <figure class="border-radius-10">
       <img id="main-image" src="{{product.productImage.[0]}}" alt="{{product.productName}}" class="zoomable-image" />
     </figure>
+      
+        <a href="javascript:void(0)" class="wishlist-icon" data-product-id="{{_id}}" onclick="toggleWishlist(this)">
+    <i class="fa-solid fa-heart {{#if isWishlisted}}wishlist-active{{/if}}"></i>
+</a>
   </div>
 
   <!-- Thumbnail Images -->
@@ -130,6 +138,9 @@
         <img class="thumbnail" src="{{this}}" alt="{{../product.productName}}" data-full="{{this}}" />
       </div>
     {{/each}}
+  </div>
+  <div>
+    
   </div>
 </div>
                     </div>
@@ -175,7 +186,7 @@
             {{else}}
                 No offer
             {{/if}}
-        </span>
+        </span> 
     </div>
 </div>
 
@@ -197,31 +208,39 @@
                                         <span class="qty-val" id="quantity">Stocks left {{quantity}}</span>
                                         <a href="#" class="qty-up" onclick=""><i class="fi-rs-angle-small-up"></i></a>
                                     </div>
-                                    <div class="product-extra-link2">
-                                      {{#if quantity}}
-                                        {{!-- <button type="submit" class="button button-add-to-cart" onclick="">Add to cart</button> --}}
-                                        <button class="add-to-cart-btn btn btn-primary" data-product-id="{{_id}}" onclick="addToCart('{{_id}}')">Add to Cart</button>
-                                       {{/if}}
-                                        <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a>
-                                    </div>
+                                   
                                 </div>
                                 <ul class="product-meta font-xs color-grey mt-50">
-                                    <li class="mb-5">Stock Code: <a href="#">FWM15VKT</a></li>
-                                    <li class="mb-5">Tags: {{category.name}}
+                                  
+                                   <li class="mb-5">
+                                     <i class="fas fa-tags mr-2"></i>Stock Code: 
+                                      <a href="#">FWM15VKT</a></li>
+                                    <li class="mb-5">
+                                       <i class="fas fa-tags mr-2"></i>
+                                      Tags: {{category.name}}
                                         {{!-- {{#each category.name}}
                                         <a href="#" rel="tag">{{this}}</a>
                                         {{/each}} --}}
-                                    </li>
+                                    </li> 
                                     {{#if categoryOffer}}
-                                    <li class="mb-5">categoryOffer: {{categoryOffer}}%
+                                    <li class="mb-5">
+                                       <i class="fas fa-tags mr-2"></i>categoryOffer: {{categoryOffer}}%</li>
                                       {{/if}}
                                       {{#if productOffer}}
-                                    <li class="mb-5">productOffer: {{productOffer}}% 
+                                    <li class="mb-5"> <i class="fas fa-tags mr-2"></i>productOffer: {{productOffer}}% </li>
                                       {{/if}}
-                                    <li>Availability: 
+                                    <li> <i class="fas fa-tags mr-2"></i>Availability: 
                                         <span class="in-stock text-success ml-5">{{product.status}}</span>
                                     </li>
                                 </ul>
+
+                                 <div class="product-extra-link2 mb-30">
+                                      {{#if quantity}}
+                                        {{!-- <button type="submit" class="button button-add-to-cart" onclick="">Add to cart</button> --}}
+                                        <button class="add-to-cart-btn btn btn-primary " data-product-id="{{_id}}" onclick="addToCart('{{_id}}')">Add to Cart</button>
+                                       {{/if}}
+ 
+</div>        </div>
                             </div>
                         </div>
                     </div>
@@ -230,9 +249,128 @@
         </div>
     </div>
 </section>
+<div class="reviews-section">
+    <div class="rating-summary">
+      <div class="average-rating">
+        <h1 style="color: #28a745;">4.7</h1>
+        <p>Customer Rating</p>
+        <p>(934,516)</p>
+      </div>
+      <div class="rating-breakdown">
+        <div class="rating-bar">
+          <span>5 ★</span>
+          <div class="bar"><div class="fill" style="width: 63%;"></div></div>
+          <span>63% (94,532)</span>
+        </div>
+        <div class="rating-bar">
+          <span>4 ★</span>
+          <div class="bar"><div class="fill" style="width: 24%;"></div></div>
+          <span>24% (6,717)</span>
+        </div>
+        <div class="rating-bar">
+          <span>3 ★</span>
+          <div class="bar"><div class="fill" style="width: 9%;"></div></div>
+          <span>9% (714)</span>
+        </div>
+        <div class="rating-bar">
+          <span>2 ★</span>
+          <div class="bar"><div class="fill" style="width: 1%;"></div></div>
+          <span>1% (152)</span>
+        </div>
+        <div class="rating-bar">
+          <span>1 ★</span>
+          <div class="bar"><div class="fill" style="width: 7%;"></div></div>
+          <span>7% (643)</span>
+        </div>
+      </div>
+    </div>
+    {{!-- <div class="customer-feedback">
+      <h2>Customer Feedback</h2>
+      <div class="review">
+        <h3>Dianne Russell</h3>
+            <span class="stars">★★★★★</span>
+
+        <p class="time">Just now</p>
+        <p>Nice product</p>
+      </div>
+      <div class="review">
+        <h3>Courtney Henry</h3>
+            <span class="stars">★★★★</span>
+
+        <p class="time">2 mins ago</p>
+        <p>Worth the money</p>
+      </div>
+      <div class="review">
+        
+        <h3>Darrell Steward</h3>
+            <span class="stars">★★★★★</span>
+
+        <p class="time">21 mins ago</p>
+        <p>Nice go for it.</p>
+      </div>
+      <div class="review">
+        <h3>Brooklyn Simmons</h3>
+            <span class="stars">★★★★</span>
+
+        <p class="time">1 hour ago</p>
+        <p>Fabulous watches and amazing quality</p>
+      </div>
+      <div class="review">
+        <h3>Bessie Cooper</h3>
+        <p class="time">1 day ago</p>
+        <p>Nice product</p>
+      </div>
+    </div> --}}
+    <div class="customer-feedback">
+  <h2>Customer Feedback</h2>
+  <div class="review">
+    <div class="review-header">
+      <h3>Dianne Russell</h3>
+      <span class="stars">★★★★★</span>
+    </div>
+    <p class="time">Just now</p>
+    <p>Nice product</p>
+  </div>
+  <div class="review">
+    <div class="review-header">
+      <h3>Courtney Henry</h3>
+      <span class="stars">★★★★</span>
+    </div>
+    <p class="time">2 mins ago</p>
+    <p>Worth the money</p>
+  </div>
+  <div class="review">
+    <div class="review-header">
+      <h3>Darrell Steward</h3>
+      <span class="stars">★★★★★</span>
+    </div>
+    <p class="time">21 mins ago</p>
+    <p>Nice go for it.</p>
+  </div>
+  <div class="review">
+    <div class="review-header">
+      <h3>Brooklyn Simmons</h3>
+      <span class="stars">★★★★</span>
+    </div>
+    <p class="time">1 hour ago</p>
+    <p>Fabulous watches and amazing quality</p>
+  </div>
+  <div class="review">
+    <div class="review-header">
+      <h3>Bessie Cooper</h3>
+      <span class="stars">★★★★★</span>
+    </div>
+    <p class="time">1 day ago</p>
+    <p>Nice product</p>
+  </div>
+</div>
+
+  </div>
 {{>userfooter}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.rawgit.com/elevateweb/elevatezoom/master/jquery.elevateZoom-3.0.8.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
 
 
 {{!-- <script>
@@ -257,7 +395,54 @@
     });
 </script> --}}
 
+<script>
+  async function toggleWishlist(element) {
+    const productId = element.getAttribute('data-product-id');
 
+    try {
+        const response = await fetch('/user/toggleWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const icon = element.querySelector('i');
+            const toast = document.getElementById('toast');
+
+            if (data.isWishlisted) {
+                icon.classList.add('wishlist-active'); // Make heart red
+                showToast('Item added to wishlist');
+
+            } else {
+                icon.classList.remove('wishlist-active'); // Revert to gray
+                showToast('Item removed from wishlist')
+            }
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error('Error toggling wishlist:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    // Hide the toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+</script>
 <script>
 // Zoom effect on main image
 const mainImage = document.getElementById('main-image');
@@ -382,6 +567,13 @@ thumbnails.forEach((thumbnail) => {
 .mb-5  {
     margin-bottom: 9px !important;
 }
+.text-brand{
+  margin-bottom: 20px;
+}
+
+.short-desc{
+  margin-top: 30px;
+}
 
 
 
@@ -401,23 +593,26 @@ thumbnails.forEach((thumbnail) => {
 .thumbnail:hover {
   border-color: #007bff;
 }
-/* Bold the text in detail-info section */
 .detail-info {
-  font-weight: bold;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ffffff; /* Clean white background */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  font-family: Arial, sans-serif; /* Ensure readable font */
+  width: 421px;
 }
 
-.detail-info h2.title-detail {
+.title-detail {
+  font-size: 24px;
   font-weight: bold;
-  font-size: 22px;
-  color: #333;
+  color: #333; /* Dark, professional color */
+  margin-bottom: 10px;
 }
 
-.detail-info .short-desc,
-.detail-info .product-meta {
-  font-size: 14px;
-  color: #555;
-  margin-top: 21px;
+.bt-1 {
+  border-top: 1px solid #e3e3e3; /* Subtle divider */
 }
+
 /* Main Image Zoom Effect */
 .zoomable-image {
   transition: transform 0.3s ease;
@@ -455,6 +650,9 @@ thumbnails.forEach((thumbnail) => {
   color: #fff;
   z-index: 1;
   cursor: pointer;
+}
+.product-meta {
+  list-style-type: none;
 }
 
 
@@ -622,6 +820,141 @@ thumbnails.forEach((thumbnail) => {
      .shopping-icon a{
         text-decoration: none;
     }
+
+    .reviews-section {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.stars {
+  color: green; /* Change this to any color */
+  margin-left: 10px;
+  font-size: 1.2em;
+}
+
+.rating-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.average-rating h1 {
+  font-size: 3em;
+  margin: 0;
+}
+
+.average-rating p {
+  margin: 5px 0;
+  color: #777;
+}
+
+.rating-breakdown .rating-bar {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.rating-bar span:first-child {
+  width: 50px;
+}
+
+.bar {
+  flex: 1;
+  height: 8px;
+  background: #e0e0e0;
+  margin: 0 10px;
+  position: relative;
+  border-radius: 4px;
+}
+
+.fill {
+  height: 100%;
+  background: #f9a825;
+  border-radius: 4px;
+}
+.customer-feedback {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.review {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.review:last-child {
+  border-bottom: none;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-header h3 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.stars {
+  font-size: 14px;
+  color: rgb(48, 150, 8);
+}
+
+.time {
+  font-size: 12px;
+  color: gray;
+  margin: 5px 0;
+}
+
+p {
+  margin: 5px 0;
+}
+
+.product-image-slider {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 400px; /* Adjust to fit your layout */
+  margin: auto;
+  overflow: hidden; /* Ensure the image stays within the rounded corners */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+  background-color: #f9f9f9; /* Light background to enhance contrast */
+  
+}
+.add-to-cart-btn{
+  width: 286px;
+  margin-left: 50px;
+}
+
+.toast{
+  margin-top: -222px;
+    margin-left: 448px;
+}
+
+
+.product-image-slider figure {
+  margin: 0;
+  padding: 0;
+   /* Match the parent container's border-radius */
+  overflow: hidden; /* Ensure image corners match the rounded container */
+}
   
 
 

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Page</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.product-page {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+}
+
+.image-gallery {
+  flex: 1;
+}
+
+.main-image img {
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+.thumbnail-images img {
+  width: 60px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.product-details {
+  flex: 1;
+}
+
+.product-name {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.rating {
+  color: #f39c12;
+  margin: 10px 0;
+}
+
+.price {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.current-price {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.original-price {
+  text-decoration: line-through;
+  margin-left: 10px;
+  color: #7f8c8d;
+}
+
+.discount {
+  color: #27ae60;
+  margin-left: 10px;
+}
+
+.product-options select,
+.quantity input {
+  margin: 5px 0;
+  padding: 5px;
+  width: 100%;
+}
+
+.buttons button {
+  padding: 10px 20px;
+  margin: 10px 5px 0 0;
+  border: none;
+  cursor: pointer;
+}
+
+.add-to-cart {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.buy-now {
+  background-color: #2ecc71;
+  color: #fff;
+}
+
+.product-tabs {
+  margin: 20px 0;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tab.active {
+  border-bottom: 2px solid #3498db;
+}
+
+.tab-content {
+  margin: 20px 0;
+}
+
+.extra-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #fff;
+}
+
+  </style>
+</head>
+<body>
+  <div class="product-page">
+    <!-- Product Image Gallery -->
+    <div class="image-gallery">
+      <div class="main-image">
+        <img src="watch-main.jpg" alt="Main Watch Image">
+      </div>
+      <div class="thumbnail-images">
+        <img src="watch1.jpg" alt="Watch Thumbnail 1">
+        <img src="watch2.jpg" alt="Watch Thumbnail 2">
+        <img src="watch3.jpg" alt="Watch Thumbnail 3">
+        <img src="watch4.jpg" alt="Watch Thumbnail 4">
+      </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="product-details">
+      <h1 class="product-name">Daisy Rose Gold Metallic Strap Watch</h1>
+      <p class="product-id">ID: A264671</p>
+      <p class="product-brand">Brand: Daniel Willington</p>
+      <p class="product-category">Category: Women</p>
+      <p class="rating">★ 4.7 Star Rating (10 User Feedback)</p>
+      <div class="price">
+        <span class="current-price">₹3,200</span>
+        <span class="original-price">₹5,200</span>
+        <span class="discount">25% OFF</span>
+      </div>
+
+      <!-- Dropdown Options -->
+      <div class="product-options">
+        <label for="strap">Strap:</label>
+        <select id="strap">
+          <option value="metallic">Metallic</option>
+          <option value="leather">Leather</option>
+        </select>
+
+        <label for="size">Size:</label>
+        <select id="size">
+          <option value="2-inch">2 inch dial</option>
+          <option value="1.5-inch">1.5 inch dial</option>
+        </select>
+
+        <label for="dial">Dial:</label>
+        <select id="dial">
+          <option value="square">Square</option>
+          <option value="round">Round</option>
+        </select>
+      </div>
+
+      <!-- Quantity and Buttons -->
+      <div class="quantity">
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" value="1" min="1">
+      </div>
+      <div class="buttons">
+        <button class="add-to-cart">Add to Cart</button>
+        <button class="buy-now">Buy Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Tabs -->
+  <div class="product-tabs">
+    <button class="tab active" data-tab="description">Description</button>
+    <button class="tab" data-tab="review">Review</button>
+  </div>
+  <div class="tab-content" id="description">
+    <h2>Description</h2>
+    <p>Still trying to choose between a minimalist and a more sophisticated style? Have both with the new Quadro Evergold with a 5-link bracelet...</p>
+  </div>
+  <div class="tab-content" id="review" style="display: none;">
+    <h2>Review</h2>
+    <p>No reviews yet.</p>
+  </div>
+
+  <!-- Features and Shipping -->
+  <div class="extra-info">
+    <div class="features">
+      <h3>Feature</h3>
+      <ul>
+        <li>Free 2-Year Warranty</li>
+        <li>Free Shipping & Fast Delivery</li>
+        <li>100% Money-back guarantee</li>
+        <li>24/7 Customer support</li>
+        <li>Secure payment method</li>
+      </ul>
+    </div>
+    <div class="shipping-info">
+      <h3>Shipping Information</h3>
+      <p>Courier: 2-4 days, free shipping</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

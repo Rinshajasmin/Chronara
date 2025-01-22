@@ -55,7 +55,8 @@ const cartSchema = new Schema({
         type: Number,
         required: true,
         default: 0
-    }
+    },
+   
 })
 
 const Cart = mongoose.model('Cart',cartSchema)

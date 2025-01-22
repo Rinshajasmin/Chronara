@@ -137,10 +137,14 @@ const getEditOrder = async (req, res) => {
 
         // Add the totalOrderPrice to the order object
         order.totalOrderPrice = totalOrderPrice;
-
         
+        let couponDiscount = 0;
+        if (order.couponApplied) {
+            couponDiscount = order.totalPrice - order.finalAmount; // Or any custom logic
+        }
 
-        res.render('admin/editOrder', { order ,addressDetails:selectedAddressDocument.address[0]});
+
+        res.render('admin/editOrder', { order ,addressDetails:selectedAddressDocument.address[0],couponDiscount});
     } catch (error) {
         console.error(error);
         res.status(500).send('Error fetching order details.');
@@ -243,15 +247,23 @@ const getCancelOrder = async(req,res)=>{
 
         // Add the totalOrderPrice to the order object
         order.totalOrderPrice = totalOrderPrice;
+        let couponDiscount = 0;
+        if (order.couponApplied) {
+            couponDiscount = order.totalPrice - order.finalAmount; // Or any custom logic
+        }
 
         
 
-        res.render('user/cancelOrder', { order ,addressDetails:selectedAddressDocument.address[0],username:user.username});
+        
+
+        res.render('user/cancelOrder', { order ,addressDetails:selectedAddressDocument.address[0],username:user.username,couponDiscount});
     } catch (error) {
         console.error(error);
         res.status(500).send('Error fetching order details.');
     }
 };
+
+
 // const orderCancel = async(req,res)=>{
 //     const orderId = req.params.id;
 //     const { status } = req.body;

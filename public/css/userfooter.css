@@ -8,8 +8,7 @@ footer {
   display: flex;
   flex-direction: column;
   justify-content: space-between; /* Pushes content to top and bottom */
-  margin-left: -20px;
-    margin-right: -20px;
+
 }
 
 /* Footer Left Section in Bottom-Left Corner */
