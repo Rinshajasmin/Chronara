@@ -155,19 +155,30 @@ const filterOrders = (filterType, startDate, endDate) => {
     return filter;
 };
  
+
+
 const getSalesPage = async (req, res) => {
     try {
-        const { filterType, startDate, endDate } = req.query;
+        
+        let { filterType, startDate, endDate } = req.query;
+
+        
+        if (!filterType) {
+            filterType = "weekly"; 
+        }
+
+        // Determine the date range based on the filterType
         const filter = filterOrders(filterType, startDate, endDate);
 
-        // Fetch orders
-    
+        const query = {
+            ...filter, // Include the date range filter
+            paymentStatus: "Paid", // Only orders with paymentStatus as "paid"
+            status: { $nin: ["Returned", "Cancelled"] } // Exclude orders with status "returned" or "cancelled"
+        };
 
-
-//Fetch orders based on the filter
-        const orders = await Order.find(filter);
-        orders.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
-
+        // Fetch orders based on the filter
+        const orders = await Order.find(query);
+        orders.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)); // Sort orders by date (most recent first)
 
         // Calculate report data
         const report = {
@@ -176,22 +187,25 @@ const getSalesPage = async (req, res) => {
             totalDiscounts: orders.reduce((acc, order) => acc + order.discounts, 0),
         };
 
+        // Add net sales to each order
         const ordersWithNetSales = orders.map(order => ({
             ...order.toObject(),
-            netSales: order.originalTotalPrice - order.discounts,
+            netSales: (order.originalTotalPrice - order.discounts)+50,
         }));
 
-        res.render('admin/sales', { report, orders:ordersWithNetSales, filterType});
+        res.render('admin/sales', { report, orders: ordersWithNetSales, filterType });
     } catch (error) {
         console.error('Error generating sales report:', error);
         res.status(500).send({ error: 'Failed to generate sales report' });
     }
-}
+};
+
 
 const postSalesReport = async (req, res) => {
     try {
         const { action, filterType, startDate, endDate } = req.body; // Handle form submission
         console.log(req.body)
+        
 
         if (action === 'view') {
             const filter = filterOrders(filterType, startDate, endDate);
@@ -221,6 +235,7 @@ const postSalesReport = async (req, res) => {
             const filePath = await generateSalesPDF({ filterType, startDate, endDate });
             return res.status(200).json({ message: 'PDF generated successfully', filePath });
         }
+        
 
     } catch (error) {
         console.error('Error generating sales report:', error);
@@ -230,7 +245,10 @@ const postSalesReport = async (req, res) => {
 
 
 const generateSalesPDF = async (req, res) => {
-    const { tableData } = req.body;
+    const { tableData, startDate,endDate,filterType} = req.body;
+
+    console.log("reqbody while pdf generation",req.body)
+    
 
     // Create a new PDF document
     const doc = new PDFDocument({ margin: 50 });
@@ -246,11 +264,49 @@ const generateSalesPDF = async (req, res) => {
     doc.fontSize(20).text('Chronara Sales Report', { align: 'center' });
     doc.moveDown(0.5);
 
-    // Add Date of Report Generation
-    const reportDate = new Date().toLocaleString();
-    doc.fontSize(12).text(`Date: ${reportDate}`, { align: 'right' });
+     // Helper Functions to Calculate Date Ranges
+     const getCurrentWeekRange = () => {
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay());
+        const endOfWeek = new Date(today);
+        endOfWeek.setDate(today.getDate() + (6 - today.getDay()));
+        return {
+            startDate: startOfWeek.toISOString().split('T')[0],
+            endDate: endOfWeek.toISOString().split('T')[0],
+        };
+    };
+
+    const getCurrentMonthRange = () => {
+        const today = new Date();
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        const monthName = startOfMonth.toLocaleString('default', { month: 'long' });
+        return {
+            startDate: startOfMonth.toISOString().split('T')[0],
+            endDate: endOfMonth.toISOString().split('T')[0],
+            monthName: monthName,
+        };
+    };
+
+     // Add the custom date range if available
+     if (filterType === 'custom' && startDate && endDate) {
+        doc.fontSize(12).text(`Date Range: ${startDate} to ${endDate}`, { align: 'left' });
+    } else if (filterType === 'weekly') {
+        const weekRange = getCurrentWeekRange();
+        doc.fontSize(12).text(`Weekly Report: ${weekRange.startDate} to ${weekRange.endDate}`, { align: 'left' });
+    } else if (filterType === 'monthly') {
+        const monthRange = getCurrentMonthRange();
+        doc.fontSize(12).text(`Monthly Report: ${monthRange.monthName}`, { align: 'left' });
+    } else {
+        doc.fontSize(12).text(`Report Type: ${filterType}`, { align: 'left' });
+    }
+
     doc.moveDown(1);
 
+
+
+    
     // Add an Underline Below the Title
     const underlineStartX = 50;
     const underlineEndX = doc.page.width - 50;
@@ -351,9 +407,17 @@ const generateSalesPDF = async (req, res) => {
 
     drawRow(totalRow, false); // Draw the total row
 
+    const lineY = y + 10; // Adjust the position slightly below the total row
+doc.moveTo(startX, lineY).lineTo(startX + columnWidths.reduce((a, b) => a + b, 0), lineY).stroke();
+
+const reportDate1 = new Date().toLocaleString();
+doc.fontSize(12).text(`Report Generated on: ${reportDate1}`, startX, lineY + 10, { align: 'right' }); // Adjust Y-position
+    
     // Finalize the PDF
     doc.end();
 };
+
+
 
 
 
@@ -551,8 +615,8 @@ const generateSalesPDF = async (req, res) => {
 const ExcelJS = require('exceljs');
 
 const generateSalesExcel = async (req, res) => {
-    const { tableData } = req.body;
-
+    const { tableData ,startDate,endDate,filterType} = req.body;
+    
     // Create a new workbook and worksheet
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Sales Report');
@@ -570,6 +634,18 @@ const generateSalesExcel = async (req, res) => {
     subtitleCell.value = `Generated on: ${new Date().toLocaleString()}`;
     subtitleCell.font = { italic: true, size: 10 };
     subtitleCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+    worksheet.mergeCells('A3:E3');
+    const infoCell = worksheet.getCell('A3');
+    if (startDate && endDate) {
+        infoCell.value = `Date Range: ${startDate} to ${endDate}`;
+    } else {
+        infoCell.value = `Report Type: ${filterType}`;
+    }
+
+    infoCell.font = { italic: true, size: 10 };
+    infoCell.alignment = { vertical: 'middle', horizontal: 'center' };
+
 
     // Define column headers
     const headers = ['Order Date', 'Order ID', 'Total Amount', 'Discount', 'Net Amount'];

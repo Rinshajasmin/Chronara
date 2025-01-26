@@ -9,6 +9,7 @@ const productController = require('../controllers/productController')
 const orderController = require('../controllers/orderController')
 const couponController = require('../controllers/couponController')
 const salesController = require('../controllers/salesController')
+const dashBoardController = require('../controllers/dashBoardController')
 const multer = require('multer')
 const storage = require('../helpers/multer')
 const uploads = multer({storage:storage})
@@ -61,6 +62,10 @@ router.get('/getSalesReport', adminAuth, salesController.getSalesPage); // Defau
 router.post('/downloadPDF',adminAuth,salesController.generateSalesPDF)
 router.post('/downloadExcel',adminAuth,salesController.generateSalesExcel)
 
+
+//dashboard management
+router.get('/getDashBoard',adminAuth,dashBoardController.getDashBoard)
+router.post('/getFilteredRevenue',adminAuth,dashBoardController.getFilteredRevenue)
 
 
 

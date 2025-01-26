@@ -21,7 +21,7 @@ const registerLogin= async(req,res)=>{
         if(!isMatch)
             return res.render('admin/login',{message:'incorrect password'})
         req.session.admin=true
-        res.redirect('/admin/dashBoard')
+        res.redirect('/admin/getDashBoard')
 
 
     } catch (error) {

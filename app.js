@@ -119,7 +119,9 @@ app.engine(
       },
       gt: (a, b) => a > b, // Greater than comparison
       lt: (a, b) => a < b, // Less than comparison
-    
+      json: function(context) {
+        return JSON.stringify(context);
+    }
     },
     runtimeOptions: {
       allowProtoPropertiesByDefault: true

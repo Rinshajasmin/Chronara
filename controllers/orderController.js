@@ -8,6 +8,9 @@ const mongodb = require("mongodb");
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const { v4: uuidv4 } = require('uuid');
+const PDFDocument = require('pdfkit');
+const moment = require('moment')
+
 
 
 
@@ -389,7 +392,189 @@ const returnOrder = async(req,res)=>{
         res.status(500).send("server error")
     }
 }
+const completeFailedPayment = async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        const { paymentMethod } = req.body; 
+        
+        console.log("Payment Method:", paymentMethod);
 
+        const order = await Order.findById(orderId).populate({
+            path: 'orderItems.product', // Assuming `productId` is the field in `orderItems`
+            select: 'productName' // Only fetch the `name` field from the Product schema
+        });        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+
+        // Extract relevant order details
+        const {  finalAmount, paymentStatus } = order;
+
+        console.log("Order Details:", order);
+
+        // Check if payment is already completed
+        if (paymentStatus === 'Paid') {
+            return res.status(400).json({ success: false, message: 'Payment has already been completed for this order' });
+        }
+
+        // Process payment based on the selected payment method
+        if (paymentMethod === 'Wallet') {
+            const userId = req.session.user; // Assuming user session contains the logged-in user's ID
+            const wallet = await Wallet.findOne({ userId });
+
+            if (!wallet) {
+                return res.status(404).json({ success: false, message: 'Wallet not found' });
+            }
+
+            if (wallet.balance < finalAmount) {
+                return res.json({ success: false, message: 'Insufficient wallet balance' });
+            }
+
+            // Deduct the amount from the wallet
+            wallet.balance -= finalAmount;
+            wallet.transactions.unshift({
+                transactionId: uuidv4(),
+                description: `Payment for: ${order.orderItems
+                    .map(item => item.product.productName) // Extract product names
+                    .join(', ')}`, // Join product names with `,
+                type: 'Withdrawal',
+                amount: finalAmount,
+                date: new Date(),
+            });
+            await wallet.save();
+
+            // Update the order payment status to "Paid"
+            order.paymentStatus = 'Paid';
+            order.status = 'Pending'; // Update status to processing or any relevant status
+            await order.save();
+
+            return res.json({ success: true, message: 'Payment completed successfully using Wallet' });
+        } else if (paymentMethod === 'Razorpay') {
+            // Redirect to an online payment gateway (e.g., Razorpay, PayPal)
+            return res.redirect(`/user/getPaymentPage?orderId=${orderId}&amount=${finalAmount}`);
+        } else if (paymentMethod === 'Cash on Delivery') {
+            // Update the order payment status for COD
+            order.paymentStatus = 'Pending';
+            order.status = 'Pending'; // Update status accordingly
+            await order.save();
+
+            return res.status(200).json({success:true,message:'Order confirmed with Cash on Delivery'});
+        } else {
+            return res.status(400).json({success:false,message:'Invalid payment method selected'});
+        }
+    } catch (error) {
+        console.error('Error completing payment:', error);
+        res.status(500).send('Server error');
+    }
+};
+
+const invoiceDownload = async(req,res)=>{
+    try {
+        const orderId = req.params.id
+        const order = await Order.findById(orderId).populate('orderItems.product');
+
+    if (!order) {
+        return res.status(404).send('Order not found');
+    }
+
+    
+
+    const doc = new PDFDocument({ margin: 50 });
+
+    // Set headers for the response
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=invoice_${order.orderId}.pdf`);
+
+    // Pipe the document to the response
+    doc.pipe(res);
+
+    // Add company logo and details
+    doc
+      
+      .fontSize(20)
+      .text('Chronara Pvt Ltd.', 50, 50)
+      .fontSize(10)
+      .text('123 Main Street', 50, 75)
+      .text('Bangalore, Karnataka, 10025', 50, 90)
+      .moveDown();
+
+    // Invoice header
+    doc.fontSize(20).text('Invoice', 50, 150).moveDown();
+
+    // Invoice details
+        const formattedDate = moment(order.createdOn).format('DD MMMM YYYY, hh:mm A');
+        const finalTotal = order.finalAmount.toFixed(2)
+    doc
+
+      .fontSize(10)
+      .text(`Order Number: ${order.orderId}`, 50, 200)
+      .text(`Invoice Date: ${formattedDate}`, 50, 215)
+      .text(`Balance Due: ${finalTotal}`, 50, 230)
+    //   .text(`Customer Name: ${order.customerName}`, 300, 200) // Use dynamic customer name
+    //   .text(`Address: ${order.customerAddress}`, 300, 215);
+
+    // Table header
+    const tableTop = 300;
+    doc
+      .fontSize(10)
+      .text('NO:', 50, tableTop)
+      .text('Item', 150, tableTop)
+      .text('Unit Cost', 300, tableTop)
+      .text('Quantity', 350, tableTop)
+      .text(' Total', 450, tableTop);
+
+    doc.moveTo(50, tableTop + 15).lineTo(550, tableTop + 15).stroke();
+
+    // Add order items
+    let y = tableTop + 25;
+    order.orderItems.forEach((item, index) => {
+        const unitPrice = item.product.regularPrice.toFixed(2); // Format unit price
+        const lineTotal = (item.product.regularPrice * item.quantity).toFixed(2); // Format line total
+      
+        doc
+          .text((index + 1).toString(), 50, y) // Serial number
+          .text(item.product.productName, 150, y) // Product name
+          .text(`${unitPrice}`, 300, y) // Unit price with 2 decimals
+          .text(item.quantity.toString(), 350, y) // Quantity
+          .text(`${lineTotal}`, 450, y); // Line total with 2 decimals
+      
+        y += 20; // Move to the next row
+      });
+    // Add total summary
+    doc
+      .moveTo(50, y + 10)
+      .lineTo(550, y + 10)
+      .stroke();
+
+      const discounted=order.discounts.toFixed(2)
+      const formattedTotal=order.totalPrice.toFixed(2)
+
+
+      doc
+      .fontSize(10)
+      .text(`You saved: ${discounted}`, 400, y + 35)
+  
+      .text(`Subtotal: ${formattedTotal}`, 400, y + 55) // Increased the space between rows
+  
+      .text(`Shipping: 50.00`, 400, y + 75) // Increased space
+  
+      .font('Helvetica-Bold') // Make the finalTotal bold
+      .text(`Total: ${finalTotal}`, 400, y + 95); // Increased space and applied bold font
+  
+    // Footer
+    doc
+      .fontSize(10)
+      .text('Thank you for your purchase!', 50, y + 100, {
+        align: 'left',
+        width: 500,
+      });
+
+    // Finalize PDF
+    doc.end();
+} catch (error) {
+    console.error('Error generating invoice:', error);
+    res.status(500).send('Server error');
+}
+}
 
 
 module.exports = {
@@ -400,5 +585,7 @@ module.exports = {
     getOrderslist,
     getCancelOrder,
     orderCancel,
-    returnOrder
+    returnOrder,
+    completeFailedPayment,
+    invoiceDownload
 }

@@ -206,10 +206,10 @@ const getCartPage = async (req, res) => {
                 return {
                     productId: item.productId._id,
                     productName: item.productId.productName,
-                    regularPrice: item.productId.regularPrice,
-                    salePrice, // Include the calculated sale price
+                    regularPrice: (item.productId.regularPrice).toFixed(2),
+                    salePrice: salePrice.toFixed(2), 
                     quantity: item.quantity,
-                    totalPrice: item.quantity * salePrice, // Use sale price for total price
+                    totalPrice: (item.quantity * salePrice).toFixed(2), // Use sale price for total price
                     productImage: item.productId.productImage[0], // Assuming multiple images
                     status: item.status,
                     totalOffer,
@@ -217,23 +217,28 @@ const getCartPage = async (req, res) => {
                     OfferDiscount
                 };
             });
+            
 
-        const grandTotal = cartDetails.reduce((acc, item) => acc + item.totalPrice, 0);
-        const actualCartTotal = cartDetails.reduce((acc, item) => acc + item.actualTotal, 0);
-        const actualCartOfferDiscount = cartDetails.reduce((acc,item)=>acc + item.OfferDiscount,0);
-        const netQuantity = cartDetails.reduce((acc,item)=>acc + item.quantity,0);
+            const shippingCharge=50.00
+            const grandTotal = cartDetails
+            .reduce((acc, item) => acc + parseFloat(item.totalPrice), 0)
+            .toFixed(2);       
+             const actualCartTotal = cartDetails.reduce((acc, item) => acc +parseFloat (item.actualTotal), 0).toFixed(2);
+        const actualCartOfferDiscount = cartDetails.reduce((acc,item)=>acc + parseFloat(item.OfferDiscount),0).toFixed(2);
+        const netQuantity = cartDetails.length;
+        const  totalWithShipping = (parseFloat(grandTotal)+shippingCharge).toFixed(2)
 
 
-         console.log("cart details kandolooo",cartDetails);
+         console.log("cart details",cartDetails);
          
-        // Render the cart page with the cart details
         res.render('user/cart', {
             message: "Cart details retrieved successfully.",
             data: cartDetails,
-            grandTotal,
+            grandTotal:totalWithShipping ,
             actualCartTotal,
             actualCartOfferDiscount,
             netQuantity,
+            shippingCharge:shippingCharge,
             username: user.username,
             cartId: cart._id,
         });
@@ -613,15 +618,16 @@ const addToCart = async (req, res) => {
         });
         console.log("Final Response Data:", cartDetails);
 
-
+        const shippingCharge = 50.00
         const grandTotal = cartDetails.reduce((acc, item) => acc + item.totalPrice, 0);
         const actualCartTotal = cartDetails.reduce((acc,item)=>acc+item.actualTotal,0)
+        const  totalWithShipping = (parseFloat(grandTotal)+shippingCharge).toFixed(2)
 
         res.json({
             success: true,
             message: "Item added to cart",
             data: cartDetails,
-            grandTotal,
+            grandTotal:totalWithShipping,
             actualCartTotal
         });
     } catch (error) {
@@ -1110,10 +1116,11 @@ const getCheckOut = async (req, res) => {
 
             return acc + item.totalPrice; // Add item total price to grand total
         }, 0);
-
+        
+        const shoppingCharge=50
         // Calculate final total price after applying any coupon (if present)
         const discount = cart.coupon?.discount || 0; // Coupon discount (if any)
-        const finalTotal = grandTotal - discount; // Final total after coupon
+        const finalTotal = parseFloat((grandTotal - discount + shoppingCharge).toFixed(2));
 
         res.render('user/checkOut', {
             items: cart.items,
@@ -1297,7 +1304,8 @@ const placeOrders = async (req, res) => {
         const totalPrice = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
         const grandTotal = cart.grandTotal;
       console.log("grandtotal and totalPrice in order:::",grandTotal,totalPrice);
-      
+      const shippingCharge = 50.00
+      totalWithShipping =(parseFloat(totalPrice+shippingCharge).toFixed(2))
 
         // Check stock for each product and update inventory
         for (const item of cart.items) {
@@ -1308,12 +1316,12 @@ const placeOrders = async (req, res) => {
                 return res.status(404).send(`Product not found: ${item.productId._id}`);
             }
 
-            if (product.quantity < item.quantity) {
-                console.log(product.quantity);
-                console.log("item quantity", item.quantity);
+            // if (product.quantity < item.quantity) {
+            //     console.log(product.quantity);
+            //     console.log("item quantity", item.quantity);
 
-                return res.status(400).send(`Not enough stock for ${product.productName}`);
-            }
+            //     return res.status(400).send(`Not enough stock for ${product.productName}`);
+            // }
 
             // Decrease the product quantity by the ordered quantity
             product.quantity -= item.quantity;
@@ -1334,7 +1342,7 @@ const placeOrders = async (req, res) => {
                 price: item.price,
             })),
             totalPrice: totalPrice, // Use grandTotal from the cart
-            finalAmount: grandTotal || totalPrice, // Adjust if there are discounts or other fees
+            finalAmount: totalWithShipping, // Adjust if there are discounts or other fees
             paymentMethod: paymentMethod,
             selectedAddress: addressId,
             address: userId,
@@ -1437,7 +1445,8 @@ const placeOrders = async (req, res) => {
             createdOn: savedOrder.createdOn,
             ordernumber: savedOrder.orderId,
             username: userData.username,
-            grandTotal:savedOrder.grandTotal
+            grandTotal:savedOrder.grandTotal,
+            
         });
     } catch (error) {
         console.error('Error placing order:', error);

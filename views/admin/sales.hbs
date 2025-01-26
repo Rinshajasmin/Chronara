@@ -27,75 +27,26 @@
         </div>
 
         <div class="report-section">
-            {{!-- <h2>Generate Sales Report</h2>
-            <div class="filters">
-                <label for="quick-filters">Quick Filters</label>
-                <select id="quick-filters">
-                    <option value="custom-date">Custom Date Range</option>
-                </select>
-                <div class="date-inputs">
-                    <div>
-                        <label for="start-date">Start Date</label>
-                        <input type="date" id="start-date">
-                    </div>
-                    <div>
-                        <label for="end-date">End Date</label>
-                        <input type="date" id="end-date">
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="generate-report">Generate Report</button>
-                    <button class="download-pdf">Download PDF</button>
-                    <button class="download-excel">Download Excel</button>
-                </div>
-            </div> --}}
-            {{!-- <h2>Generate Sales Report</h2>
-<form action="/admin/getSalesReport" method="POST">
+        
+
+<form id="salesReportForm"action="/admin/getSalesReport" method="POST">
     <div class="filters">
         <div class="filter-row">
             <label for="quick-filters">Quick Filters</label>
-            <select name="filterType" id="quick-filters">
-                <option value="daily">Daily</option>
-                <option value="weekly" selected>Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="custom">Custom Date Range</option>
-            </select>
-
-            <div class="date-inputs">
-                <label for="start-date">Start Date</label>
-                <input type="date" name="startDate" id="start-date">
-                <label for="end-date">End Date</label>
-                <input type="date" name="endDate" id="end-date">
-            </div>
-
-            <div class="action-buttons">
-                
-                <button type="submit" name="action" class="generate-report" value="view">Generate Report</button>
-                <button class="download-pdf" id="download-pdf">Download PDF</button>
-                <button class="download-excel" id="download-excel">Download Excel</button>
-                 
-                
-            </div>
-        </div>
-    </div>
-    </form> --}}
-<h2>Generate Sales Report</h2>
-<form action="/admin/getSalesReport" method="POST">
-    <div class="filters">
-        <div class="filter-row">
-            <label for="quick-filters">Quick Filters</label>
-            <select name="filterType" id="quick-filters">
+            <select name="filterType" id="quick-filters" onchange="toggleDateInputs()">
                 <option value="daily" {{#if (eq filterType 'daily')}}selected{{/if}}>Daily</option>
                 <option value="weekly" {{#if (eq filterType 'weekly')}}selected{{/if}}>Weekly</option>
                 <option value="monthly" {{#if (eq filterType 'monthly')}}selected{{/if}}>Monthly</option>
                 <option value="custom" {{#if (eq filterType 'custom')}}selected{{/if}}>Custom Date Range</option>
             </select>
 
-            <div class="date-inputs">
+            <div class="date-inputs" id="date-inputs" style="display: none;">
                 <label for="start-date">Start Date</label>
-                <input type="date" name="startDate" id="start-date" value="{{startDate}}">
-                <label for="end-date">End Date</label>
-                <input type="date" name="endDate" id="end-date" value="{{endDate}}">
+                <input type="date" name="startDate" id="start-date" class="date-field" value="{{startDate}}">
+                            
+              <label for="end-date">End Date</label>
+                <input type="date" name="endDate" id="end-date"class="date-field"  value="{{endDate}}">
+               
             </div>
 
             <div class="action-buttons">
@@ -112,7 +63,9 @@
 
 
 
-            <table class="sales-table">
+
+
+            <table class="sales-table" id="salesTable">
     <thead>
         <tr>
             <th>Date</th>
@@ -232,6 +185,8 @@
     select, input[type="date"] {
         padding: 0.5rem ;
         font-size: 1rem;
+        width: 268px;
+
          /* Full width for better alignment */
     }
 
@@ -291,6 +246,80 @@ button:hover {
 }
 
 </style>
+
+<script>
+    
+$(document).ready(function () {
+    $('#salesTable').DataTable({
+        paging: true,
+        pageLength: 8,
+        lengthChange: false, // Remove the dropdown for entries per page
+        searching: false,
+        ordering: false,
+        info: false,
+        pagingType: "simple",
+        language: {
+            paginate: {
+                first: '<i class="fas fa-angle-double-left"></i>',
+                previous: '<i class="fas fa-chevron-left"></i>',
+                next: '<i class="fas fa-chevron-right"></i>',
+                last: '<i class="fas fa-angle-double-right"></i>',
+            },
+        },
+    });
+});
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const filterDropdown = document.getElementById('quick-filters');
+    const dateInputs = document.getElementById('date-inputs');
+
+    // Function to toggle the visibility of date inputs
+    function toggleDateInputs() {
+        if (filterDropdown.value === 'custom') {
+            dateInputs.style.display = 'block';
+        } else {
+            dateInputs.style.display = 'none';
+        }
+    }
+
+    // Initialize the visibility based on the pre-selected filter
+    toggleDateInputs();
+
+    // Add event listener for dropdown change
+    filterDropdown.addEventListener('change', toggleDateInputs);
+});
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById("salesReportForm").addEventListener("submit", function (e) {
+        const startDate = new Date(document.getElementById("start-date").value);
+        const endDate = new Date(document.getElementById("end-date").value);
+        const today = new Date();
+
+        if (startDate > endDate) {
+            e.preventDefault(); // Prevent form submission
+            Swal.fire({
+                icon: "error",
+                title: "Invalid Dates",
+                text: "Start date should be less than the end date.",
+            });
+            return;
+        }
+        if (endDate > today) {
+            e.preventDefault(); // Prevent form submission
+            Swal.fire({
+                icon: "error",
+                title: "Invalid Dates",
+                text: "End date should not be a future date.",
+            });
+            return;
+        }
+    });
+</script>
+
 <script>
     document.getElementById('download-pdf').addEventListener('click', () => {
     // Gather table data
@@ -299,6 +328,11 @@ button:hover {
         const rowData = Array.from(row.cells).map(cell => cell.innerText.trim());
         tableData.push(rowData);
     });
+      const startDate = document.getElementById('start-date').value; // Adjust as per your input element
+    const endDate = document.getElementById('end-date').value ;   // Adjust as per your input element
+    const filterType = document.getElementById('quick-filters').value
+    
+    
 
     // Send data to the backend
     fetch('/admin/downloadPDF', {
@@ -306,7 +340,7 @@ button:hover {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ tableData })
+        body: JSON.stringify({ tableData ,startDate,endDate,filterType})
     })
     .then(response => response.blob())
     .then(blob => {
@@ -327,13 +361,18 @@ document.getElementById('download-excel').addEventListener('click', () => {
         tableData.push(rowData);
     });
 
+    const startDate=document.getElementById('start-date').value
+    const endDate = document.getElementById('end-date').value
+    const filterType = document.getElementById('quick-filters').value
+
+
     // Send data to the backend
     fetch('/admin/downloadExcel', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ tableData })
+        body: JSON.stringify({ tableData,startDate,endDate,filterType })
     })
     .then(response => response.blob())
     .then(blob => {

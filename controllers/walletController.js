@@ -46,6 +46,9 @@ const getWallet = async (req, res) => {
             return res.status(404).json({ message: 'Wallet not found!' });
         }
 
+        const formattedBalance = parseFloat(wallet.balance).toFixed(2);
+
+
         // Sort transactions by date in descending order
         const sortedTransactions = wallet.transactions
             .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -53,13 +56,13 @@ const getWallet = async (req, res) => {
                 id: tx.transactionId,
                 description: tx.description,
                 date: tx.date.toISOString(), // Send as ISO string
-                withdrawal: tx.type === 'Withdrawal' ? tx.amount : null,
-                deposit: tx.type === 'Deposit' ? tx.amount : null,
+                withdrawal: tx.type === 'Withdrawal' ? parseFloat(tx.amount).toFixed(2) : null,
+                deposit: tx.type === 'Deposit' ? parseFloat(tx.amount).toFixed(2) : null,
             }));
 
         res.render('user/wallet', { 
             wallet: {
-                balance: wallet.balance,
+                balance: formattedBalance,
                 transactions: sortedTransactions,
             },
         });
@@ -81,6 +84,9 @@ const getWallet = async (req, res) => {
             if (!amount || amount <= 0) {
                 return res.status(400).json({ success: false, message: 'Invalid amount.' });
             }
+
+            const formattedAmount = parseFloat(amount).toFixed(2);
+
     
             // Find or create the wallet
             let wallet = await Wallet.findOne({ userId });
@@ -89,13 +95,13 @@ const getWallet = async (req, res) => {
             }
     
             // Update the wallet balance and add a transaction
-            wallet.balance += amount;
+            wallet.balance = parseFloat(wallet.balance + parseFloat(formattedAmount)).toFixed(2);
             wallet.transactions.push({
                 transactionId: uuidv4(), // Example transaction ID
                 description: 'Added money to wallet',
                 date: new Date(),
                 type: 'Deposit',
-                amount,
+                amount:formattedAmount
             });
     
             await wallet.save();

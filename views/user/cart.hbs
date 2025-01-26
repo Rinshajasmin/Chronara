@@ -149,9 +149,12 @@
                         <table class="table">
                             <tbody>
                                 <tr id="actualPriceRow">
-                                    <td class="cart_total_label">Price({{netQuantity}} Items)</td>
-                                    <td class="actualCartTotal">{{actualCartTotal}}</td>
-                                </tr>
+                                 <td class="cart_total_amount net-quantity">
+                                   Price(<span id="netQuantity">{{netQuantity}}</span> Items)
+                                     </td>
+                                   <td class="actualCartTotal">{{actualCartTotal}}</td>
+                                       </tr>
+
                                 <tr id="offerRow">
                                     <td>
                                         Saved(offers)
@@ -167,7 +170,7 @@
 
                                 <tr>
                                     <td class="cart_total_label">Shipping</td>
-                                    <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
+                                    <td class="shippingCharge" id="shippingCharge"> <i class="ti-gift mr-5"></i> ₹50.00</td>
                                 </tr>
                                 
                                 <tr>
@@ -382,12 +385,12 @@ document.getElementById('applyCouponForm').addEventListener('submit', async (eve
 
         if (result.success) {
             // Update cart details dynamically
-            document.getElementById('cartTotal').textContent = `₹${result.cartDetails.grandTotal}`;
+            document.getElementById('cartTotal').textContent = `₹${parseFloat(result.cartDetails.grandTotal).toFixed(2)}`;
             // Update discount row visibility
             const discountRow = document.getElementById('discountRow');
             if (result.cartDetails.discount) {
                 discountRow.style.display = ''; // Show the row
-                discountRow.querySelector('.discountValue').textContent = `₹${result.cartDetails.discount}`;
+                discountRow.querySelector('.discountValue').textContent = `₹${parseFloat(result.cartDetails.discount).toFixed(2)}`;
             } else {
                 discountRow.style.display = 'none'; // Hide the row
             }
@@ -805,14 +808,7 @@ if (rowToDelete) {
                 'The item has been removed from your cart.',
                 'success'
             );
-        } else {
-            // User canceled the deletion
-            Swal.fire(
-                'Cancelled',
-                'The item is still in your cart.',
-                'info'
-            );
-        }
+        } 
     });
 
     return; // Stop further execution until the user decides
@@ -892,15 +888,20 @@ if (rowToDelete) {
             console.error('Error updating cart item:', error);
         }
     }
+    let shippingCharge = 50; // Fixed shipping charge
+
 
  function updateGrandTotal() {
     let grandTotal = 0; // Total after discounts
     let actualCartTotal = 0; // Total without any discounts
     let actualCartOfferDiscount = 0; // Total discount offered
+    let netQuantity = 0
 
     // Get all the subtotals
     const subtotals = document.querySelectorAll('.subtotal');
     const rows = document.querySelectorAll('.cart-item-row'); // Each row of the cart items
+    netQuantity = rows.length
+    
 
     rows.forEach(row => {
         // Extract product details from the row
@@ -917,10 +918,11 @@ if (rowToDelete) {
         actualCartOfferDiscount += totalRegularPrice - totalSalePrice; // Discount difference
     });
 
+    const shippingCharge = 50.00;
     // Update the grand total in the UI
     const grandTotalElement = document.querySelector('#cartTotal');
     if (grandTotalElement) {
-        grandTotalElement.innerText = `₹ ${grandTotal.toFixed(2)}`;
+        grandTotalElement.innerText = `₹ ${(parseFloat(grandTotal)+shippingCharge).toFixed(2)}`;
     }
 
     // Update the actualCartTotal in the UI
@@ -933,6 +935,10 @@ if (rowToDelete) {
     const actualCartOfferDiscountElement = document.querySelector('.actualCartOfferDiscount');
     if (actualCartOfferDiscountElement) {
         actualCartOfferDiscountElement.innerText = `₹ ${actualCartOfferDiscount.toFixed(2)}`;
+    }
+     const netQuantityElement = document.getElementById('netQuantity');
+    if (netQuantityElement) {
+        netQuantityElement.innerText = `${netQuantity}` // Display the total number of distinct products
     }
 }
 

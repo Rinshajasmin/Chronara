@@ -86,6 +86,8 @@ router.get('/getUserOrders',userAuth,orderController.getOrderslist)
 router.get('/cancelOrder/:id',userAuth,orderController.getCancelOrder)
 router.post('/cancelOrder/:id',userAuth,orderController.orderCancel)
 router.post('/returnOrder/:id',userAuth,orderController.returnOrder)
+router.post('/completeFailedPayment/:id',userAuth,orderController.completeFailedPayment)
+
 //payment razorpay management
 router.post('/makePayment',userAuth,paymentController.createOrder)
 router.get('/getPaymentPage',userAuth,paymentController.getPaymentPage)
@@ -108,6 +110,9 @@ router.post('/addMoney',userAuth,walletController.addMoney)
 
 //Referrals
 router.get('/referrals',userAuth,walletController.getReferrals)
+
+//invoice download
+router.get('/invoiceDownload/:id',userAuth,orderController.invoiceDownload)
 
 router.get('/pageNotFound',userController.pageNotFound)
 router.get('/logout',userController.logout)
