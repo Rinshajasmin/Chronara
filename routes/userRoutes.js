@@ -10,18 +10,23 @@ const paymentController = require('../controllers/paymentController')
 const couponController = require('../controllers/couponController')
 const wishlistController = require('../controllers/wishlistController')
 const walletController = require('../controllers/walletController')
+const checkOutController = require('../controllers/checkOutController')
 const {userAuth} = require('../middlewares/auth')
 
 router.get('/login',userController.loadLogin)
 router.post('/login',userController.login)
 router.get('/home',userController.loadHome)
 router.get('/shop',userController.loadShop)
-router.get('/filter/:filter',userController.filterProduct)
-router.get('/sort/:sortType',userController.sortProduct)
+// router.get('/filter/:filter',userController.filterProduct)
+// router.get('/sort/:sortType',userController.sortProduct)
 router.get('/search',userAuth,userController.searchProduct)
 router.get('/filter',userAuth,userController.filterAndSort)
 // router.get('/filter/:filter/:sortType', userController.getFilteredAndSortedProducts);
 router.get('/getAboutPage',userController.getAboutPage)
+router.get('/getContactPage',userAuth,userController.getContactPage)
+router.get('/getPrivacyPolicy',userAuth,userController.getPrivacyPolicy)
+router.get('/termsOfUse',userAuth,userController.getTerms)
+
 
 
 
@@ -66,8 +71,6 @@ router.get('/getAllAddresses',userAuth,profileController.getAllAddresses)
 //product management
 router.get('/productDetails',userAuth,productController.getProductDetails)
 //cart management
-// router.get('/addToCart',userAuth,productController.viewCart)
-//  router.post('/addToCart',userAuth,productController.addToCart)
 router.get("/cart", userAuth, cartController.getCartPage)
 router.post("/addToCart",userAuth, cartController.addToCart)
 router.post("/changeQuantity", userAuth,cartController.changeQuantity)
@@ -76,15 +79,15 @@ router.post("/deleteItem", userAuth, cartController.deleteProduct)
 
 
 //checkout
-router.post('/checkOut',userAuth,cartController.getCheckOut)
+router.post('/checkOut',userAuth,checkOutController.getCheckOut)
 
 //order management
 
-router.post('/placeOrder',userAuth,cartController.placeOrders)
-router.get('/placeOrder',userAuth,cartController.razorpayPaymentSuccess)
+router.post('/placeOrder',userAuth,checkOutController.placeOrders)
+router.get('/placeOrder',userAuth,checkOutController.razorpayPaymentSuccess)
 router.get('/getUserOrders',userAuth,orderController.getOrderslist)
-router.get('/cancelOrder/:id',userAuth,orderController.getCancelOrder)
-router.post('/cancelOrder/:id',userAuth,orderController.orderCancel)
+router.get('/orderDetails/:id',userAuth,orderController.getCancelOrder)
+router.post('/orderDetails/:id',userAuth,orderController.orderCancel)
 router.post('/returnOrder/:id',userAuth,orderController.returnOrder)
 router.post('/completeFailedPayment/:id',userAuth,orderController.completeFailedPayment)
 
@@ -92,6 +95,7 @@ router.post('/completeFailedPayment/:id',userAuth,orderController.completeFailed
 router.post('/makePayment',userAuth,paymentController.createOrder)
 router.get('/getPaymentPage',userAuth,paymentController.getPaymentPage)
 router.get('/get-razorpay-key',userAuth,paymentController.getKey) 
+router.get('/paymentFailed',userAuth,paymentController.failedPayments)
   
 
 //coupon Management

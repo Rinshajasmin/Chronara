@@ -5,49 +5,8 @@
   />
 
 </head>
- <header id="header" class="navbar">
-        <div class="logo">chronara</div>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="/user/home">Home</a></li>
-                <li><a href="/user/contact">Contact</a></li>
-                <li><a href="/user/about">About</a></li>
-
-                {{!-- <li><a href="/user/cart/?id={{_id}}" >Cart</a></li> --}}
-            </ul>
-        </nav>
-        
-         {{#if username}}
-         <div class="shopping-icon">
-              <a href="/user/cart/?id={{_id}}" class="cart-icon">
-              
-                <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
-              </a>
-        <div class="dropdown">
-          
-          <a class="sign-in-link" href="#">  
-            
-                   <i class="fas fa-user-circle"></i> <!-- Profile icon -->
-
-
-            {{username}}
-          </a>
-          <div class="dropdown-content">
-            <a  href="/user/userProfile">Profile</a>
-                        <a href="/user/getUserOrders">My Orders</a>
-
-            <a  href="/user/logout">Logout</a>
-          </div>
-        </div>
-        </div>
-        
-        {{else}}
-        <div class="auth-links">
-            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
-        </div>
-       {{/if}}  
  
-    </header> 
+    {{>userHeadernw}}  
 
 <!-- Shop Page Section -->
 <section class="shop-page">
@@ -896,7 +855,7 @@ body {
 .product-name {
   font-weight: 600;
   margin-bottom: 5px;
-  font-size: 1.1rem;
+  font-size: 15px;
 }
 
 .product-price {

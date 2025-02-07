@@ -1,0 +1,127 @@
+ 
+ <aside class="sidebar">
+            <ul>
+                <li>
+                    <a class="menu-link" href="/user/cart">
+                        <i class="fas fa-bag-shopping"></i> My Cart </a>
+                </li>
+                
+                <li>
+                    <a class="menu-link" href="/user/wishlist">
+                        <i class="fas fa-heart"></i> My Wishlist
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-link" href="/user/getUserOrders">
+                        <i class="fas fa-cart-plus"></i> My Orders
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-link" href="/user/referrals">
+                        <i class="fas fa-link"></i> Referrals
+                    </a>
+                </li>
+               
+                <li>
+                    <a class="menu-link" href="/user/wallet">
+                        <i class="fas fa-wallet"></i> My Wallet
+                    </a>
+                </li>
+                <li class="section">USER MANAGEMENT</li>
+                
+                <li>
+                    <a class="menu-link" href="/user/userProfile">
+                        <i class="fas fa-box"></i> User Profile
+                    </a>
+                </li>
+                <li>
+                    <a class="menu-link" href="/user/getAllAddresses">
+                        <i class="fas fa-location-dot"></i> Addresses
+                    </a>
+                </li>
+                <li class="section">OTHERS</li>
+                
+                 <li>
+                    <a class="menu-link" href="/user/logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <style>
+.sidebar {
+    width: 250px;
+    background: #f8f9fc;
+    padding: 20px;
+    height: 100vh;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar li {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.sidebar li i {
+    margin-right: 10px;
+}
+
+.menu-link {
+            display: flex;
+            align-items: center;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            font-family: 'Poppins';
+            font-weight: 600;
+        }
+.sidebar .section {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+/* Hover Effect */
+.sidebar li:hover {
+    background-color: #e0f2fe; /* Light blue */
+}
+.sidebar li.active {
+    background-color: #e0f2fe !important; /* Ensure active bg is visible */
+}
+
+
+
+
+        </style>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+    const menuItems = document.querySelectorAll(".sidebar li");
+     const currentPath = window.location.pathname;
+    const menuLinks = document.querySelectorAll(".menu-link");
+
+    menuLinks.forEach(link => {
+        if (link.getAttribute("href") === currentPath) {
+            link.parentElement.classList.add("active");
+        }
+    });
+
+    menuItems.forEach(item => {
+        item.addEventListener("click", function () {
+            menuItems.forEach(el => el.classList.remove("active")); // Remove active from all
+            this.classList.add("active"); // Add active to clicked item
+        });
+    });
+
+});
+
+        </script>

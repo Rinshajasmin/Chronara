@@ -44,7 +44,7 @@ const viewWishlist = async (req, res) => {
         const userId = req.session.user;
         const user = await User.findById(userId).populate('wishlist');
 
-        res.render('user/wishlist', { products: user.wishlist });
+        res.render('user/wishlist', { products: user.wishlist ,username:user.username});
     } catch (error) {
         console.error('Error fetching wishlist:', error);
         res.status(500).send('Error fetching wishlist');

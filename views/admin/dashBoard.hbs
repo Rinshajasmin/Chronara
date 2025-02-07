@@ -6,9 +6,10 @@
     <title>Sales Report</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-{{>adminheader}}
 <body>
     
+    {{>adminheader}}
+
 
     <div class="sales-report-container">
         <div class="summary-cards">
@@ -33,11 +34,22 @@
         <!-- Quick Filters Row -->
         <div class="filter-row">
             <label for="quick-filters">Quick Filters</label>
-            <select name="filterType" id="quick-filters" onchange="toggleMonths()">
+            <select name="filterType" id="quick-filters" onchange="toggleFilters()">
                 <option value="yearly" {{#if (eq filterType 'yearly')}}selected{{/if}}>Yearly</option>
                 <option value="monthly" {{#if (eq filterType 'monthly')}}selected{{/if}}>Monthly</option>
             </select>
         </div>
+
+          <div class="filter-row" id="year-dropdown" style="display: none;">
+        <label for="year-select">Select Year</label>
+        <select name="year" id="year-select">
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+        </select>
+    </div>
 
         <!-- Month Dropdown Row (hidden by default) -->
         <div class="filter-row" id="month-dropdown" style="display: none;">
@@ -64,39 +76,7 @@
 
     <canvas id="revenueChart"></canvas>
 </div>
-{{!-- <div class="card-mostsold">
-<div class="sales-card">
-  <h3>Most Sold Items</h3>
-  <div class="item">
-    <div class="label">Women</div>
-    <div class="progress-bar">
-      <div class="fill" style="width: 70%;"></div>
-    </div>
-    <span class="percentage">70%</span>
-  </div>
-  <div class="item">
-    <div class="label">Men</div>
-    <div class="progress-bar">
-      <div class="fill" style="width: 40%;"></div>
-    </div>
-    <span class="percentage">40%</span>
-  </div>
-  <div class="item">
-    <div class="label">Smart Watches</div>
-    <div class="progress-bar">
-      <div class="fill" style="width: 60%;"></div>
-    </div>
-    <span class="percentage">60%</span>
-  </div>
-  <div class="item">
-    <div class="label">Unisex</div>
-    <div class="progress-bar">
-      <div class="fill" style="width: 80%;"></div>
-    </div>
-    <span class="percentage">80%</span>
-  </div>
-</div>
-</div> --}}
+
 <div class="cards-container">
   <!-- Card for Most Sold Items -->
   <div class="card-mostsold">
@@ -353,7 +333,7 @@
                 datasets: [{
                     label: chartLabel,
                     data: revenueData,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    backgroundColor: 'rgba(0, 86, 179, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1,
                     barThickness: 20,
@@ -388,6 +368,7 @@
         event.preventDefault();
 
         const filterType = document.getElementById('quick-filters').value;
+        const year = document.getElementById('year-select')?.value;
         const month = document.getElementById('month-select')?.value;
 
         try {
@@ -395,7 +376,7 @@
             const response = await fetch('/admin/getFilteredRevenue', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ filterType, month }),
+                body: JSON.stringify({ filterType, month ,year}),
             });
 
             const data = await response.json();
@@ -414,209 +395,35 @@
     // Add onchange event listeners for filter changes
     document.getElementById('quick-filters').addEventListener('change', submitForm);
     document.getElementById('month-select').addEventListener('change', submitForm);
+    document.getElementById('year-select').addEventListener('change', submitForm);
+
 </script>
  
 
-
-
-
-
-
-
-
-
-    
- {{!-- <script>
-    // Add onchange event listeners for filter changes
-   let revenueChartInstance = null;  // Store the chart instance globally
-
-// Add onchange event listeners for filter changes
-document.getElementById('quick-filters').addEventListener('change', submitForm);
-document.getElementById('month-select').addEventListener('change', submitForm);
-
-async function submitForm(event) {
-    // Prevent the form from submitting the traditional way
-    event.preventDefault();
-
-    const filterType = document.getElementById('quick-filters').value;
-    const month = document.getElementById('month-select')?.value; // Get selected month (if exists)
-
-    console.log("filterType", filterType);  // Debugging
-
-    try {
-        // Send the data to the backend via a POST request
-        const response = await fetch('/admin/getFilteredRevenue', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filterType, month }),  // Send filter data to backend
-        });
-
-        // Parse the response data
-        const data = await response.json();
-
-        // Handle the response based on the filter type
-        if (filterType === 'yearly') {
-            // Update the chart for yearly data
-            updateChart(data.months, data.monthlyRevenueData, 'Monthly Revenue');
-        } else if (filterType === 'monthly') {
-            // Update the chart for monthly data
-            updateChart(data.days, data.dailyRevenueData, `Daily Revenue for Month ${month}`);
-        }
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
-
-// Update the chart with new data
-function updateChart(labels, revenueData, chartLabel) {
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-
-    // If there's an existing chart, destroy it before creating a new one
-    if (revenueChartInstance) {
-        revenueChartInstance.destroy();  // Destroy the previous chart instance
-    }
-
-    // Create a new chart and assign it to revenueChartInstance
-    revenueChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: chartLabel,
-                data: revenueData,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-            }],
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
-            },
-        },
-    });
-}
-
-</script>
-
 <script>
-let revenueChartInstance = null; // Global reference for the chart instance
-
-// Add onchange event listeners for filter changes
-document.getElementById('quick-filters').addEventListener('change', submitForm);
-document.getElementById('month-select').addEventListener('change', submitForm);
-
-// Function to initialize or update the chart
-function initializeOrUpdateChart(labels, revenueData, chartLabel) {
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-
-    // If a chart instance already exists, destroy it before creating a new one
-    if (revenueChartInstance) {
-        revenueChartInstance.destroy();
-    }
-
-    // Create or update the chart instance
-    revenueChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: chartLabel,
-                data: revenueData,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-                barThickness: 20,       // Fixed bar width
-                maxBarThickness: 30,    // Maximum bar width
-                categoryPercentage: 0.6, // Space between bars within categories
-                barPercentage: 0.8      // Space between bars
-            }],
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
-            },
-        },
-    });
-}
-
-// On initial page load, load default data provided by the server
-document.addEventListener('DOMContentLoaded', () => {
-        const defaultLabels = {{{json defaultLabels}}}; // E.g., months
-        const defaultRevenueData = {{{json defaultRevenueData}}}; // Revenue data for the current year
-        const defaultChartLabel = {{{json defaultChartLabel}}}; // Default chart label
-
-        // Initialize the chart with default data
-        initializeOrUpdateChart(defaultLabels, defaultRevenueData, defaultChartLabel);
-    });
-
-// Function to handle filter submissions
-async function submitForm(event) {
-    // Prevent the form from submitting the traditional way
-    event.preventDefault();
-
-    const filterType = document.getElementById('quick-filters').value;
-    const month = document.getElementById('month-select')?.value; // Get selected month (if exists)
-
-    console.log("filterType", filterType); // Debugging
-
-    try {
-        // Fetch filtered data from the backend
-        const response = await fetch('/admin/getFilteredRevenue', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filterType, month }), // Send filter data to backend
-        });
-
-        const data = await response.json();
-
-        // Update the chart based on the filter type
-        if (filterType === 'yearly') {
-            initializeOrUpdateChart(data.months, data.monthlyRevenueData, 'Monthly Revenue');
-        } else if (filterType === 'monthly') {
-            initializeOrUpdateChart(data.days, data.dailyRevenueData, `Daily Revenue for Month ${month}`);
-        }
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
-</script> --}}
-<script>
-
-    
-    function toggleMonths() {
+ function toggleFilters() {
         const filterType = document.getElementById("quick-filters").value;
         const monthDropdown = document.getElementById("month-dropdown");
+        const yearDropdown = document.getElementById("year-dropdown")
 
-        if (filterType === "monthly") {
-            monthDropdown.style.display = "flex"; // Show the month dropdown
+         if (filterType === "monthly") {
+            monthDropdown.style.display = "flex";
+            yearDropdown.style.display = "none";
+        } else if (filterType === "yearly") {
+            yearDropdown.style.display = "flex";
+            monthDropdown.style.display = "none";
         } else {
-            monthDropdown.style.display = "none"; // Hide the month dropdown
+            monthDropdown.style.display = "none";
+            yearDropdown.style.display = "none";
         }
+    
     }
 
     // Trigger toggleMonths on page load to handle pre-selected filter type
     document.addEventListener("DOMContentLoaded", () => {
-        toggleMonths();
+        toggleFilters();
     });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-     
 
 <style>
     body {
@@ -780,145 +587,7 @@ button:hover {
 
 </style>
 
-{{!-- <script>
-    
-$(document).ready(function () {
-    $('#salesTable').DataTable({
-        paging: true,
-        pageLength: 8,
-        lengthChange: false, // Remove the dropdown for entries per page
-        searching: false,
-        ordering: false,
-        info: false,
-        pagingType: "simple",
-        language: {
-            paginate: {
-                first: '<i class="fas fa-angle-double-left"></i>',
-                previous: '<i class="fas fa-chevron-left"></i>',
-                next: '<i class="fas fa-chevron-right"></i>',
-                last: '<i class="fas fa-angle-double-right"></i>',
-            },
-        },
-    });
-});
 
-</script> --}}
-{{!-- <script>
-    document.addEventListener('DOMContentLoaded', () => {
-    const filterDropdown = document.getElementById('quick-filters');
-    const dateInputs = document.getElementById('date-inputs');
-
-    // Function to toggle the visibility of date inputs
-    function toggleDateInputs() {
-        if (filterDropdown.value === 'custom') {
-            dateInputs.style.display = 'block';
-        } else {
-            dateInputs.style.display = 'none';
-        }
-    }
-
-    // Initialize the visibility based on the pre-selected filter
-    toggleDateInputs();
-
-    // Add event listener for dropdown change
-    filterDropdown.addEventListener('change', toggleDateInputs);
-});
-
-</script> --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-{{!-- <script>
-    document.getElementById("salesReportForm").addEventListener("submit", function (e) {
-        const startDate = new Date(document.getElementById("start-date").value);
-        const endDate = new Date(document.getElementById("end-date").value);
-        const today = new Date();
 
-        if (startDate > endDate) {
-            e.preventDefault(); // Prevent form submission
-            Swal.fire({
-                icon: "error",
-                title: "Invalid Dates",
-                text: "Start date should be less than the end date.",
-            });
-            return;
-        }
-        if (endDate > today) {
-            e.preventDefault(); // Prevent form submission
-            Swal.fire({
-                icon: "error",
-                title: "Invalid Dates",
-                text: "End date should not be a future date.",
-            });
-            return;
-        }
-    });
-</script>
-
-<script>
-    document.getElementById('download-pdf').addEventListener('click', () => {
-    // Gather table data
-    const tableData = [];
-    document.querySelectorAll('.sales-table tbody tr').forEach(row => {
-        const rowData = Array.from(row.cells).map(cell => cell.innerText.trim());
-        tableData.push(rowData);
-    });
-      const startDate = document.getElementById('start-date').value; // Adjust as per your input element
-    const endDate = document.getElementById('end-date').value ;   // Adjust as per your input element
-    const filterType = document.getElementById('quick-filters').value
-    
-    
-
-    // Send data to the backend
-    fetch('/admin/downloadPDF', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ tableData ,startDate,endDate,filterType})
-    })
-    .then(response => response.blob())
-    .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Sales_Report.pdf';
-        a.click();
-    })
-    .catch(error => console.error('Error generating PDF:', error));
-});
-
-document.getElementById('download-excel').addEventListener('click', () => {
-    // Gather table data
-    const tableData = [];
-    document.querySelectorAll('.sales-table tbody tr').forEach(row => {
-        const rowData = Array.from(row.cells).map(cell => cell.innerText.trim());
-        tableData.push(rowData);
-    });
-
-    const startDate=document.getElementById('start-date').value
-    const endDate = document.getElementById('end-date').value
-    const filterType = document.getElementById('quick-filters').value
-
-
-    // Send data to the backend
-    fetch('/admin/downloadExcel', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ tableData,startDate,endDate,filterType })
-    })
-    .then(response => response.blob())
-    .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Sales_Report.xlsx';
-        a.click();
-    })
-    .catch(error => console.error('Error generating Excel:', error));
-});
-
-
-    
-</script> --}}
 </html>

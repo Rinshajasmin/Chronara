@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Card</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header id="header" class="navbar">
+  <div class="logo">chronara</div>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+  </nav>
+  {{#if username}}
+    <div class="dropdown">
+      <a class="sign-in-link" href="#">{{username}}</a>
+      <div class="dropdown-content">
+        <a href="/user/profile">Profile</a>
+        <a href="/user/logout">Logout</a>
+      </div>
+    </div>
+  {{else}}
+    <div class="auth-links">
+      <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+    </div>
+  {{/if}}
+</header>
+  <div class="contact-container">
+    <!-- Left Section -->
+    <div class="contact-details">
+        <div class ="address">
+      <p>Mada Center 8th floor, 379 Hudson<br> Bangalore, Karnataka</p>
+      <p><a href="tel:+18001236879">+1 800 1236879</a></p>
+      <p><a href="mailto:contact@example.com">contact@chronara.com</a></p>
+      </div>
+    </div>
+    
+    <!-- Right Section -->
+    <div class="contact-form">
+      <h2>Send Us A Message</h2>
+      <form>
+        <div class="form-group">
+          <input type="text" placeholder="First name" required>
+          <input type="text" placeholder="Last name" required>
+        </div>
+        <input type="email" placeholder="Eg. example@email.com" required>
+        <input type="tel" placeholder="Eg. +1 800 0000000" required>
+        <textarea placeholder="Write us a message" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+  {{>userfooter}}
+  <style>
+    body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.contact-container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+  margin: 50px auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.contact-details {
+  flex: 1;
+  padding: 40px;
+  color: white;
+  background: url('/images/contactimg.jpg') no-repeat center center; /* Replace with your image URL */
+  background-size: cover; /* Ensures the image covers the entire div */
+  border-radius: 8px 0 0 8px;
+}
+.address{
+    margin-top: 306px;
+}
+
+
+.contact-details h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.contact-details p {
+  margin: 5px 0;
+  line-height: 1.6;
+}
+
+.contact-details a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.contact-form {
+  flex: 1.5;
+  padding: 40px;
+}
+
+.contact-form h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.form-group {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group input {
+  flex: 1;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+textarea {
+  height: 100px;
+  resize: none;
+}
+
+button {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #218838;
+}
+
+@media (max-width: 768px) {
+  .contact-container {
+    flex-direction: column;
+  }
+
+  .contact-details {
+    border-radius: 8px 8px 0 0;
+  }
+
+  .contact-form {
+    border-radius: 0 0 8px 8px;
+  }
+}
+
+  </style>
+</body>
+</html>

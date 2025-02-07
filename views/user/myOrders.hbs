@@ -10,6 +10,9 @@
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
         }
+        .sidebar-container{
+            display: flex;
+        }
         .table th, .table td {
             vertical-align: middle;
             text-align: center;
@@ -29,11 +32,10 @@
         }
     </style>
 </head>
-{{>profilesidebar}}
 <body>
-         {{!-- {{>profilesidebar}} --}}
-            {{!-- <h1>Orders</h1> --}}
-
+       {{>userHeadernw}}
+<div class="sidebar-container">
+    {{>sidebar}}
     <div class="container">
         {{#if order.length}}
             <div class="table-responsive">
@@ -52,10 +54,7 @@
                     <tbody>
                         {{#each order}}
                             <tr>
-                                {{!-- <td>{{this.orderId}}</td> --}}
-                                {{!-- <td>{{this.address.username}} <br> {{this.address.email}}</td> --}}
-                        
-                                <td>
+                               <td>
                                     <ul>
                                         {{#each this.orderItems}}
                                             <li>
@@ -70,28 +69,9 @@
 
                                 <td>{{this.paymentMethod}}</td>
                                 <td>{{formatDate this.createdOn "YYYY-MM-DD"}}</td>
-                                {{!-- <td>{{this.createdOn }}</td> --}}
-{{!-- 
-                                <td>{{#each addressDetails}}
-        <ul>
-            <li><strong>Address Type:</strong> {{this.addressType}}</li>
-            <li><strong>Name:</strong> {{this.name}}</li>
-            <li><strong>Phone:</strong> {{this.phone}}</li>
-            <li><strong>Alternative Phone:</strong> {{this.altPhone}}</li>
-            <li><strong>City:</strong> {{this.city}}</li>
-            <li><strong>Landmark:</strong> {{this.landMark}}</li>
-            <li><strong>State:</strong> {{this.state}}</li>
-            <li><strong>Pincode:</strong> {{this.pincode}}</li>
-        </ul>
-        {{/each}}</td> --}}
-
-                                <td>
-                                    <a href="/user/cancelOrder/{{this._id}}" class="btn btn-primary btn-sm">Details</a>
-                                    {{!-- <form action="/admin/deleteOrder/{{this._id}}" method="POST" style="display:inline-block;">
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this order?')">
-                                            Delete
-                                        </button>
-                                    </form> --}}
+                                 <td>
+                                    <a href="/user/orderDetails/{{this._id}}" class="btn btn-primary btn-sm">Details</a>
+                                    
                                 </td>
                             </tr>
                         {{/each}}
@@ -102,11 +82,12 @@
             <p class="text-center text-muted">No orders found.</p>
         {{/if}}
     </div>
+    </div>
+    {{>userfooter}}
 </body>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        // Initialize DataTables
         $('#orderTableUser').DataTable({
              searching: false,  // Enable the built-in search box
         paging: true,     // Enable pagination
@@ -118,63 +99,3 @@
     });
 </script>
 
-{{!-- <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #4CAF50;
-            color: white;
-            font-weight: bold;
-        }
-
-        td {
-            background-color: #ffffff;
-            color: #333;
-        }
-
-        tr:nth-child(even) td {
-            background-color: #f2f2f2;
-        }
-
-        tr:hover td {
-            background-color: #eaeaea;
-        }
-
-        ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 8px;
-        }
-
-        p {
-            text-align: center;
-            color: #333;
-            font-size: 1.2em;
-        }
-    </style> --}}

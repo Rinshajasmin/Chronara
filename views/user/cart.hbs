@@ -7,47 +7,9 @@
 </head>
 
 <main class="main">
-  <header id="header" class="navbar">
-        <div class="logo">chronara</div>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="/user/home">Home</a></li>
-                <li><a href="/user/contact">Contact</a></li>
-                <li><a href="/user/about">About</a></li>
-
-                {{!-- <li><a href="/user/cart/?id={{_id}}" >Cart</a></li> --}}
-            </ul>
-        </nav>
-        
-         {{#if username}}
-         <div class="shopping-icon">
-              <a href="/user/cart/?id={{cartId}}" class="cart-icon">
-              
-                <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
-              </a>
-        <div class="dropdown">
-          
-          <a class="sign-in-link" href="#">  
-            
-                   <i class="fas fa-user-circle"></i> <!-- Profile icon -->
-
-
-            {{username}}
-          </a>
-          <div class="dropdown-content">
-            <a  href="/user/userProfile">Profile</a>
-            <a  href="/user/logout">Logout</a>
-          </div>
-        </div>
-        </div>
-        
-        {{else}}
-        <div class="auth-links">
-            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
-        </div>
-       {{/if}}  
- 
-    </header>     
+  
+    {{>userHeadernw}} 
+       
 
              <nav class="breadcrumb-nav">
       <ul class="breadcrumb-list">
@@ -365,6 +327,7 @@ document.getElementById('applyCouponForm').addEventListener('submit', async (eve
     const couponCodeInput = document.querySelector('input[name="couponCode"]');
     const applyButton = document.querySelector('#applyCouponButton'); // Add ID to your button
     const isCouponApplied = applyButton.getAttribute('data-coupon-applied') === 'true';
+    const shippingCharge = 50;
 
         const cartId = '{{cartId}}';  // If cartId is available in the template
 
@@ -385,7 +348,7 @@ document.getElementById('applyCouponForm').addEventListener('submit', async (eve
 
         if (result.success) {
             // Update cart details dynamically
-            document.getElementById('cartTotal').textContent = `₹${parseFloat(result.cartDetails.grandTotal).toFixed(2)}`;
+            document.getElementById('cartTotal').textContent = `₹${parseFloat(result.cartDetails.grandTotal +shippingCharge).toFixed(2)}`;
             // Update discount row visibility
             const discountRow = document.getElementById('discountRow');
             if (result.cartDetails.discount) {
@@ -411,7 +374,7 @@ document.getElementById('applyCouponForm').addEventListener('submit', async (eve
                 title:'Oops..',
                 text:result.message,
                 confirmButtonText:'Try Again',
-                timer:3000
+                
             })
         }
     } catch (error) {
@@ -1097,6 +1060,8 @@ section {
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    background-color: #f0f0f0;
+    margin-top: -98px;
 }
 
 .table {
@@ -1269,6 +1234,7 @@ section {
 .logo {
     font-size: 24px;
     font-weight: bold;
+    margin-left: 50px;
 }
 
 .nav-links {

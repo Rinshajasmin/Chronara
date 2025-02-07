@@ -9,13 +9,10 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 const { v4: uuidv4 } = require('uuid');
 const PDFDocument = require('pdfkit');
-const moment = require('moment')
-
-
-
+const moment = require('moment');
+const Coupon = require('../models/couponSchema');
 
 //admin side
-// 
 const getAllOrders = async (req, res) => {
     try {
         const orders = await Order.find({isDeleted:false})
@@ -48,9 +45,7 @@ const deleteOrder = async (req, res) => {
         if (!orders) {
             return res.status(404).send('order not found');
         }
-        
-     
-        // Redirect back to the products list
+         // Redirect back to the products list
         res.redirect('/admin/dashBoard');
     } catch (error) {
         console.error(error);
@@ -58,141 +53,103 @@ const deleteOrder = async (req, res) => {
     }
 };
 
-// const getEditOrder = async (req, res) => {
-//     try {
-//         // Find the order by ID
-//         const order = await Order.findById(req.params.id)
-//             .populate('orderItems.product'); // Populate product details in order items
-
-//         if (!order) {
-//             return res.status(404).send('Order not found');
-//         }
-
-//         // Use the selectedAddress field to find the specific address
-//         const selectedAddressDocument = await Address.findOne(
-//             { "address._id": order.selectedAddress }, // Match the specific address ID
-//             { "address.$": 1 } // Project only the matching address element
-//         );
-
-//         if (!selectedAddressDocument || !selectedAddressDocument.address.length) {
-//             return res.status(404).send('Selected address not found in the Address document.');
-//         }
-//         console.log(selectedAddressDocument)
-//         // Extract the specific address
-//         //const specificAddress = selectedAddressDocument.address[0];
-
-//         // Calculate total price for each order item
-//         order.orderItems.forEach((item) => {
-//             item.totalPrice = item.quantity * item.price;
-//         });
-
-//         // Calculate the total order amount
-//         const totalOrderPrice = order.orderItems.reduce(
-//             (acc, item) => acc + item.totalPrice,
-//             0
-//         );
-
-//         // Add the totalOrderPrice to the order object
-//         order.totalOrderPrice = totalOrderPrice;
-
-//         // Render the order details page with the specific address
-//         res.render('admin/editOrder', { order, addressDetails:selectedAddressDocument.address[0]});
-//     } catch (error) {
-//         console.error('Error fetching order details:', error);
-//         res.status(500).send('Error fetching order details.');
-//     }
-// };
-
-
 const getEditOrder = async (req, res) => {
-    try {
-        
-        const order = await Order.findById(req.params.id)
-            .populate('address') // Populate the address (User) details
-            .populate('orderItems.product') // Populate the product details in the orderItems array
-           
+  try {
+    const order = await Order.findById(req.params.id)
+      .populate("address") // Populate the address (User) details
+      .populate("orderItems.product"); // Populate the product details in the orderItems array
 
-            const user = await User.findById(order.address); // Using the address field which stores the userId
-        
-            if (!user) {
-                return res.status(404).send('User not found');
-            }
-            const selectedAddressDocument = await Address.findOne(
-                { "address._id": order.selectedAddress }, // Match the specific address ID
-                { "address.$": 1 } // Project only the matching address element
-            );
-    
-            if (!selectedAddressDocument || !selectedAddressDocument.address.length) {
-                return res.status(404).send('Selected address not found in the Address document.');
-            }
-    
-           
-    
-        if (!order) {
-            return res.status(404).send('Order not found');
-        }
-        order.orderItems.forEach(item => {
-            item.totalPrice = item.quantity * item.price; // Calculate totalPrice for each item
-        });
+    const user = await User.findById(order.address); // Using the address field which stores the userId
 
-        // Calculate the total order amount
-        const totalOrderPrice = order.orderItems.reduce((acc, item) => acc + item.totalPrice, 0);
-
-        // Add the totalOrderPrice to the order object
-        order.totalOrderPrice = totalOrderPrice;
-        
-        let couponDiscount = 0;
-        if (order.couponApplied) {
-            couponDiscount = order.totalPrice - order.finalAmount; // Or any custom logic
-        }
-
-
-        res.render('admin/editOrder', { order ,addressDetails:selectedAddressDocument.address[0],couponDiscount});
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error fetching order details.');
+    if (!user) {
+      return res.status(404).send("User not found");
     }
+    const selectedAddressDocument = await Address.findOne(
+      { "address._id": order.selectedAddress }, // Match the specific address ID
+      { "address.$": 1 } // Project only the matching address element
+    );
+
+    if (!selectedAddressDocument || !selectedAddressDocument.address.length) {
+      return res
+        .status(404)
+        .send("Selected address not found in the Address document.");
+    }
+
+    if (!order) {
+      return res.status(404).send("Order not found");
+    }
+    order.orderItems.forEach((item) => {
+      item.totalPrice = item.quantity * item.price; // Calculate totalPrice for each item
+    });
+
+    // Calculate the total order amount
+    const totalOrderPrice = order.orderItems.reduce(
+      (acc, item) => acc + item.totalPrice,
+      0
+    );
+
+    // Add the totalOrderPrice to the order object
+    order.totalOrderPrice = totalOrderPrice;
+
+    let couponDiscount = 0;
+    if (order.couponApplied && order.couponCode) {
+      const appliedCoupon = await Coupon.findOne({ name: order.couponCode });
+
+      if (appliedCoupon) {
+        couponDiscount = parseFloat(appliedCoupon.offerPrice).toFixed(2);
+      }
+    }
+
+    res.render("admin/editOrder", {
+      order,
+      addressDetails: selectedAddressDocument.address[0],
+      couponDiscount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching order details.");
+  }
 };
-const updateStatus = async(req,res)=>{
-    try {
-        const orderId = req.params.id;
-        const updatedStatus = req.body.status;
-        console.log(orderId)
-        console.log(updatedStatus)
+const updateStatus = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const updatedStatus = req.body.status;
+    console.log(orderId);
+    console.log(updatedStatus);
 
-        // Find the order by ID and update the status
-        const order = await Order.findByIdAndUpdate(orderId, { status: updatedStatus }, { new: true });
+    // Find the order by ID and update the status
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { status: updatedStatus },
+      { new: true }
+    );
 
-        if (!order) {
-            return res.status(404).send('Order not found');
+    if (!order) {
+      return res.status(404).send("Order not found");
+    }
+    if (updatedStatus === "Cancelled") {
+      for (const item of order.orderItems) {
+        const product = await Product.findById(item.product._id);
+        if (product) {
+          product.quantity += item.quantity; // Restore the quantity
+          await product.save();
         }
-        if (updatedStatus === 'Cancelled') {
-            for (const item of order.orderItems) {
-                const product = await Product.findById(item.product._id);
-                if (product) {
-                    product.quantity += item.quantity; // Restore the quantity
-                    await product.save();
-                }
-            }
-        }
-
-        // Update the order status
-        order.status = updatedStatus;
-        await order.save();
-
-       // res.status(200).json({ success: true, message: 'Order status updated successfully', order });
-
-        // Redirect to the updated order details page
-        //res.render('admin/orders',{order});
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error updating order status');
+      }
     }
 
-}
+    // Update the order status
+    order.status = updatedStatus;
+    await order.save();
+    // res.status(200).json({ success: true, message: 'Order status updated successfully', order });
+    // Redirect to the updated order details page
+    //res.render('admin/orders',{order});
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error updating order status");
+  }
+};
 const getOrderslist = async (req, res) => {
     try {
-        console.log("hi");
         const userId = req.session.user;  
         console.log("User ID:", userId);
 
@@ -250,47 +207,22 @@ const getCancelOrder = async(req,res)=>{
 
         // Add the totalOrderPrice to the order object
         order.totalOrderPrice = totalOrderPrice;
+        
         let couponDiscount = 0;
-        if (order.couponApplied) {
-            couponDiscount = order.totalPrice - order.finalAmount; // Or any custom logic
+        if (order.couponApplied && order.couponCode) {
+            const appliedCoupon = await Coupon.findOne({name:order.couponCode})
+
+            if(appliedCoupon){
+                couponDiscount=parseFloat(appliedCoupon.offerPrice).toFixed(2)
+            }
         }
-
-        
-
-        
-
-        res.render('user/cancelOrder', { order ,addressDetails:selectedAddressDocument.address[0],username:user.username,couponDiscount});
+    res.render('user/orderDetails', { order ,addressDetails:selectedAddressDocument.address[0],username:user.username,couponDiscount});
     } catch (error) {
         console.error(error);
         res.status(500).send('Error fetching order details.');
     }
 };
 
-
-// const orderCancel = async(req,res)=>{
-//     const orderId = req.params.id;
-//     const { status } = req.body;
-//     const userId = req.session.user;  // Ensure this contains the user's ID
-
-
-//     try {
-//         // Update the order status and add the cancellation reason
-//         await Order.findByIdAndUpdate(orderId, {
-//             status: status,
-    
-//         });
-//         const userData = await User.findById(userId); 
-
-//         // Fetch orders where address refers to the user
-//         const orders = await Order.find({ address: userId })
-//             .populate('orderItems.product', 'productName')  // Populate product details
-//             .sort({ createdOn: -1 });
-//         res.render('user/myOrders',{username:userData.username,order:orders}); // Redirect after successful update
-//     } catch (error) {
-//         console.error('Error updating order status:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// }
 const orderCancel = async (req, res) => {
     const orderId = req.params.id;
     const { status } = req.body;
@@ -312,8 +244,6 @@ const orderCancel = async (req, res) => {
                 await product.save();
             }
         }
-
-        // Update the order status to cancelled
         order.status = status || 'Cancelled'; // Default status to 'Cancelled' if not provided
         await order.save();
 
@@ -321,6 +251,7 @@ const orderCancel = async (req, res) => {
         if(!wallet){
             return res.status(400).send("wallet not find")
         }
+        
 
         const refundAmount = order.finalAmount;
         wallet.balance+=refundAmount;
@@ -339,9 +270,7 @@ const orderCancel = async (req, res) => {
      });
         // Save the updated wallet
         await wallet.save();
-
-
-        // Fetch updated user and order details
+       // Fetch updated user and order details
         const userData = await User.findById(userId);
         const orders = await Order.find({ address: userId })
             .populate('orderItems.product', 'productName')  // Populate product details
@@ -362,8 +291,9 @@ const returnOrder = async(req,res)=>{
         const orderId = req.params.id
         console.log(orderId)
         const{ status }=req.body
-        const userId=req.session.user
-
+        const user = req.session.user; // Get user object from session
+        const userId = user._id; // Extract the user ID (ObjectId)
+    
         const order = await Order.findById(orderId).populate('orderItems.product')
         if(!order){
             return res.status(404).send("order not found")
@@ -379,6 +309,31 @@ const returnOrder = async(req,res)=>{
         }
         order.status=status || 'Returned';
         await order.save()
+
+        const wallet = await Wallet.findOne({userId})
+        if(!wallet){
+            return res.status(400).send("wallet not find")
+        }
+        
+
+        const refundAmount = order.finalAmount;
+        wallet.balance+=refundAmount;
+         // Add a refund transaction to the wallet
+         const productNames = order.orderItems
+         .map(item => item.product.productName) // Extract product names
+         .join(', '); // Create a comma-separated string
+     
+     wallet.transactions.unshift({
+         transactionId:uuidv4(), // Unique transaction ID
+         description: `Refund for Returned order: ${productNames}`, // Include product names
+         type: 'Deposit',
+         amount: refundAmount,
+         orderId, // Reference to the cancelled order
+         date: new Date(),
+     });
+        // Save the updated wallet
+        await wallet.save();
+
 
         const userData = await User.findById(userId);
         const orders = await Order.find({address:userId})
@@ -405,13 +360,9 @@ const completeFailedPayment = async (req, res) => {
         });        if (!order) {
             return res.status(404).send('Order not found');
         }
-
-        // Extract relevant order details
         const {  finalAmount, paymentStatus } = order;
 
         console.log("Order Details:", order);
-
-        // Check if payment is already completed
         if (paymentStatus === 'Paid') {
             return res.status(400).json({ success: false, message: 'Payment has already been completed for this order' });
         }
@@ -443,6 +394,7 @@ const completeFailedPayment = async (req, res) => {
             await wallet.save();
 
             // Update the order payment status to "Paid"
+            order.paymentMethod ='Wallet'
             order.paymentStatus = 'Paid';
             order.status = 'Pending'; // Update status to processing or any relevant status
             await order.save();
@@ -450,10 +402,12 @@ const completeFailedPayment = async (req, res) => {
             return res.json({ success: true, message: 'Payment completed successfully using Wallet' });
         } else if (paymentMethod === 'Razorpay') {
             // Redirect to an online payment gateway (e.g., Razorpay, PayPal)
-            return res.redirect(`/user/getPaymentPage?orderId=${orderId}&amount=${finalAmount}`);
+
+             return res.redirect(`/user/getPaymentPage?orderId=${orderId}&amount=${finalAmount}`);
         } else if (paymentMethod === 'Cash on Delivery') {
             // Update the order payment status for COD
             order.paymentStatus = 'Pending';
+            order.paymentMethod = 'Cash on Delivery'
             order.status = 'Pending'; // Update status accordingly
             await order.save();
 
@@ -467,125 +421,116 @@ const completeFailedPayment = async (req, res) => {
     }
 };
 
-const invoiceDownload = async(req,res)=>{
-    try {
-        const orderId = req.params.id
-        const order = await Order.findById(orderId).populate('orderItems.product');
+const invoiceDownload = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const order = await Order.findById(orderId).populate("orderItems.product");
 
     if (!order) {
-        return res.status(404).send('Order not found');
+      return res.status(404).send("Order not found");
     }
-
-    
-
     const doc = new PDFDocument({ margin: 50 });
 
     // Set headers for the response
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=invoice_${order.orderId}.pdf`);
-
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=invoice_${order.orderId}.pdf`
+    );
     // Pipe the document to the response
     doc.pipe(res);
-
-    // Add company logo and details
     doc
-      
+
       .fontSize(20)
-      .text('Chronara Pvt Ltd.', 50, 50)
+      .text("Chronara Pvt Ltd.", 50, 50)
       .fontSize(10)
-      .text('123 Main Street', 50, 75)
-      .text('Bangalore, Karnataka, 10025', 50, 90)
+      .text("123 Main Street", 50, 75)
+      .text("Bangalore, Karnataka, 10025", 50, 90)
       .moveDown();
 
     // Invoice header
-    doc.fontSize(20).text('Invoice', 50, 150).moveDown();
+    doc.fontSize(20).text("Invoice", 50, 150).moveDown();
 
     // Invoice details
-        const formattedDate = moment(order.createdOn).format('DD MMMM YYYY, hh:mm A');
-        const finalTotal = order.finalAmount.toFixed(2)
+    const formattedDate = moment(order.createdOn).format(
+      "DD MMMM YYYY, hh:mm A"
+    );
+    const finalTotal = order.finalAmount.toFixed(2);
     doc
 
       .fontSize(10)
       .text(`Order Number: ${order.orderId}`, 50, 200)
       .text(`Invoice Date: ${formattedDate}`, 50, 215)
-      .text(`Balance Due: ${finalTotal}`, 50, 230)
-    //   .text(`Customer Name: ${order.customerName}`, 300, 200) // Use dynamic customer name
-    //   .text(`Address: ${order.customerAddress}`, 300, 215);
-
+      .text(`Balance Due: ${finalTotal}`, 50, 230);
+   
     // Table header
     const tableTop = 300;
     doc
       .fontSize(10)
-      .text('NO:', 50, tableTop)
-      .text('Item', 150, tableTop)
-      .text('Unit Cost', 300, tableTop)
-      .text('Quantity', 350, tableTop)
-      .text(' Total', 450, tableTop);
+      .text("NO:", 50, tableTop)
+      .text("Item", 150, tableTop)
+      .text("Unit Cost", 270, tableTop) // Shifted slightly to the left
+      .text("Offer Price", 350, tableTop) // New column
+      .text("Quantity", 420, tableTop) // Adjusted positions
+      .text("Total", 500, tableTop); // Adjusted positions
 
-    doc.moveTo(50, tableTop + 15).lineTo(550, tableTop + 15).stroke();
+    doc
+      .moveTo(50, tableTop + 15)
+      .lineTo(550, tableTop + 15)
+      .stroke();
 
     // Add order items
     let y = tableTop + 25;
     order.orderItems.forEach((item, index) => {
-        const unitPrice = item.product.regularPrice.toFixed(2); // Format unit price
-        const lineTotal = (item.product.regularPrice * item.quantity).toFixed(2); // Format line total
-      
-        doc
-          .text((index + 1).toString(), 50, y) // Serial number
-          .text(item.product.productName, 150, y) // Product name
-          .text(`${unitPrice}`, 300, y) // Unit price with 2 decimals
-          .text(item.quantity.toString(), 350, y) // Quantity
-          .text(`${lineTotal}`, 450, y); // Line total with 2 decimals
-      
-        y += 20; // Move to the next row
-      });
+      const unitPrice = item.product.regularPrice.toFixed(2); // Format unit price
+      const offerPrice = item.price.toFixed(2); // Fallback if salePrice is missing
+      const lineTotal = (item.price * item.quantity).toFixed(2); // Calculate total with offer price
+
+      doc
+        .text((index + 1).toString(), 50, y) // Serial number
+        .text(item.product.productName, 150, y) // Product name
+        .text(`${unitPrice}`, 270, y) // Unit price
+        .text(`${offerPrice}`, 350, y) // Offer price
+        .text(item.quantity.toString(), 420, y) // Quantity
+        .text(`${lineTotal}`, 500, y); // Total
+
+      y += 20; // Move to the next row
+    });
     // Add total summary
+    doc;
     doc
       .moveTo(50, y + 10)
       .lineTo(550, y + 10)
       .stroke();
 
-      const discounted=order.discounts.toFixed(2)
-      const formattedTotal=order.totalPrice.toFixed(2)
-
-
-      doc
+    let couponDiscount = 0;
+    if (order.couponApplied && order.couponCode) {
+      const appliedCoupon = await Coupon.findOne({ name: order.couponCode });
+      if (appliedCoupon) {
+        couponDiscount = parseFloat(appliedCoupon.offerPrice).toFixed(2) || 0;
+      }
+    }
+    const discounted = parseFloat(order.discounts - couponDiscount).toFixed(2);
+    const formattedTotal = order.totalPrice.toFixed(2);
+    doc 
       .fontSize(10)
-      .text(`You saved: ${discounted}`, 400, y + 35)
-  
-      .text(`Subtotal: ${formattedTotal}`, 400, y + 55) // Increased the space between rows
-  
-      .text(`Shipping: 50.00`, 400, y + 75) // Increased space
-  
-      .font('Helvetica-Bold') // Make the finalTotal bold
-      .text(`Total: ${finalTotal}`, 400, y + 95); // Increased space and applied bold font
-  
-    // Footer
-    doc
-      .fontSize(10)
-      .text('Thank you for your purchase!', 50, y + 100, {
-        align: 'left',
-        width: 500,
-      });
+      .text(`Offer Discount: ${discounted}`, 400, y + 35)
+      .text(`Coupon Discount: ${couponDiscount}`, 400, y + 50) // New coupon discount line
+      .text(`Subtotal: ${formattedTotal}`, 400, y + 70) // Adjust y offset as needed
+      .text(`Shipping: 50.00`, 400, y + 90)
+      .font("Helvetica-Bold")
+      .text(`Total: ${finalTotal}`, 400, y + 110);
+    doc.fontSize(10).text("Thank you for your purchase!", 50, y + 100, {   // Footer
 
-    // Finalize PDF
-    doc.end();
-} catch (error) {
-    console.error('Error generating invoice:', error);
-    res.status(500).send('Server error');
-}
-}
-
-
+      align: "left",
+      width: 500,
+    });
+    doc.end();//finalize pdf
+  } catch (error) {
+    console.error("Error generating invoice:", error);
+    res.status(500).send("Server error");
+  }
+};
 module.exports = {
-    getAllOrders,
-    deleteOrder,
-    getEditOrder,
-    updateStatus,
-    getOrderslist,
-    getCancelOrder,
-    orderCancel,
-    returnOrder,
-    completeFailedPayment,
-    invoiceDownload
+    getAllOrders,deleteOrder,getEditOrder,updateStatus,getOrderslist,  getCancelOrder,orderCancel,returnOrder,completeFailedPayment,invoiceDownload
 }

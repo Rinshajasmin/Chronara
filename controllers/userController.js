@@ -1,4 +1,3 @@
-
 const adminmodel = require('../models/usermodel')
 const mongoose = require('mongoose')
 const User = require('../models/usermodel')
@@ -6,7 +5,6 @@ const Category = require('../models/categorySchema')
 const Product = require('../models/productSchema')
 const Wallet = require('../models/walletSchema')
 const { v4: uuidv4 } = require('uuid');
-
 const env = require('dotenv').config();
 const nodemailer = require('nodemailer')
 const bcrypt = require('bcrypt')
@@ -46,50 +44,6 @@ const login = async (req,res)=>{
            res.render('user/login',{message:"login failed...please try again", layout: 'layout', isUser: true})
     }
 }
-
-// const loadLogin = async (req, res) => {
-//     res.render('user/login',{ layout: 'layout', isUser: true })
-
-// }; 
-// const loadHome= async(req,res)=>{
-//     try {
-//         console.log(req.session.user)
-//         const user = req.session.user;
-//         const categories = await Category.find({isListed:true});
-
-//         let productData = await Product.find(
-//             {isBlocked:false,
-//              category:{$in:categories.map(category=>category._id)},quantity:{$gt:0}
-//         })
-        
-//         productData.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-//          productData=productData.slice(0,4)
-     
-
-//         if(user){
-//             const userData = await User.findOne({_id:user._id})
-//             const productsWithWishlistStatus = productData.map(product => ({
-//               ...product.toObject(),
-//               isWishlisted: userData.wishlist.includes(product._id.toString()),
-//           }));
-
-//           return res.render('user/home', {
-//               username: user.username,
-//               user: userData,
-//               products: productsWithWishlistStatus,
-//           });
-//             // console.log("Categories:", categories);
-//           // return  res.render('user/home', { username: user.username ,user:userData,products:productData});
-//         }else{
-//             return res.render("user/home",{products:productData})
-//         }
-        
-//     } catch (error) {
-//         console.log("Home page not found",error)
-//         res.status(500).send("server error")
-//     }
-
-// }
 
 const loadHome = async (req, res) => {
   try {
@@ -147,90 +101,6 @@ const loadSignup= async (req,res)=>{
         res.status(500).send("server error")
     }
 }
-// const loadShop = async(req,res)=>{
-//     try {
-//         console.log(req.session.user)
-//         const user = req.session.user;
-        
-//         const categories = await Category.find({isListed:true});
-
-//         let productData = await Product.find(
-//             {isDeleted:false})
-//             productData.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-//         // productData=productData.slice(0,12)
-//        console.log("products",productData)
-
-//         if(user){
-//             const userData = await User.findOne({_id:user._id})
-//             //console.log("Categories:", categories);
-//             //console.log("Products:", productData);
-//            return  res.render('user/shop', { username: user.username ,user:userData,products:productData});
-//         }else{
-//             return res.render("user/home",{products:productData})
-//         }
-//        // return  res.render('user/shop');
-        
-//     } catch (error) {
-//         console.error("error in loading shop page",error)
-//         res.redirect('/user/shop')
-//     }
-// }
-
-
-// const loadShop = async (req, res) => {
-//   try {
-//       const user = req.session.user;
-//       const selectedCategory = req.query.category;
-        
-
-
-//       // Fetch all listed categories for the sidebar/menu
-//       const categories = await Category.find({ isListed: true });
-
-//       let productData;
-
-//       if (selectedCategory) {
-//           // Fetch products that belong to the selected category
-//           const category = await Category.findOne({ name: selectedCategory });
-
-//           if (category) {
-//               productData = await Product.find({
-//                   category: category._id,
-//                   isDeleted: false,
-//               }).populate("category");
-//           } else {
-//               productData = []; // No products if category doesn't exist
-//           }
-//       } else {
-//           // Fetch all products if no category is selected
-//           productData = await Product.find({ isDeleted: false }).populate("category");
-//       }
-
-//       // Sort products by creation date (newest first)
-//       productData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-//       // Render the shop page with filtered or all products
-//       if (user) {
-//           const userData = await User.findOne({ _id: user._id });
-//           return res.render('user/shop', {
-//               username: user.username,
-//               user: userData,
-//               products: productData,
-//               categories,
-//               selectedCategory,
-//           });
-//       } else {
-//           return res.render('user/home', {
-//               products: productData,
-//               categories,
-//               selectedCategory,
-//           });
-//       }
-//   } catch (error) {
-//       console.error("Error in loading shop page:", error);
-//       res.redirect('/user/shop');
-//   }
-// };
 
 const loadShop = async (req, res) => {
   try {
@@ -292,61 +162,6 @@ const loadShop = async (req, res) => {
   }
 };
 
-
-// const signup= async(req,res)=>{
-//     const{username,email,password,phone}=req.body
-//     try {
-//         const newUser = new User({username,email,password,phone})//creating a new user instance
-//         console.log(newUser)
-//         await newUser.save()// to savethat in db
-//         return  res.redirect('usersignup')// redirecting to login page
-        
-//     } catch (error) {
-//         console.error("error in user saving",error)
-//         res.status(500).send("internal server error")
-        
-//     }
-// }
-// const loadShop = async(req,res)=>{
-//     try {
-//        const user = req.session.user;
-//        const userData = await User.findOne({_id:user});
-//        const categories = await Category.find({isListed:true}) ;
-//        const categoryIds = categories.map((category)=>category._id.toString())
-//        const page = parseInt(req,query.page) || 1;
-//        const limit = 9;
-//        const skip = (page-1)* limit;
-//        const products = await Product.find({
-//         isBlocked:false,
-//         category:{$in:categoryIds},
-//         quantity:{$gt:0}
-//        }).sort({createdOn:-1}).skip(skip).limit(limit);
-
-//        const totalProducts = await Product.countDocuments({
-//         isBlocked:false,
-//         category:{$in:categoryIds},
-//         quantity:{$gt:0}
-//        });
-//        const totalPages = Math.ceil(totalProducts/limit);
-//        //const brands = await Brand.find({isBlocked:false});
-//        const categoriesWithIds = categories.map(category =>({_id:category._id,name:category.name}))
-
-
-//        res.render("user/shop",{
-//         user:userData,
-//         products:products,
-//         category:categoriesWithIds,
-//         totalProducts:totalProducts,
-//         currentPage:page,
-//         totalPages:totalPages
-//        })
-
-
-//     } catch (error) {
-//        res.redirect("/admin/error") 
-//     }
-// }
-
 const securePassword = async(password)=>{
     try {
         const passwordHash = await bcrypt.hash(password,10)
@@ -359,38 +174,6 @@ const securePassword = async(password)=>{
 const generateReferralCode = (name, userId) => {
   return `${name.slice(0, 4).toUpperCase()}${userId.slice(-4)}`;
 };
-
- 
-// const verifyOtp= async(req,res)=>{  
-//     try {
-//         const {otp}=req.body
-//     //    console.log(otp);
-//     console.log('otp:', otp, typeof otp);
-// console.log('req.session.userOtp:', req.session.userOtp, typeof req.session.userOtp);
-
-//         if(otp === req.session.userOtp){
-//             const user =req.session.userData
-//             const passwordHash = await securePassword(user.password)
-//             const userSaveData = new User({
-//                 username:user.username,
-//                 email:user.email,
-//                 phone:user.phone,
-//                 password:passwordHash
-//             })
-//             await userSaveData.save()
-//             req.session.user=userSaveData._id
-//             res.json({
-//                 success:true,
-//                 redirectUrl:"/user/login"
-//             })
-//         }else{
-//             res.status(400).json({success:false,message:"invalid OTP ,Please try again "})
-//         }
-//     } catch (error) {
-//         console.error("error verifying otp",error)
-//         res.status(500).json({success:false,message:"An error occurred"})
-//     }
-// }
 
 const verifyOtp = async (req, res) => {
   try {
@@ -465,7 +248,6 @@ const verifyOtp = async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred" });
   }
 };
-
 
 function generateOtp(){
     return Math.floor(100000+Math.random()*900000).toString()//method to create a random 6 digit otp
@@ -581,84 +363,7 @@ const logout = async (req,res)=>{
          
 } 
 // Express Route for Filtered Products
-const filterProduct= async (req, res) => {
-    const filterType = req.params.filter;
-    let filter = {};
-    const userId=req.session.user;
-    const user = await User.findById(userId)
-  
-    // Define filters based on the filterType
-    switch (filterType) {
-      case 'under-500':
-        filter.regularPrice = { $lt: 500 };
-        break;
-      case '500-1000':
-        filter.regularPrice = { $gte: 500, $lte: 1000 };
-        break;
-      case '1000-1500':
-        filter.regularPrice = { $gte: 1000, $lte: 1500 };
-        break;
-      case 'above-1500':
-        filter.regularPrice = { $gt: 1500 };
-        break;
-      default:
-        filter = {}; // No filter applied, show all products
-    }
-  
-    try {
-      // Query the database with the filter using async/await
-      const products = await Product.find(filter); // No need for .exec()
-  
-      // Render the filtered products on the new page
-      res.render('user/shop', { products,username:user.username });
-    } catch (err) {
-      console.error('Error retrieving filtered products:', err);
-      return res.status(500).send('Error retrieving filtered products');
-    }
-  }
 
-  const sortProduct = async(req,res)=>{
-    try {
-        const userId = req.session.user
-        const sortType = req.params.sortType; // Get the selected sorting option
-        let sortOption = {}; // Default sorting option (empty)
-        const user = await User.findById(userId)
-        // Define sorting logic based on the criteria
-        switch (sortType) {
-          case 'popularity':
-            sortOption = { popularity: -1 }; // Sort by popularity descending
-            break;
-          case 'price-low-high':
-            sortOption = { regularPrice: 1 }; // Sort by price ascending
-            break;
-          case 'price-high-low':
-            sortOption = { regularPrice: -1 }; // Sort by price descending
-            break;
-          case 'new-arrivals':
-            sortOption = { createdAt: -1 }; // Sort by newest first
-            break;
-          case 'a-z':
-            sortOption = { productName: 1 }; // Sort alphabetically A → Z
-            break;
-          case 'z-a':
-            sortOption = { productName: -1 }; // Sort alphabetically Z → A
-            break;
-          default:
-            sortOption = {}; // No sorting applied
-        }
-    
-        // Fetch products from the database with sorting
-        const products = await Product.find().sort(sortOption);
-    
-        // Render the 'filter.hbs' page with sorted products
-        res.render('user/shop', { products ,username:user.username});
-      
-    } catch (error) {
-        console.log("error while sorting",error)
-        res.redirect("/admin/error")
-    }
-
-  }
   const searchProduct = async(req,res)=>{
     const userId=req.session.user;
     const user = await User.find(userId)
@@ -686,106 +391,7 @@ const filterProduct= async (req, res) => {
     res.status(500).send('Server error');
   }
   }
-
-  // const filterAndSort= async (req, res) => {
-  //   try {
-  //     const userId = req.session.user
-  //     const user = await User.findById(userId)
-
-  //     const { price, sort } = req.query;
-  
-  //     // Build the query object
-  //     let query = { isDeleted: false }; // Only fetch non-deleted products
-
-      
-  
-  //     if (price !== 'all' && price) {
-  //       if (price === 'under-500') query.regularPrice = { $lt: 500 };
-  //       if (price === '500-1000') query.regularPrice = { $gte: 500, $lte: 1000 };
-  //       if (price === '1000-1500') query.regularPrice = { $gte: 1000, $lte: 1500 };
-  //       if (price === 'above-1500') query.regularPrice = { $gt: 1500 };
-  //     }
-  
-  //     // Sorting
-  //     let sortOptions = {};
-  //     if (sort) {
-  //       if (sort === 'price-low-high') sortOptions.regularPrice = 1;
-  //       if (sort === 'price-high-low') sortOptions.regularPrice = -1;
-  //       if (sort === 'popularity') sortOptions.popularity = -1;
-  //       if (sort === 'new-arrivals') sortOptions.createdAt = -1;
-  //       if (sort === 'a-z') sortOptions.productName = 1;
-  //       if (sort === 'z-a') sortOptions.productName = -1;
-  //     }
-  
-  //     // Fetch filtered and sorted products
-  //     const products = await Product.find(query).sort(sortOptions);
-  
-  //     res.render('user/shop', {username:user.username,
-  //       products,
-  //       price,
-  //       sort,
-  //     });
-  //   } catch (err) {
-  //     console.error(err);
-  //     res.status(500).send('Internal Server Error');
-  //   }
-  // };
-
-  // const filterAndSort = async (req, res) => {
-  //   try {
-  //     const userId = req.session.user;
-  //     const user = await User.findById(userId);
-  //     const categories = await Category.find({ isListed: true });
-
-  
-  //     const { price, sort, category } = req.query;
-  
-  //     // Build the query object
-  //     let query = { isDeleted: false }; // Only fetch non-deleted products
-  
-  //     // Price filter
-  //     if (price !== 'all' && price) {
-  //       if (price === 'under-500') query.regularPrice = { $lt: 500 };
-  //       if (price === '500-1000') query.regularPrice = { $gte: 500, $lte: 1000 };
-  //       if (price === '1000-1500') query.regularPrice = { $gte: 1000, $lte: 1500 };
-  //       if (price === 'above-1500') query.regularPrice = { $gt: 1500 };
-  //     }
-  
-  //     // Category filter
-  //     if (category !== 'all' && category) {
-  //       query.category = category; // Match the category field in your Product schema
-  //     }
-  
-  //     // Sorting
-  //     let sortOptions = {};
-  //     if (sort) {
-  //       if (sort === 'price-low-high') sortOptions.regularPrice = 1;
-  //       if (sort === 'price-high-low') sortOptions.regularPrice = -1;
-  //       if (sort === 'popularity') sortOptions.popularity = -1;
-  //       if (sort === 'new-arrivals') sortOptions.createdAt = -1;
-  //       if (sort === 'a-z') sortOptions.productName = 1;
-  //       if (sort === 'z-a') sortOptions.productName = -1;
-  //     }
-  
-  //     // Fetch filtered and sorted products
-  //     const products = await Product.find(query).sort(sortOptions);
-  
-  //     res.render('user/shop', {
-  //       username: user.username,
-  //       products,
-  //       price,
-  //       sort,
-  //       categories,
-  //       category ,// Pass the selected category back to the frontend
-      
-  //     });
-  //   } catch (err) {
-  //     console.error(err);
-  //     res.status(500).send('Internal Server Error');
-  //   }
-  // };
-
-  const filterAndSort = async (req, res) => {
+ const filterAndSort = async (req, res) => {
     try {
       const userId = req.session.user;
       const user = await User.findById(userId);
@@ -851,155 +457,39 @@ const filterProduct= async (req, res) => {
       res.status(500).send("Internal Server Error");
     }
   };
-  
-  
-  
-  
-  
- const getuserProfile = async(req,res)=>{
-
- } 
-
- const getFilteredAndSortedProducts = async (req, res) => {
-    const { filter, sortType } = req.query; // Get filter and sort parameters from the query string
-    let filterCriteria = {};
-    let sortOption = {};
-  
-    // Define filtering criteria
-    switch (filter) {
-      case 'under-500':
-        filterCriteria.regularPrice = { $lt: 500 };
-        break;
-      case '500-1000':
-        filterCriteria.regularPrice = { $gte: 500, $lte: 1000 };
-        break;
-      case '1000-1500':
-        filterCriteria.regularPrice = { $gte: 1000, $lte: 1500 };
-        break;
-      case 'above-1500':
-        filterCriteria.regularPrice = { $gt: 1500 };
-        break;
-      default:
-        filterCriteria = {}; // No filter applied
-    }
-  
-    // Define sorting options
-    switch (sortType) {
-      case 'popularity':
-        sortOption = { popularity: -1 }; // Sort by popularity descending
-        break;
-      case 'price-low-high':
-        sortOption = { regularPrice: 1 }; // Sort by price ascending
-        break;
-      case 'price-high-low':
-        sortOption = { regularPrice: -1 }; // Sort by price descending
-        break;
-      case 'new-arrivals':
-        sortOption = { createdAt: -1 }; // Sort by newest first
-        break;
-      case 'a-z':
-        sortOption = { productName: 1 }; // Sort alphabetically A → Z
-        break;
-      case 'z-a':
-        sortOption = { productName: -1 }; // Sort alphabetically Z → A
-        break;
-      default:
-        sortOption = {}; // No sorting applied
-    }
-  
-    try {
-      // Fetch products from the database with both filtering and sorting
-      const products = await Product.find(filterCriteria).sort(sortOption);
-  
-      // Render the page with filtered and sorted products
-      res.render('user/shop', {
-        products,
-        selectedSort: sort || '', // Pass the current sorting option
-      });
-          } catch (err) {
-      console.error('Error while filtering and sorting products:', err);
-      res.status(500).send('Error while filtering and sorting products');
-    }
-  };
-
-  const filterAndSortProducts = async (req, res) => {
-    const { filter, sort } = req.query; // Get query parameters for filter and sort
-    let filterQuery = {};
-    let sortOption = {};
-  
-    // Define filters based on the filter type
-    switch (filter) {
-      case 'under-500':
-        filterQuery.regularPrice = { $lt: 500 };
-        break;
-      case '500-1000':
-        filterQuery.regularPrice = { $gte: 500, $lte: 1000 };
-        break;
-      case '1000-1500':
-        filterQuery.regularPrice = { $gte: 1000, $lte: 1500 };
-        break;
-      case 'above-1500':
-        filterQuery.regularPrice = { $gt: 1500 };
-        break;
-      default:
-        filterQuery = {}; // No filter applied
-    }
-  
-    // Define sorting options based on the sort type
-    switch (sort) {
-      case 'popularity':
-        sortOption = { popularity: -1 }; // Sort by popularity descending
-        break;
-      case 'price-low-high':
-        sortOption = { regularPrice: 1 }; // Sort by price ascending
-        break;
-      case 'price-high-low':
-        sortOption = { regularPrice: -1 }; // Sort by price descending
-        break;
-      case 'new-arrivals':
-        sortOption = { createdAt: -1 }; // Sort by newest first
-        break;
-      case 'a-z':
-        sortOption = { productName: 1 }; // Sort alphabetically A → Z
-        break;
-      case 'z-a':
-        sortOption = { productName: -1 }; // Sort alphabetically Z → A
-        break;
-      default:
-        sortOption = {}; // No sorting applied
-    }
-  
-    try {
-      // Fetch products with both filtering and sorting applied
-      const products = await Product.find(filterQuery).sort(sortOption);
-  
-      // Render the 'filter' page with filtered and sorted products
-      res.render('user/filter', { 
-        products, 
-        selectedFilter: filter, 
-        selectedSort: sort 
-      });
-    } catch (err) {
-      console.error('Error retrieving products:', err);
-      res.status(500).send('Error retrieving products');
-    }
-  };
-
-  const getAboutPage = async(req,res)=>{
+ 
+   const getAboutPage = async(req,res)=>{
     try {
       res.render('user/aboutUs')
     } catch (error) {
-      
+      console.log("error in contact page")
     }
   }
-  
-  
+  const getContactPage=async(req,res)=>{
+    const userId = req.session.user;
+    const user = await User.findById(userId)
+    res.render('user/contact',{username:user.username})
+  }
+  const getPrivacyPolicy =async(req,res)=>{
+    try {
+      res.render('user/privacyPolicy')
+    } catch (error) {
+      console.log("error while accessing the privacy page",error)
+    }
+  }
+  const getTerms = async(req,res)=>{
+try {
+  res.render('user/termsOfUse')
+} catch (error) {
+  console.log("error while loading terms page",error)
+}
+  }
 
 module.exports={loadLogin,
     loadHome,
     loadSignup,
     signup,verifyOtp,resendOtp,
     pageNotFound,login,logout,loadShop,
-    filterProduct,sortProduct,searchProduct,
-    getuserProfile,getFilteredAndSortedProducts ,getAboutPage,filterAndSort
+    searchProduct,getAboutPage,filterAndSort,getContactPage,
+    getPrivacyPolicy,getTerms
 } 

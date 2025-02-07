@@ -461,48 +461,9 @@
     </style>
 </head>
 <body>
-       
-     <header id="header" class="navbar">
-        <div class="logo">chronara</div>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="/user/home">Home</a></li>
-                <li><a href="/user/contact">Contact</a></li>
-                <li><a href="/user/about">About</a></li>
-
-                {{!-- <li><a href="/user/cart/?id={{_id}}" >Cart</a></li> --}}
-            </ul>
-        </nav>
-        
-         {{#if username}}
-         <div class="shopping-icon">
-              <a href="/user/cart/?id={{_id}}" class="cart-icon">
-              
-                <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
-              </a>
-        <div class="dropdown">
-          
-          <a class="sign-in-link" href="#">  
-            
-                   <i class="fas fa-user-circle"></i> <!-- Profile icon -->
-
-
-            {{username}}
-          </a>
-          <div class="dropdown-content">
-            <a  href="/user/userProfile">Profile</a>
-            <a  href="/user/logout">Logout</a>
-          </div>
-        </div>
-        </div>
-        
-        {{else}}
-        <div class="auth-links">
-            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
-        </div>
-       {{/if}}  
- 
-    </header> 
+        {{>userHeadernw}}
+    <div class="sidebar-container" style="display: flex;">
+        {{>sidebar}}
     <div class="checkout-container">
         <!-- Address Section -->
         <div class="section address-section">
@@ -511,16 +472,9 @@
                         <input type="hidden" name="cartId" value={{cartId}}>
                         <input type="hidden" name="totalSaved" value="{{totalSaved}}">
                         <input type="hidden" name="discount" value="{{discount}}">
-                            <input type="hidden" name="originalTotalPrice" value="{{originalTotalPrice}}">
-
-                        
-
-
-
-                        
-
-
-                <label for="address">Select Address:</label>
+                        <input type="hidden" name="originalTotalPrice" value="{{originalTotalPrice}}">
+                        <input type="hidden" name="finalTotal" value="{{finalTotal}}">
+                  <label for="address">Select Address:</label>
                 <div class="address-list">
                     {{#each addresses}}
                     {{#each this.address}}
@@ -689,35 +643,40 @@
 
         
     </div>
+    </div>
 </body>
 {{>userfooter}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
-    document.addEventListener('DOMContentLoaded',()=>{
-        const paymentMethodSelected = document.getElementById('paymentMethod')
-        const finalTotal={{finalTotal}}
+    document.addEventListener('DOMContentLoaded', () => {
+        const paymentMethodSelected = document.getElementById('paymentMethod');
+        const walletBalance = {{walletBalance}}
+        const finalTotal = {{finalTotal}}
 
-        paymentMethodSelected.addEventListener('change',()=>{
-          const selectedMethod = paymentMethodSelected.value;
+        paymentMethodSelected.addEventListener('change', () => {
+            const selectedMethod = paymentMethodSelected.value;
 
-          if(selectedMethod === 'Cash on Delivery' && finalTotal>1000){
-        Swal.fire({
-             title: '',
-        text: "COD Unavailable for orders over 1000.00!!",
-        icon: 'warning',
-    
-        confirmButtonColor: '#3085d6',
-        
-        confirmButtonText: 'Ok',
-        
-        })
-        paymentMethodSelected.value='';
-      }
+            if (selectedMethod === 'Cash on Delivery' && finalTotal > 1000) {
+                Swal.fire({
+                    title: '',
+                    text: "COD Unavailable for orders over ₹1000!",
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok',
+                });
+                paymentMethodSelected.value = ''; 
+            } 
+            else if (selectedMethod === 'Wallet' && finalTotal > walletBalance) {
+                Swal.fire({
+                    title: '',
+                    text: "Insufficient Wallet Balance",
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok',
+                });
+                paymentMethodSelected.value = ''; 
+            }
         });
-
-      
-
     });
 </script>
 

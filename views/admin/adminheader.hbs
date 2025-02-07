@@ -1,13 +1,15 @@
 <!-- header.html -->
 <!DOCTYPE HTML>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Admin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"><link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 
 
     <style>
@@ -21,7 +23,7 @@
         /* Sidebar */
         .navbar-aside {
             width: 250px;
-            background-color: #8da7ab;
+            background-color: #e6ebf0;
             color: white;
             display: flex;
             flex-direction: column;
@@ -35,8 +37,8 @@
             padding: 15px;
             font-weight: bold;
             font-size: 20px;
-            background-color: #6e7e6e;
-            color: white;
+            background-color: #E0E0E0;
+            color: #140202;
         }
 
         .navbar-aside ul {
@@ -53,13 +55,14 @@
             display: flex;
             align-items: center;
             padding: 10px 20px;
-            color: #fff;
+            color: #180101;
             text-decoration: none;
             transition: background-color 0.3s;
+            margin-left: 37px;
         }
 
         .navbar-aside .menu-link:hover {
-            background-color: #5c6d5c;
+            background-color: #E0E0E0;
         }
 
         .navbar-aside .menu-link i {
@@ -68,71 +71,74 @@
 
         /* Main Content */
         .main-wrap {
-            margin-left: 250px; /* Same width as the sidebar */
+            margin-left: 250px;
+            /* Same width as the sidebar */
             padding: 20px;
             flex-grow: 1;
             background-color: #f8f9fa;
         }
 
         .main-header {
-            background-color: #b0d5de;
+            background-color: #fff;
             padding: 15px;
             font-size: 13px;
             font-weight: bold;
         }
+
         /* Basic styles for the header */
-.main-header {
-    background-color: #b0d5de;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .main-header {
+            background-color: #e6ebf0;
 
-/* Dropdown container */
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-/* Admin name and dropdown caret */
-.admin-name {
-    cursor: pointer;
-    font-weight: bold;
-    color: #000;
-}
+        /* Dropdown container */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
 
-/* Dropdown content (hidden by default) */
-.dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-}
+        /* Admin name and dropdown caret */
+        .admin-name {
+            cursor: pointer;
+            font-weight: bold;
+            color: #000;
+        }
 
-/* Dropdown link */
-.dropdown-content a {
-    color: black;
-    padding: 8px 16px;
-    text-decoration: none;
-    display: block;
-}
+        /* Dropdown content (hidden by default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
 
-/* Hover effects */
-.dropdown-content a:hover {
-    background-color: #ddd;
-}
+        /* Dropdown link */
+        .dropdown-content a {
+            color: black;
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+        }
 
-/* Show the dropdown when hovering over the parent div */
-.dropdown:hover .dropdown-content {
-    display: block;
-}
+        /* Hover effects */
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
 
+        /* Show the dropdown when hovering over the parent div */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
     </style>
 </head>
+
 <body>
     <!-- Sidebar -->
     <aside class="navbar-aside">
@@ -158,21 +164,13 @@
                     <i class="fas fa-percent"></i> Coupons
                 </a>
             </li>
-            <li>
-                <a class="menu-link" href="/admin/addProductsnew">
-                    <i class="fas fa-plus"></i> Add Product
-                </a>
-            </li>
+
             <li>
                 <a class="menu-link" href="/admin/products">
                     <i class="fas fa-box"></i> Products
                 </a>
             </li>
-            {{!-- <li>
-                <a class="menu-link" href="/admin/coupon">
-                    <i class="fas fa-percent"></i> Coupon
-                </a>
-            </li> --}}
+
             <li>
                 <a class="menu-link" href="/admin/getSalesReport">
                     <i class="fas fa-image"></i> Sales
@@ -180,35 +178,35 @@
             </li>
             <li>
                 <a class="menu-link" href="/admin/getAllOrders">
-<i class="fa-solid fa-bag-shopping"></i>Orders
+                    <i class="fa-solid fa-bag-shopping"></i>Orders
                 </a>
             </li>
         </ul>
     </aside>
 
     <main class="main-wrap">
-    <header class="main-header">
-        <div class="header-left">
-            <h2>Dashboard</h2>
-        </div>
-        
-        <!-- Dropdown Menu for Admin Name -->
-        <div class="dropdown">
-            <span class="admin-name">
-                Admin <i class="fas fa-caret-down"></i>
-            </span>
-            <!-- Dropdown Content -->
-            <div class="dropdown-content">
-                <a href="/admin/logout">Logout</a>
+        <header class="main-header">
+            <div class="header-left">
             </div>
+
+            <!-- Dropdown Menu for Admin Name -->
+            <div class="dropdown">
+                <span class="admin-name">
+                    Admin <i class="fas fa-caret-down"></i>
+                </span>
+                <!-- Dropdown Content -->
+                <div class="dropdown-content">
+                    <a href="/admin/logout">Logout</a>
+                </div>
+            </div>
+        </header>
+
+        <div>
+            <!-- Add your main content here -->
+
         </div>
-    </header>
-    
-    <div>
-        <!-- Add your main content here -->
-        
-    </div>
 
 
 </body>
+
 </html>

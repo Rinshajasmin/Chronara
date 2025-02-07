@@ -59,12 +59,14 @@ const getWallet = async (req, res) => {
                 withdrawal: tx.type === 'Withdrawal' ? parseFloat(tx.amount).toFixed(2) : null,
                 deposit: tx.type === 'Deposit' ? parseFloat(tx.amount).toFixed(2) : null,
             }));
+            const user = await User.findById(userId);
+
 
         res.render('user/wallet', { 
             wallet: {
                 balance: formattedBalance,
                 transactions: sortedTransactions,
-            },
+            },username:user.username
         });
     } catch (error) {
         console.error('Error fetching wallet details:', error);
@@ -143,6 +145,7 @@ const getReferrals= async (req, res) => {
             totalReferredUsers,
             referralCode:user.referralCode,
             referees: refereeDetails,
+            username:user.username
           });
         } catch (error) {
           console.error("Error fetching referral page:", error);

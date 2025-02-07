@@ -20,6 +20,9 @@
     font-weight: bold; /* Regular font weight for links */
 
   }
+  .nav-icons{
+    margin-left: 15px;
+  }
   
   /* Style for hover effect */
   .nav-link:hover {
@@ -58,6 +61,7 @@
     .sign-in-link{
       text-decoration: none;
       color: black;
+      margin-right: 27px;
     }
   
   

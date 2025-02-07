@@ -1,0 +1,93 @@
+{{>userHeadernw}}
+
+<div class="sidebar-container">
+    {{>sidebar}} <!-- Sidebar remains on the left -->
+
+    <div class="content">
+        <div class="card">
+            <div class="message-box _failed">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+                <h2> Your payment failed </h2>
+                <p><strong>Order ID:</strong> {{orderId}}</p>
+                <p>Unfortunately, your payment could not be processed.</p>
+                <p> Try again later </p>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    {{>userfooter}}
+</footer>
+
+
+
+<style>
+    
+    ._failed i {
+    color: red !important;
+    font-size: 60px; /* Increase the icon size */
+}
+
+    ._failed {
+        border-bottom: solid 4px red !important;
+        box-shadow: 0 15px 25px #00000019;
+        padding: 45px;
+        width: 100%;
+        text-align: center;
+        margin: 40px auto;
+    }
+
+    ._failed i {
+        color: red !important;
+    }
+    .sidebar-container {
+    display: flex;
+    min-height: 100vh; /* Ensure full height */
+}
+
+.content {
+    flex-grow: 1; /* Allow content to take available space */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    width: 100%; /* Take full width */
+}
+
+.card {
+    width: 512px; /* Set a fixed width */
+    padding: 11px;
+    box-shadow: 0 15px 25px #00000019;
+    text-align: center;
+    margin-top: -151px;
+}
+
+
+    ._success {
+        box-shadow: 0 15px 25px #00000019;
+        padding: 45px;
+        width: 100%;
+        text-align: center;
+        margin: 40px auto;
+        border-bottom: solid 4px #28a745;
+    }
+
+    ._success i {
+        font-size: 55px;
+        color: #28a745;
+    }
+
+    ._success h2 {
+        margin-bottom: 12px;
+        font-size: 40px;
+        font-weight: 500;
+        line-height: 1.2;
+        margin-top: 10px;
+    }
+
+    ._success p {
+        margin-bottom: 0px;
+        font-size: 18px;
+        color: #495057;
+        font-weight: 500;
+    }
+</style>

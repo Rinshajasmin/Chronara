@@ -2,19 +2,7 @@
  
     
 <main class="login-page">
-   {{!-- <header class="navbar">
-        <div class="logo">chronara</div>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#">About</a></li>
-            </ul>
-        </nav>
-        <div class="auth-links">
-            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
-        </div>
-    </header>  --}}
+
   <div class="container">
     <div class="row">
       <!-- Image Section -->
@@ -32,14 +20,20 @@
             <label for="username">Username</label>
             <input type="text" id="username" name="username" placeholder="username" required>
 
+
             <label for="password">Password</label>
+             <div class="password-container">
             <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <button class="btn btn-outline-primary" type="button" onclick="togglePassword('password')">        <i class="fa-regular fa-eye"></i>
+</button>
              {{#if message}}
+             
              <div class="alert alert-danger alert-dismissible fade show" role="alert">
              <strong>Error!</strong> {{message}}
              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
              </div>
              {{/if}}
+             </div>
 
             <div class="actions">
               <a href="/user/forgotPassword" class="forgot-password">Forgot password?</a>
@@ -52,15 +46,54 @@
               <div class="line"></div>
             </div>
 
-            <button type="button" class="google-button">
+            <a href="/user/auth/google" style="text-decoration: none;">
+             <button type="button" class="google-button">
               <img src="/images/Google_Icons-09-512.webp" alt="Google">
-              Continue with Google
-            </button>
+              Continue with Google 
+            </button></a>
 
-            <p class="signup-link">Don't have an account? <a href="#">Sign up now</a></p>
+            <p class="signup-link">Don't have an account? <a href="/user/usersignup" style="text-decoration: none;">Sign up now</a></p>
           </form>
         </div>
       </div>
     </div>
   </div>
 </main>
+<script>
+  function togglePassword(fieldId){
+    const field= document.getElementById(fieldId);
+    field.type=field.type === 'password'?'text':'password';
+     }
+
+</script>
+<style>
+    .password-container {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: -2px;
+        width: 100%;
+        max-width: 400px; /* Adjust based on your layout */
+    }
+
+    .password-container input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 4px;
+        font-size: 14px;
+    }
+
+    .password-container button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+    }
+
+    .password-container button i {
+        font-size: 18px;
+        color: #333;
+    }
+</style>

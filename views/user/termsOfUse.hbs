@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Use - Watch Store</title>
+    <style>
+   .wrap {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-sizing: border-box;
+  
+  padding: 2rem;
+  background-color: #eee;
+}
+p{
+  text-indent: 30px; /* Add space at the beginning of each paragraph */
+            margin-bottom: 15px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 1rem;
+  background-color: #fff;
+  width: 768px;
+  
+  border-radius: 0.25rem;
+  box-shadow: 0rem 1rem 2rem -0.25rem rgba(0, 0, 0, 0.25);
+  
+  &__heading {
+    padding: 1rem 0;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+    
+    & > h2 {
+      font-size: 1.75rem;
+      line-height: 1.75rem;
+      margin: 0;
+    }
+  }
+  
+  &__content {
+    flex-grow: 1;
+    overflow-y: scroll;
+  }
+  
+  &__nav {
+    border-top: 1px solid #ccc;
+    text-align: right;
+    padding: 2rem 0 1rem;
+    
+    & > .button {
+      background-color: #444499;
+      box-shadow: 0rem 0.5rem 1rem -0.125rem rgba(0, 0, 0, 0.25);
+      padding: 0.8rem 2rem;
+      border-radius: 0.5rem;
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: transform 0.25s, box-shadow 0.25s;
+      
+      &:hover {
+        box-shadow: 0rem 0rem 1rem -0.125rem rgba(0, 0, 0, 0.25);
+        transform: translateY(-0.5rem);
+      }
+    }
+    
+    & > small {
+      color: #777;
+      margin-right: 1rem;
+    }
+  }
+}
+</style>
+</head>
+<header id="header" class="navbar">
+  <div class="logo">chronara</div>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="/user/home">Home</a></li>
+      <li><a href="/user/getContactPage">Contact</a></li>
+      <li><a href="/user/getAboutPage">About</a></li>
+    </ul>
+  </nav>
+  {{#if username}}
+    <div class="dropdown">
+      <a class="sign-in-link" href="#">{{username}}</a>
+      <div class="dropdown-content">
+        <a href="/user/profile">Profile</a>
+        <a href="/user/logout">Logout</a>
+      </div>
+    </div>
+  {{else}}
+    <div class="auth-links">
+      <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+    </div>
+  {{/if}}
+</header>
+
+
+<body>
+
+
+
+<main class="wrap">
+  <section class="container">
+    <div class="container__heading">
+      <h2>Terms & Conditions</h2>
+    </div>
+    <div class="container__content">
+<p>Welcome to <strong>CHRONARA!</strong> By accessing or using our website, you agree to comply with these Terms of Use. If you do not agree to any of these terms, please refrain from using our services. The website is intended for individuals aged 18 and above. By using the website, you confirm that you meet this age requirement and agree to use this website only for lawful purposes in a manner that does not infringe the rights of others or inhibit their use of the website.</p>      <p>Products damaged due to misuse or wear and tear are not eligible for returns or refunds. All content on this website, including text, images, and designs, is the property of [Your Watch Store Name] and is protected under intellectual property laws. Unauthorized use, reproduction, or distribution of our content is prohibited. We are not liable for any direct, indirect, incidental, or consequential damages arising from your use of the website or products purchased, including loss of data, revenue, or profits. </p>
+<p>To make a purchase, you may need to create an account, and you are responsible for maintaining the confidentiality of your account credentials. All information provided during registration must be accurate and up-to-date. We strive to provide accurate product descriptions and images, but we do not guarantee that all details are error-free, complete, or current. Prices are subject to change without notice, and we reserve the right to modify or discontinue products at any time.</p>      <p>Your use of the website is also governed by our Privacy Policy, which explains how we collect, use, and protect your personal information. We reserve the right to update or modify these Terms of Use at any time, and changes will be effective upon posting on this page. Continued use of the website after modifications constitutes your acceptance of the updated terms. These Terms of Use are governed by the laws of India, and any disputes will be resolved exclusively in the courts of India. If you have any questions about these Terms of Use, please contact us at contact@chronara.com, +91 4857852356, or Bangalore,Karnataka 147528.
+
+</p>
+<p>Payments can be made using the methods displayed during checkout, and all transactions must be completed in the specified currency. In case of failed or disputed transactions, we reserve the right to cancel orders without notice. Orders will be shipped to the address provided at checkout, so ensure the address is correct and complete. Shipping timelines are estimates and may vary due to unforeseen circumstances. Returns are accepted under the conditions specified in our Return Policy, and refunds will be processed once the returned product meets the required conditions.</p>    </div>
+    <div class="container__nav">
+      <small>By clicking 'Accept' you are agreeing to our terms and conditions.</small>
+      <a class="button" href="#">Accept</a>
+    </div>
+  </section>
+</main>
+
+{{>userfooter}}
+
+</body>
+</html>

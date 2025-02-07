@@ -1,33 +1,284 @@
-<div class="table-responsive">
-  <table class="table table-hover table-dark border-light">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Lorem</th>
-        <th scope="col">Ipsum</th>
-        <th scope="col">Dolor</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Sit</td>
-        <td>Amet</td>
-        <td>Consectetur</td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Adipisicing</td>
-        <td>Elit</td>
-        <td>Sint</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Hic</td>
-        <td>Fugiat</td>
-        <td>Temporibus</td>
-      </tr>
-    </tbody>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>MENU</h2>
+            <ul>
+                <li class="active"><i class="fas fa-box"></i> Products</li>
+                <li><i class="fas fa-list"></i> Category</li>
+                <li><i class="fas fa-shopping-cart"></i> Orders</li>
+                <li><i class="fas fa-tags"></i> Coupon</li>
+                <li><i class="fas fa-image"></i> Banner</li>
+                <li><i class="fas fa-money-check"></i> Transaction</li>
+                <li class="section">USER MANAGEMENT</li>
+                <li><i class="fas fa-user-shield"></i> Manage Admins</li>
+                <li><i class="fas fa-users"></i> Customers</li>
+                <li class="section">OTHERS</li>
+                <li><i class="fas fa-cog"></i> Settings</li>
+                <li><i class="fas fa-question-circle"></i> Help</li>
+                <li><i class="fas fa-sign-out-alt"></i> Logout</li>
+            </ul>
+        </aside>
 
-  </table>
-</div>
+        <main class="content">
+            <header>
+                <input type="text" placeholder="Search...">
+                <div class="admin-info">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">2</span>
+                    <span class="admin-name">Rinsha Jasmin</span>
+                    <span class="role">Admin</span>
+                </div>
+            </header>
+
+            <div class="product-container">
+                <div class="product-header">
+                    <h2>Product</h2>
+                    <button class="btn export">Export</button>
+                    <button class="btn add-product">+ Add Product</button>
+                </div>
+
+                <div class="filters">
+                    <button>Some Text</button>
+                    <button>Any</button>
+                    <button>Any</button>
+                    <button>Any</button>
+                    <button>Any</button>
+                    <button>Any</button>
+                    <button class="btn filter">Filters</button>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox"></th>
+                            <th>Product</th>
+                            <th>SKU</th>
+                            <th>Category</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Added</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>Jet Black strap smart...</td>
+                            <td class="sku">302012</td>
+                            <td>Smart Watch</td>
+                            <td>10</td>
+                            <td>₹5900</td>
+                            <td class="status published">Published</td>
+                            <td>24 Jun 2024</td>
+                            <td>
+                                <i class="fas fa-edit"></i>
+                                <i class="fas fa-eye"></i>
+                                <i class="fas fa-trash-alt"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>Jet Black strap smart...</td>
+                            <td class="sku">302012</td>
+                            <td>Smart Watch</td>
+                            <td>10</td>
+                            <td>₹5900</td>
+                            <td class="status draft">Draft</td>
+                            <td>24 Jun 2024</td>
+                            <td>
+                                <i class="fas fa-edit"></i>
+                                <i class="fas fa-eye"></i>
+                                <i class="fas fa-trash-alt"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background: #f8f9fc;
+    padding: 20px;
+    height: 100vh;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar li {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.sidebar li i {
+    margin-right: 10px;
+}
+
+.sidebar .active {
+    background: #eef2ff;
+    font-weight: bold;
+}
+
+.sidebar .section {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+}
+
+.admin-name {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.role {
+    margin-left: 5px;
+    color: gray;
+    font-size: 14px;
+}
+
+.product-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.btn {
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.export {
+    background: #e0e7ff;
+    color: #3b82f6;
+}
+
+.add-product {
+    background: #3b82f6;
+    color: white;
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.filters button {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.filter {
+    background: #f3f4f6;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #f9fafb;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.published {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.draft {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.out-of-stock {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.low-stock {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+td i {
+    margin: 0 5px;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+td i:hover {
+    color: #111827;
+}
+</style>

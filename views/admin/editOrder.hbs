@@ -1,63 +1,39 @@
-<head>
-
-</head>
-
 {{>adminheader}}
 <h4>Details</h4>
 <div class="container">
-    {{!-- <div class="header">
-        <h1>Order Details</h1>
-        <nav>
-            <a href="/dashboard">Dashboard</a> &gt; 
-            <a href="/orderList">Order List</a> &gt; 
-            <span>Order Details</span>
-        </nav>
-    </div> --}}
-
     <div class="details-grid">
         <!-- Order Details -->
         <div class="card">
             <h2>Order #{{order.orderId}}</h2>
 
 
-             <div class="status">
-              {{!-- <form method="POST" action="/admin/statusUpdate/{{order._id}}">
-    <div class="form-group">
-        <label for="status">Order Status</label>
-        <select id="status" name="status" class="form-select form-select-lg mb-3">
-            <option value="Pending" {{#if (eq order.status "Pending")}}selected{{/if}}>Pending</option>
-            <option value="Shipped" {{#if (eq order.status "Shipped")}}selected{{/if}}>Shipped</option>
-            <option value="Delivered" {{#if (eq order.status "Delivered")}}selected{{/if}}>Delivered</option>
-            <option value="Cancelled" {{#if (eq order.status "Cancelled")}}selected{{/if}}>Cancelled</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Update Status</button>
-</form> --}}
-{{#if (and (neq order.status "Delivered") (neq order.status "Cancelled") (neq order.status "Returned"))}}
+            <div class="status">
+                {{#if (and (neq order.status "Delivered") (neq order.status "Cancelled") (neq order.status
+                "Returned"))}}
                 <form method="POST" action="/admin/statusUpdate/{{order._id}}">
                     <div class="form-group">
                         <label for="status">Order Status</label>
                         <select id="status" name="status" class="form-select form-select-lg mb-3">
-                            <option value="Pending" {{#if (eq order.status "Pending")}}selected{{/if}}>Pending</option>
-                            <option value="Shipped" {{#if (eq order.status "Shipped")}}selected{{/if}}>Shipped</option>
-                            <option value="Delivered" {{#if (eq order.status "Delivered")}}selected{{/if}}>Delivered</option>
-                            {{!-- <option value="Cancelled" {{#if (eq order.status "Cancelled")}}selected{{/if}}>Cancelled</option> --}}
+                            <option value="Pending" {{#if (eq order.status "Pending" )}}selected{{/if}}>Pending</option>
+                            <option value="Shipped" {{#if (eq order.status "Shipped" )}}selected{{/if}}>Shipped</option>
+                            <option value="Delivered" {{#if (eq order.status "Delivered" )}}selected{{/if}}>Delivered
+                            </option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Update Status</button>
                 </form>
-            {{else}}
-                <p class="text-muted">Status cannot be updated as the order is already {{order.status}}.</p>
-            {{/if}}
+                {{else}}
+                <p class="text-muted">Order is {{order.status}}.</p>
+                {{/if}}
 
 
-    </div>
+            </div>
 
             <ul>
                 <li><strong>Added:</strong>{{formatDate order.createdOn "DD MMMM YYYY"}}</li>
                 <li><strong>Payment Method:</strong> {{order.paymentMethod}}</li>
-                <li><strong>Shipping Method:</strong> Free Shipping</li>
-                 <li><strong>Payment Status:</strong> {{order.paymentStatus}}</li>
+                <li><strong>Shipping Charge:</strong> ₹50.00</li>
+                <li><strong>Payment Status:</strong> {{order.paymentStatus}}</li>
 
             </ul>
         </div>
@@ -72,32 +48,22 @@
             </ul>
         </div>
 
-        <!-- Document Details -->
-        {{!-- <div class="card">
-            <h2>Document</h2>
-            <ul>
-                <li><strong>Invoice:</strong> {{order.invoiceId}}</li>
-                <li><strong>Shipping:</strong> {{order.shippingId}}</li>
-                <li><strong>Rewards:</strong> {{order.rewards}} points</li>
-            </ul>
-        </div> --}}
-
         <!-- Address Details -->
-         <div class="card">
-        <h2>Delivery Details</h2>
-        {{!-- {{if addressDetails}} --}}
-        <ul>
-            <li><strong>Address Type:</strong> {{addressDetails.addressType}}</li>
-            <li><strong>Name:</strong> {{addressDetails.name}}</li>
-            <li><strong>Phone:</strong> {{addressDetails.phone}}</li>
-            <li><strong>Alternative Phone:</strong> {{addressDetails.altPhone}}</li>
-            <li><strong>City:</strong> {{addressDetails.city}}</li>
-            <li><strong>Landmark:</strong> {{addressDetails.landMark}}</li>
-            <li><strong>State:</strong> {{addressDetails.state}}</li>
-            <li><strong>Pincode:</strong> {{addressDetails.pincode}}</li>
-        </ul>
-        {{!-- {{/if}} --}}
-    </div>
+        <div class="card">
+            <h2>Delivery Details</h2>
+            {{!-- {{if addressDetails}} --}}
+            <ul>
+                <li><strong>Address Type:</strong> {{addressDetails.addressType}}</li>
+                <li><strong>Name:</strong> {{addressDetails.name}}</li>
+                <li><strong>Phone:</strong> {{addressDetails.phone}}</li>
+                <li><strong>Alternative Phone:</strong> {{addressDetails.altPhone}}</li>
+                <li><strong>City:</strong> {{addressDetails.city}}</li>
+                <li><strong>Landmark:</strong> {{addressDetails.landMark}}</li>
+                <li><strong>State:</strong> {{addressDetails.state}}</li>
+                <li><strong>Pincode:</strong> {{addressDetails.pincode}}</li>
+            </ul>
+            {{!-- {{/if}} --}}
+        </div>
     </div>
 
     <!-- Order List -->
@@ -119,40 +85,41 @@
                 {{#each order.orderItems}}
                 <tr>
                     <td>{{this.product.productName}} <br> <small>{{this.product.productDetails}}</small></td>
-                    
+
                     <td>{{this.quantity}}</td>
                     <td>{{this.product.regularPrice}}</td>
                     <td>₹{{this.price}}</td>
-                   
+
                     <td>₹{{this.totalPrice}}</td>
                 </tr>
-                 {{/each}}
-                
+                {{/each}}
+
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4">Subtotal:</td>
-                    <td>₹{{order.totalOrderPrice}}</td>
+                    <td colspan="4">You Saved:</td>
+                    <td>{{ formatPrice order.discounts }}</td>
                 </tr>
-                
-                
-                  <tr>
+                <tr>
+                    <td colspan="4">Subtotal:</td>
+                    <td>₹{{ formatPrice order.totalOrderPrice}}</td>
+                </tr>
+
+
+                <tr>
                     <td colspan="4">Coupon Discount:</td>
                     <td>{{couponDiscount}}</td>
                 </tr>
-                
-                 <tr>
-                    <td colspan="4">You Saved:</td>
-                    <td>{{order.discounts}}</td>
-                </tr>
-                
+
+
+
                 <tr>
                     <td colspan="4">Shipping Rate:</td>
                     <td>₹50.00</td>
                 </tr>
                 <tr>
                     <td colspan="4"><strong>Total:</strong></td>
-                    <td><strong>₹{{order.finalAmount}}</strong></td>
+                    <td><strong>₹{{formatPrice order.finalAmount}}</strong></td>
                 </tr>
             </tfoot>
         </table>
@@ -160,71 +127,72 @@
 </div>
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-}
-h2{
-  font-size: 12px;
-}
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
 
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
+    h2 {
+        font-size: 12px;
+    }
 
-.header {
-    margin-bottom: 20px;
-}
+    .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
-.header h1 {
-    margin: 0;
-}
+    .header {
+        margin-bottom: 20px;
+    }
 
-.header nav {
-    font-size: 14px;
-    color: #6c757d;
-}
+    .header h1 {
+        margin: 0;
+    }
 
-.details-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
+    .header nav {
+        font-size: 14px;
+        color: #6c757d;
+    }
 
-.card {
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
 
-.card h2 {
-    margin: 0 0 10px;
-}
+    .card {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .card h2 {
+        margin: 0 0 10px;
+    }
 
 
 
-.order-list table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
+    .order-list table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
 
-.order-list table th,
-.order-list table td {
-    border: 1px solid #dee2e6;
-    padding: 10px;
-    text-align: left;
-}
+    .order-list table th,
+    .order-list table td {
+        border: 1px solid #dee2e6;
+        padding: 10px;
+        text-align: left;
+    }
 
-.order-list table tfoot td {
-    font-weight: bold;
-}
+    .order-list table tfoot td {
+        font-weight: bold;
+    }
 </style>

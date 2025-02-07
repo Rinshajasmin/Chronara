@@ -24,6 +24,7 @@ body {
 .logo {
     font-size: 24px;
     font-weight: bold;
+    margin-left: 50px;
 }
 
 .nav-links {
@@ -36,6 +37,7 @@ body {
     text-decoration: none;
     color: #333;
     font-weight: 500;
+    font-family: 'Poppins';
 }
 
 .auth-links a {
@@ -59,11 +61,18 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 40px 80px;
-    background-color: #fff;
+    background-color: #ebdfdf;
+}
+
+.nav-icons{
+    margin-left: 11px;
+    display: flex;
 }
 
 .hero-content {
     max-width: 50%;
+    margin-left: 51px;
+
 }
 
 .hero-content h1 {
@@ -446,6 +455,9 @@ body {
     }
 
     .shopping-icon a{
+        text-decoration: none;
+    }
+    .btn-secondary a{
         text-decoration: none;
     }
     

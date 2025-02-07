@@ -10,47 +10,8 @@
 
 
 <!-- end of nav-->
- <header id="header" class="navbar">
-        <div class="logo">chronara</div>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="/user/home">Home</a></li>
-                <li><a href="/user/contact">Contact</a></li>
-                <li><a href="/user/about">About</a></li>
 
-                {{!-- <li><a href="/user/cart/?id={{_id}}" >Cart</a></li> --}}
-            </ul>
-        </nav>
-        
-         {{#if username}}
-         <div class="shopping-icon">
-              <a href="/user/cart/?id={{_id}}" class="cart-icon">
-              
-                <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
-              </a>
-        <div class="dropdown">
-          
-          <a class="sign-in-link" href="#">  
-            
-                   <i class="fas fa-user-circle"></i> <!-- Profile icon -->
-
-
-            {{username}}
-          </a>
-          <div class="dropdown-content">
-            <a  href="/user/userProfile">Profile</a>
-            <a  href="/user/logout">Logout</a>
-          </div>
-        </div>
-        </div>
-        
-        {{else}}
-        <div class="auth-links">
-            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
-        </div>
-       {{/if}}  
- 
-    </header> 
+    {{>userHeadernw}} 
     <style>
       .navbar {
     display: flex;
@@ -133,6 +94,8 @@
 
 <!-- start of main -->
 <div style="background:">
+  <div class="sidebar-container" style="display: flex;">
+    {{>sidebar}}
 <div class="container">
 
   <div class="row">
@@ -155,7 +118,6 @@
             <h5>ORDER CONFIRMATION</h5>
             <p>Your order with order ID {{ordernumber}} has been sucessful!</p>
             <p><strong>Total Price:</strong>  ₹{{totalPrice}}</p>
-                        <p><strong>Shipping Charge:</strong>  ₹50.00</p>
 
         <p><strong>Payment Method:</strong> {{paymentMethod}}</p>
             <p>Thank you for choosing Us.</p>

@@ -46,29 +46,42 @@
    const couponRegex = /^[A-Z0-9]+$/
 
     if(!couponRegex.test(coupon)){
-      alert("Coupon code must contain only uppercase letters and numbers!")
-     event.preventDefault()
+    Swal.fire({
+        icon: "error",
+        title: "Invalid Coupon Code",
+        text: "Coupon code must contain only uppercase letters and numbers!",
+      });          
+      event.preventDefault()
      return;
     }
 
 
     // Check if offer price is less than the minimum price
     if (offerPrice >= minimumPrice) {
-      alert("Offer price must be less than the minimum price!");
-      event.preventDefault(); // Prevent form submission
+     Swal.fire({
+        icon: "error",
+        title: "Invalid Offer Price",
+        text: "Offer price must be less than the minimum price!",
+      });           event.preventDefault(); // Prevent form submission
       return;
     }
      if (startDate < currentDate) {
-      alert("Start date must be today or a future date!");
-      event.preventDefault(); // Prevent form submission
+     Swal.fire({
+        icon: "error",
+        title: "Invalid Start Date",
+        text: "Start date must be today or a future date!",
+      });           event.preventDefault(); // Prevent form submission
       return;
     }
 
     // Check if end date is after the start date
     if (endDate < startDate) {
   // End date is before the start date (invalid)
-  alert("End date must be after the start date!");
-  event.preventDefault(); // Prevent form submission
+    Swal.fire({
+        icon: "error",
+        title: "Invalid End Date",
+        text: "End date must be after the start date!",
+      });      event.preventDefault(); // Prevent form submission
   return;
 } else if (endDate.getTime() === startDate.getTime()) {
   // Start date and end date are the same (valid one-day coupon)

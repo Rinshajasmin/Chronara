@@ -1,8 +1,15 @@
-{{>profilesidebar}}
+{{!-- {{>profilesidebar}}
+{{>userHeadernw}} --}}
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables CSS & JS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
   <title>Wallet</title>
   <style>
@@ -16,6 +23,10 @@
       background-color: #f9f9f9;
       padding: 20px;
       border: 1px solid #ddd;
+    }
+    .wallet-portion{
+        margin-left: 67px;
+        margin-top: 18px;
     }
     .wallet-balance h1 {
       margin: 0;
@@ -33,6 +44,11 @@
       border-collapse: collapse;
       margin: 20px 0;
     }
+    table thead{
+        background-color: #f0f0f0 !important;
+    }
+
+   
     .transaction-table th,
     .transaction-table td {
       border: 1px solid #ddd;
@@ -105,6 +121,14 @@
     #addMoneyToggle:hover {
         background-color: #0056b3;
     }
+     .wallet-container {
+            margin: 50px auto;
+            max-width: 1100px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
     .wallet-balance {
         display: flex;
@@ -135,22 +159,20 @@
     }
     /* Target text inside the tbody */
 tbody td {
-    color: #b8b0b0 !important; /* Change to your desired color */
+    color: #101010 !important; /* Change to your desired color */
 }
 /* Override the Bootstrap border-light class */
 .border-light {
     border-color: rgb(113, 111, 111) !important; /* Change to your desired color */
 
 }
-
-
-    
 </style>
-
-    
-
 </head>
 <body>
+    {{>userHeadernw}}
+    <div class="sidebar-container" style="display: flex;">
+        {{>sidebar}}
+    <div class="wallet-portion">
 <div class="wallet-balance">
     <i class="fas fa-wallet wallet-icon"></i>
     <h1>Wallet Balance: ₹{{wallet.balance}}</h1>
@@ -162,11 +184,9 @@ tbody td {
     </div>
 </div>
 
-
-
-
+<div class="wallet-container">
   <div class="table-responsive">
-    <table id="transactionTable" class="table table-hover table-dark border-light ">
+    <table id="transactionTable" class="text-center ">
         <thead>
             <tr>
                 <th class="text-center">Transaction ID</th>
@@ -189,57 +209,13 @@ tbody td {
         </tbody>
     </table>
 </div>
-{{!-- <script type="text/javascript">
-    $(document).ready(function() {
-        // Initialize DataTables
-        var table = $('#transactionTable').DataTable({
-            searching: false,  // Enable the built-in search box
-            paging: true,      // Enable pagination
-            lengthChange: false,
-            pageLength: 5,     // Show 5 entries per page
-            ordering: false,    // Enable sorting
-            order: [[2, 'desc']], // Sort by the Date column (index 2) in descending order
-            columnDefs: [
-                {
-                    targets: 2, // Target the Date column
-                    type: 'date' // Ensure it's treated as a date
-                }
-            ],
-            pagingType: "simple", // Use detailed pagination (First, Previous, Next, Last)
-        language: {
-            paginate: {
-                first: '<i class="fas fa-angle-double-left"></i>', // Icon for 'First'
-                previous: '<i class="fas fa-chevron-left"></i>',   // Icon for 'Previous'
-                next: '<i class="fas fa-chevron-right"></i>',     // Icon for 'Next'
-                last: '<i class="fas fa-angle-double-right"></i>' // Icon for 'Last'
-            }
-        }
-        });
+</div>
+</div>
+</div>
+{{>userfooter}}
 
-        // After DataTable is initialized, format the date column
-        table.on('draw', function () {
-            $('#transactionTable tbody tr').each(function() {
-                var dateCell = $(this).find('td').eq(2); // Get the Date cell (index 2)
-                var rawDate = dateCell.text(); // Get the raw ISO date string
-                var date = new Date(rawDate); // Convert to Date object
 
-                // Format the date manually
-                var formattedDate = date.toLocaleString('en-US', {
-                    weekday: 'long', // "Monday"
-                    year: 'numeric', // "2025"
-                    month: 'long', // "January"
-                    day: 'numeric', // "6"
-                    hour: '2-digit', // "4 PM"
-                    minute: '2-digit', // "11"
-                    second: '2-digit', // "18"
-                    hour12: true // AM/PM
-                });
 
-                dateCell.text(formattedDate); // Set the formatted date back in the table
-            });
-        });
-    });
-</script> --}}
 <script>
 $(document).ready(function() {
     var table = $('#transactionTable').DataTable({
@@ -247,7 +223,7 @@ $(document).ready(function() {
         paging: true,
         lengthChange: false,
         pageLength: 5,
-        ordering: true,
+        ordering: false,
         order: [[2, 'desc']], // Sort by the Date column (index 2) in descending order
         columnDefs: [
             {
@@ -256,7 +232,7 @@ $(document).ready(function() {
                     if (type === 'display' || type === 'filter') {
                         const date = new Date(data); // Parse ISO date string
                         return date.toLocaleString('en-US', {
-                            weekday: 'short',
+                            
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric',
@@ -322,12 +298,6 @@ $(document).ready(function() {
 
 
 
-  {{!-- <div class="pagination">
-    <button>01</button>
-    <button>02</button>
-    <button>03</button>
-    <button>04</button>
-    <button>05</button>
-  </div> --}}
+
 </body>
 </html>

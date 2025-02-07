@@ -10,14 +10,14 @@
                 <th class="text-center">COUPON CODE</th>
                 <th class="text-center">DISCOUNT</th>
                 <th class="text-center">MINIMUM PRICE</th>
-                
-                
+            
+            
                 <th class="text-center">START</th>
                 <th class="text-center">EXPIRY</th>
                 {{!-- <th>CREATED</th> --}}
                 <th class="text-center">STATUS</th>
-                
-                <th class="text-center" >Actions</th>
+            
+                <th class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -31,11 +31,14 @@
                 <td class="text-center">{{formatDate this.expireOn "DD MMMM YYYY"}}</td>
                 {{!-- //<td>{{this.productImage}}</td> --}}
                 <td class="text-center">
-                   <span class="badge {{#if (eq status 'active')}}bg-success{{else}}bg-danger{{/if}}">
-                   {{this.status}}
-                  </span>
-
+                    <span class="badge 
+                        {{#if (eq status 'active')}}bg-success
+                        {{else if (eq status 'inactive')}}bg-warning
+                        {{else}}bg-danger{{/if}}">
+                        {{this.status}}
+                    </span>
                 </td>
+
                 <td class="text-center">
                     <a href="/admin/editCoupon/{{this._id}}" class="btn btn-primary btn-sm">Edit</a>
 <form action="/admin/deleteCoupon/{{this._id}}" method="POST" style="display:inline-block;">

@@ -8,13 +8,11 @@
 </head>
 {{>adminheader}}
 <body>
-    
-
     <div class="sales-report-container">
         <div class="summary-cards">
             <div class="card">
                 <h3>Total Sales</h3>
-                <p>₹{{report.totalSales}}</p>
+                <p>₹{{formatPrice report.totalSales}}</p>
             </div>
             <div class="card">
                 <h3>Orders Count</h3>
@@ -22,7 +20,7 @@
             </div>
             <div class="card">
                 <h3>Total Discounts</h3>
-                <p>₹{{report.totalDiscounts}}</p>
+                <p>₹{{formatPrice report.totalDiscounts}}</p>
             </div>
         </div>
 
@@ -58,14 +56,7 @@
     </div>
 </form>
 
-
-
-
-
-
-
-
-            <table class="sales-table" id="salesTable">
+ <table class="sales-table" id="salesTable">
     <thead>
         <tr>
             <th>Date</th>

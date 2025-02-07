@@ -1,318 +1,310 @@
-{{>profilesidebar}}
-<h4>Details</h4>
-<div class="container">
-    {{!-- <div class="header">
-        <h1>Order Details</h1>
-        <nav>
-            <a href="/dashboard">Dashboard</a> &gt; 
-            <a href="/orderList">Order List</a> &gt; 
-            <span>Order Details</span>
-        </nav>
-    </div> --}}
-
-    <div class="details-grid">
-        <!-- Order Details -->
-        <div class="card">
-            <h2>Order #{{order.orderId}}</h2>
-
-    {{#if (or (eq order.status "Pending") (eq order.status "Shipped"))}}
-
-             <div class="status">
-            <form id="cancelOrderForm" method="POST" action="/user/cancelOrder/{{order._id}}">
-    <div class="form-group">
-        <label for="cancellationReason">Cancellation Reason</label>
-        <textarea id="cancellationReason" name="cancellationReason" class="form-control" placeholder="Enter reason for cancellation"></textarea>
-    </div>
-    <button type="button" class="btn btn-danger" id="cancelOrderBtn">Cancel Order</button>
-</form>
+{{>userHeadernw}}
+<div class="sidebar-container" style="display: flex;">
+    {{>sidebar}}
+    <div class="container">
 
 
-    </div>{{/if}}
+        <div class="details-grid">
+            <!-- Order Details -->
+            <div class="card">
+                <h2>Order #{{order.orderId}}</h2>
 
-    {{#if (eq order.status "Delivered")}}
-    <div class="status">
-        <form id="returnOrderForm" method="POST" action="/user/returnOrder/{{order._id}}">
-            <div class="form-group">
-                <label for="returnReason">Return Reason</label>
-                <textarea id="returnReason" name="returnReason" class="form-control" placeholder="Enter reason for return"></textarea>
+                {{#if (or (eq order.status "Pending") (eq order.status "Shipped"))}}
+
+                <div class="status">
+                    <form id="cancelOrderForm" method="POST" action="/user/orderDetails/{{order._id}}">
+                        <div class="form-group">
+                            <label for="cancellationReason">Cancellation Reason</label>
+                            <textarea id="cancellationReason" name="cancellationReason" class="form-control"
+                                placeholder="Enter reason for cancellation"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-danger" id="cancelOrderBtn">Cancel Order</button>
+                    </form>
+
+
+                </div>{{/if}}
+
+                {{#if (eq order.status "Delivered")}}
+                <div class="status">
+                    <form id="returnOrderForm" method="POST" action="/user/returnOrder/{{order._id}}">
+                        <div class="form-group">
+                            <label for="returnReason">Return Reason</label>
+                            <textarea id="returnReason" name="returnReason" class="form-control"
+                                placeholder="Enter reason for return"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="returnOrderBtn">Return Order</button>
+                    </form>
+                </div>
+                {{/if}}
+
+                <ul>
+                    <li><strong>Added:</strong>{{formatDate order.createdOn "DD MMMM YYYY"}}</li>
+                    <li><strong>Payment Method:</strong> {{order.paymentMethod}}</li>
+                    <li>
+                        <strong>Payment Status:</strong>
+                        <span style="color: {{#if (eq order.paymentStatus 'Awaiting Payment')}}red{{else}}green{{/if}}">
+                            {{order.paymentStatus}}
+                        </span>
+                    </li>
+                </ul>
+                
+                {{#if (eq order.paymentStatus "Awaiting Payment")}}
+                <form id="paymentForm" method="POST">
+
+
+
+                    <label for="paymentMethod">Pay Now:</label>
+                    <select name="paymentMethod" id="paymentMethod" required>
+                        <option value="" disabled selected>Select a payment Method</option>
+                        <option value="Wallet">Wallet</option>
+                        <option value="Razorpay">Razorpay</option>
+                        <option value="Cash on Delivery">Cash on Delivery</option>
+                    </select>
+                    <button class="btn btn-primary" id="proceedButton" style="display: none;">Proceed</button>
+
+                    {{/if}}
+
             </div>
-            <button type="button" class="btn btn-primary" id="returnOrderBtn">Return Order</button>
-        </form>
-    </div>
-{{/if}}
 
-            <ul>
-                <li><strong>Added:</strong>{{formatDate order.createdOn "DD MMMM YYYY"}}</li>
-                <li><strong>Payment Method:</strong> {{order.paymentMethod}}</li>
-<li>
-    <strong>Payment Status:</strong> 
-    <span style="color: {{#if (eq order.paymentStatus 'Awaiting Payment')}}red{{else}}green{{/if}}">
-        {{order.paymentStatus}}
-    </span>
-</li>
-            </ul>
-            {{#if (eq order.paymentStatus "Awaiting Payment")}}
-                <form id="paymentForm"  method="POST">
-                 
+            <!-- Customer Details -->
+            <div class="card">
+                <h2>Customer</h2>
+                <ul>
+                    <li><strong>Name:</strong> {{order.address.username}}</li>
+                    <li><strong>Email:</strong> {{order.address.email}}</li>
+                    <li><strong>Phone:</strong> {{order.address.phone}}</li>
+                </ul>
+            </div>
+
+        
+
+            <!-- Address Details -->
+            <div class="card">
+                <h2>Address</h2>
+                {{!-- {{addressDetails}} --}}
+                <ul>
+                    <li><strong>Address Type:</strong> {{addressDetails.addressType}}</li>
+                    <li><strong>Name:</strong> {{addressDetails.name}}</li>
+                    <li><strong>Phone:</strong> {{addressDetails.phone}}</li>
+                    <li><strong>Alternative Phone:</strong> {{addressDetails.altPhone}}</li>
+                    <li><strong>City:</strong> {{addressDetails.city}}</li>
+                    <li><strong>Landmark:</strong> {{addressDetails.landMark}}</li>
+                    <li><strong>State:</strong> {{addressDetails.state}}</li>
+                    <li><strong>Pincode:</strong> {{addressDetails.pincode}}</li>
+                </ul>
+                {{!-- {{/each}} --}}
+            </div>
+            
+        </div>
+        
 
 
-            <label for="paymentMethod">Pay Now:</label>
-            <select name="paymentMethod" id="paymentMethod" required>
-                <option value="" disabled selected>Select a payment Method</option>
-                <option value="Wallet">Wallet</option>
-                <option value="Razorpay">Razorpay</option>
-                <option value="Cash on Delivery">Cash on Delivery</option>
-            </select>
-                <button class="btn btn-primary" id="proceedButton" style="display: none;">Proceed</button>
+        <!-- Order List -->
+        <div class="order-list">
+            <h2>Order List</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        {{!-- <th>SKU</th> --}}
+                        <th>Quantity</th>
+                        <th>Actual Price</th>
+                        <th> Offer Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each order.orderItems}}
+                    <tr>
+                        <td>{{this.product.productName}} <br> <small>{{this.product.productDetails}}</small></td>
 
+                        <td>{{this.quantity}}</td>
+                        <td>{{this.product.regularPrice}}</td>
+                        <td>₹{{this.price }}</td>
+
+                        <td>₹{{this.totalPrice}}</td>
+                    </tr>
+                    {{/each}}
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">Subtotal:</td>
+                        <td>₹{{ formatPrice order.totalOrderPrice}}</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4">Coupon Discount:</td>
+                        <td>{{couponDiscount}}</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4">You Saved:</td>
+                        <td>{{ formatPrice order.discounts}}</td>
+                    </tr>
+
+
+                    <tr>
+                        <td colspan="4">Shipping Rate:</td>
+                        <td>₹50.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><strong>Total:</strong></td>
+                        <td><strong>₹{{formatPrice order.finalAmount}}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            {{#if (and (eq order.paymentStatus "Paid") (neq order.status "Cancelled"))}}
+            <button id="downloadInvoiceButton" class="btn btn-primary">Download Invoice</button>
             {{/if}}
-                
         </div>
 
-        <!-- Customer Details -->
-        <div class="card">
-            <h2>Customer</h2>
-            <ul>
-                <li><strong>Name:</strong> {{order.address.username}}</li>
-                <li><strong>Email:</strong> {{order.address.email}}</li>
-                <li><strong>Phone:</strong> {{order.address.phone}}</li>
-            </ul>
-        </div>
-
-        <!-- Document Details -->
-        {{!-- <div class="card">
-            <h2>Document</h2>
-            <ul>
-                <li><strong>Invoice:</strong> {{order.invoiceId}}</li>
-                <li><strong>Shipping:</strong> {{order.shippingId}}</li>
-                <li><strong>Rewards:</strong> {{order.rewards}} points</li>
-            </ul>
-        </div> --}}
-
-        <!-- Address Details -->
-         <div class="card">
-        <h2>Address</h2>
-        {{!-- {{addressDetails}} --}}
-        <ul>
-            <li><strong>Address Type:</strong> {{addressDetails.addressType}}</li>
-            <li><strong>Name:</strong> {{addressDetails.name}}</li>
-            <li><strong>Phone:</strong> {{addressDetails.phone}}</li>
-            <li><strong>Alternative Phone:</strong> {{addressDetails.altPhone}}</li>
-            <li><strong>City:</strong> {{addressDetails.city}}</li>
-            <li><strong>Landmark:</strong> {{addressDetails.landMark}}</li>
-            <li><strong>State:</strong> {{addressDetails.state}}</li>
-            <li><strong>Pincode:</strong> {{addressDetails.pincode}}</li>
-        </ul>
-        {{!-- {{/each}} --}}
     </div>
-    </div>
-
-    <!-- Order List -->
-    <div class="order-list">
-        <h2>Order List</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    {{!-- <th>SKU</th> --}}
-                    <th>Quantity</th>
-                    <th>Actual Price</th>
-                    <th> Offer Price</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each order.orderItems}}
-                <tr>
-                    <td>{{this.product.productName}} <br> <small>{{this.product.productDetails}}</small></td>
-                    
-                    <td>{{this.quantity}}</td>
-                    <td>{{this.product.regularPrice}}</td>
-                    <td>₹{{this.price }}</td>
-                   
-                    <td>₹{{this.totalPrice}}</td>
-                </tr>
-                 {{/each}}
-                
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4">Subtotal:</td>
-                    <td>₹{{order.totalOrderPrice}}</td>
-                </tr>
-                
-                  <tr>
-                    <td colspan="4">Coupon Discount:</td>
-                    <td>{{couponDiscount}}</td>
-                </tr>
-                
-                 <tr>
-                    <td colspan="4">You Saved:</td>
-                    <td>{{order.discounts}}</td>
-                </tr>
-                
-                
-                <tr>
-                    <td colspan="4">Shipping Rate:</td>
-                    <td>₹50.00</td>
-                </tr>
-                <tr>
-                    <td colspan="4"><strong>Total:</strong></td>
-                    <td><strong>₹{{order.finalAmount}}</strong></td>
-                </tr>
-            </tfoot>
-        </table>
-         {{#if (and (eq order.paymentStatus "Paid") (neq order.status "Cancelled"))}}
-    <button id="downloadInvoiceButton" class="btn btn-primary">Download Invoice</button>
-{{/if}}
-    </div>
-   
 </div>
-
-
-
-
 {{>userfooter}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const cancelOrderBtn = document.getElementById('cancelOrderBtn');
     if (cancelOrderBtn) { // Check if the cancel button exists
         cancelOrderBtn.addEventListener('click', function (event) {
-       
-        // Check if the cancellation reason is provided
-        if (!cancellationReason) {
-            Swal.fire({
-                title: 'Error!',
-                text: 'Please provide a reason for cancellation.',
-                icon: 'error',
-                confirmButtonColor: '#d33'
-            });
-            return; // Don't proceed if no reason is entered
-        }
 
-        // Confirm cancellation with SweetAlert
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, cancel it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Update the form to include status and cancellationReason fields
-                const form = document.getElementById('cancelOrderForm');
-                
-                // Create and append hidden status input field
-                const statusInput = document.createElement('input');
-                statusInput.type = 'hidden';
-                statusInput.name = 'status';
-                statusInput.value = 'Cancelled';
-                form.appendChild(statusInput);
-                
-                // Create and append hidden cancellationReason input field
-                const reasonInput = document.createElement('input');
-                reasonInput.type = 'hidden';
-                reasonInput.name = 'cancellationReason';
-                reasonInput.value = cancellationReason;
-                form.appendChild(reasonInput);
-
-                // Submit the form
-                form.submit();
-
-                // Show success message
-                Swal.fire(
-                    'Cancelled!',
-                    'The order has been cancelled.',
-                    'success'
-                );
-            }
-        });
-    });
-    }
-    
-
-   document.addEventListener('DOMContentLoaded', function () {
-    // Get the return order button element
-    const returnOrderBtn = document.getElementById('returnOrderBtn');
-    if (returnOrderBtn) { // Check if the button exists
-        returnOrderBtn.addEventListener('click', function (event) {
-            const returnReason = document.getElementById('returnReason').value.trim();
-
-            // Check if the return reason is provided
-            if (!returnReason) {
+            // Check if the cancellation reason is provided
+            if (!cancellationReason) {
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please provide a reason for returning the order.',
+                    text: 'Please provide a reason for cancellation.',
                     icon: 'error',
                     confirmButtonColor: '#d33'
                 });
                 return; // Don't proceed if no reason is entered
             }
 
-            // Confirm return with SweetAlert
+            // Confirm cancellation with SweetAlert
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You want to return this order!",
+                text: "You won't be able to revert this!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, return it!'
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, cancel it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Update the form to include status and returnReason fields
-                    const form = document.getElementById('returnOrderForm');
+                    // Update the form to include status and cancellationReason fields
+                    const form = document.getElementById('cancelOrderForm');
 
-                    if (form) { // Check if the form exists
-                        // Create and append hidden status input field
-                        const statusInput = document.createElement('input');
-                        statusInput.type = 'hidden';
-                        statusInput.name = 'status';
-                        statusInput.value = 'Returned';
-                        form.appendChild(statusInput);
+                    // Create and append hidden status input field
+                    const statusInput = document.createElement('input');
+                    statusInput.type = 'hidden';
+                    statusInput.name = 'status';
+                    statusInput.value = 'Cancelled';
+                    form.appendChild(statusInput);
 
-                        // Create and append hidden returnReason input field
-                        const reasonInput = document.createElement('input');
-                        reasonInput.type = 'hidden';
-                        reasonInput.name = 'returnReason';
-                        reasonInput.value = returnReason;
-                        form.appendChild(reasonInput);
+                    // Create and append hidden cancellationReason input field
+                    const reasonInput = document.createElement('input');
+                    reasonInput.type = 'hidden';
+                    reasonInput.name = 'cancellationReason';
+                    reasonInput.value = cancellationReason;
+                    form.appendChild(reasonInput);
 
-                        // Submit the form
-                        form.submit();
+                    // Submit the form
+                    form.submit();
 
-                        // Show success message
-                        Swal.fire(
-                            'Returned!',
-                            'The order has been marked as returned.',
-                            'success'
-                        );
-                    } else {
-                        console.error('Return form not found.');
-                    }
+                    // Show success message
+                    Swal.fire(
+                        'Cancelled!',
+                        'The order has been cancelled.',
+                        'success'
+                    );
                 }
             });
         });
-    } else {
-        console.error('Return order button not found.');
     }
-});
 
 
-  
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the return order button element
+        const returnOrderBtn = document.getElementById('returnOrderBtn');
+        if (returnOrderBtn) { // Check if the button exists
+            returnOrderBtn.addEventListener('click', function (event) {
+                const returnReason = document.getElementById('returnReason').value.trim();
+
+                // Check if the return reason is provided
+                if (!returnReason) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Please provide a reason for returning the order.',
+                        icon: 'error',
+                        confirmButtonColor: '#d33'
+                    });
+                    return; // Don't proceed if no reason is entered
+                }
+
+                // Confirm return with SweetAlert
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to return this order!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, return it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Update the form to include status and returnReason fields
+                        const form = document.getElementById('returnOrderForm');
+
+                        if (form) { // Check if the form exists
+                            // Create and append hidden status input field
+                            const statusInput = document.createElement('input');
+                            statusInput.type = 'hidden';
+                            statusInput.name = 'status';
+                            statusInput.value = 'Returned';
+                            form.appendChild(statusInput);
+
+                            // Create and append hidden returnReason input field
+                            const reasonInput = document.createElement('input');
+                            reasonInput.type = 'hidden';
+                            reasonInput.name = 'returnReason';
+                            reasonInput.value = returnReason;
+                            form.appendChild(reasonInput);
+
+                            // Submit the form
+                            form.submit();
+
+                            // Show success message
+                            Swal.fire(
+                                'Returned!',
+                                'The order has been marked as returned.',
+                                'success'
+                            );
+                        } else {
+                            console.error('Return form not found.');
+                        }
+                    }
+                });
+            });
+        } else {
+            console.error('Return order button not found.');
+        }
+    });
+
+
+
 </script>
 
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const form = document.getElementById('paymentForm');
+        const orderData = JSON.parse('{{{json order}}}');
+
+
         const paymentMethodDropdown = document.getElementById('paymentMethod');
         const proceedButton = document.getElementById('proceedButton');
-        const finalTotal = parseFloat("{{order.finalAmount}}") || 0; // Fallback to 0 if undefined
-        const orderId = "{{order._id}}";
 
+        const finalTotal = parseFloat(orderData.finalAmount) || 0;
+        const orderId = orderData._id;
         // Listen for changes in the dropdown
         paymentMethodDropdown.addEventListener('change', () => {
             const selectedMethod = paymentMethodDropdown.value;
@@ -321,7 +313,7 @@
             if (selectedMethod === 'Cash on Delivery' && finalTotal > 1000) {
                 Swal.fire({
                     title: '',
-                    text: "COD Unavailable for orders over 1000.00!!",
+                    text: "COD Unavailable for orders over 1000!!",
                     icon: 'warning',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'Ok',
@@ -330,6 +322,7 @@
                 proceedButton.style.display = 'none'; // Hide the button
                 return; // Stop further execution
             }
+
 
             // Show the "Proceed" button if a valid payment method is selected
             if (selectedMethod) {
@@ -344,6 +337,13 @@
             event.preventDefault(); // Prevent default form submission
 
             const selectedMethod = paymentMethodDropdown.value;
+            if (selectedMethod === 'Razorpay') {
+                const orderId = "{{order._id}}";  // Use your order ID
+                const amount = "{{order.finalAmount}}";  // Use your order amount
+
+                // Redirect to backend endpoint to load Razorpay page
+                window.location.href = `/user/getPaymentPage?orderId=${orderId}&amount=${amount}`;
+            }
 
             if (!selectedMethod) {
                 Swal.fire({
@@ -376,7 +376,7 @@
                         confirmButtonText: 'Ok',
                     }).then(() => {
                         // Redirect to orders page
-                        window.location.href = '/user/myOrder';
+                        window.location.href = '/user/getUserOrders';
                     });
                 } else {
                     Swal.fire({
@@ -400,76 +400,77 @@
 </script>
 
 
-{{!-- <script>
-    document.addEventListener('DOMContentLoaded',()=>{
-            const form = document.getElementById('paymentForm');
+{{!--
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('paymentForm');
 
         const paymentMethodDropdown = document.getElementById('paymentMethod');
-    const proceedButton = document.getElementById('proceedButton');
-    const finalTotal = parseFloat("{{order.finalAmount}}") || 0; // Fallback to 0 if undefined
-                const orderId = "{{order._id}}";
-     
- 
-   
-    // Listen for changes in the dropdown
-    paymentMethodDropdown.addEventListener('change', () => {
-        const selectedMethod = paymentMethodDropdown.value;
+        const proceedButton = document.getElementById('proceedButton');
+        const finalTotal = parseFloat("{{order.finalAmount}}") || 0; // Fallback to 0 if undefined
+        const orderId = "{{order._id}}";
 
-        // Check for "Cash on Delivery" restrictions
-        if (selectedMethod === 'Cash on Delivery' && finalTotal > 1000) {
-            Swal.fire({
-                title: '',
-                text: "COD Unavailable for orders over 1000.00!!",
-                icon: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Ok',
-            });
-            paymentMethodDropdown.value = ''; // Reset the dropdown
-            proceedButton.style.display = 'none'; // Hide the button
-            return; // Stop further execution
-        }
 
-        // Show the "Proceed" button if a valid payment method is selected
-        if (selectedMethod) {
-            proceedButton.style.display = 'inline-block';
-        } else {
-            proceedButton.style.display = 'none';
-        }
-    });
 
-     
-      
+        // Listen for changes in the dropdown
+        paymentMethodDropdown.addEventListener('change', () => {
+            const selectedMethod = paymentMethodDropdown.value;
+
+            // Check for "Cash on Delivery" restrictions
+            if (selectedMethod === 'Cash on Delivery' && finalTotal > 1000) {
+                Swal.fire({
+                    title: '',
+                    text: "COD Unavailable for orders over 1000.00!!",
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok',
+                });
+                paymentMethodDropdown.value = ''; // Reset the dropdown
+                proceedButton.style.display = 'none'; // Hide the button
+                return; // Stop further execution
+            }
+
+            // Show the "Proceed" button if a valid payment method is selected
+            if (selectedMethod) {
+                proceedButton.style.display = 'inline-block';
+            } else {
+                proceedButton.style.display = 'none';
+            }
+        });
+
+
+
 
     });
 </script> --}}
 
 <script>
-        document.getElementById("downloadInvoiceButton").addEventListener("click", downloadInvoice);
+    document.getElementById("downloadInvoiceButton").addEventListener("click", downloadInvoice);
 
-    function downloadInvoice(){
-      const orderId='{{order._id}}'
+    function downloadInvoice() {
+        const orderId = '{{order._id}}'
 
-      fetch(`/user/invoiceDownload/${orderId}`, {
+        fetch(`/user/invoiceDownload/${orderId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             }
         })
-        
-        .then(response => response.blob())  // Assuming the backend sends the invoice as a blob (PDF)
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = `invoice_${orderId}.pdf`;  // Name the file as you wish
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-        })
-        .catch(error => {
-            console.error('Error generating invoice:', error);
-        });
+
+            .then(response => response.blob())  // Assuming the backend sends the invoice as a blob (PDF)
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `invoice_${orderId}.pdf`;  // Name the file as you wish
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error generating invoice:', error);
+            });
     }
 
 </script>
@@ -479,120 +480,124 @@
 
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-}
-h2{
-  font-size: 12px;
-}
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
 
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
+    h2 {
+        font-size: 12px;
+    }
 
-.header {
-    margin-bottom: 20px;
-}
+    .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
-.header h1 {
-    margin: 0;
-}
+    .header {
+        margin-bottom: 20px;
+    }
 
-.header nav {
-    font-size: 14px;
-    color: #6c757d;
-}
+    .header h1 {
+        margin: 0;
+    }
 
-.details-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    .header nav {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+   .details-grid {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    gap: 20px; /* Space between cards */
+    justify-content: space-between; /* Distributes cards evenly */
 }
 
 .card {
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex: 1; /* Makes each card flexible */
+    min-width: 250px; /* Ensures cards don't shrink too much */
+    max-width: 30%; /* Adjust this based on the number of cards */
 }
 
-.card h2 {
-    margin: 0 0 10px;
-}
+    .card h2 {
+        margin: 0 0 10px;
+    }
 
 
 
-.order-list table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
+    .order-list table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
 
-.order-list table th,
-.order-list table td {
-    border: 1px solid #dee2e6;
-    padding: 10px;
-    text-align: left;
-}
+    .order-list table th,
+    .order-list table td {
+        border: 1px solid #dee2e6;
+        padding: 10px;
+        text-align: left;
+    }
 
-.order-list table tfoot td {
-    font-weight: bold;
-}
-/* Style the dropdown container */
-label[for="paymentMethod"] {
-    font-size: 16px;
-    font-weight: bold;
-    margin-right: 10px;
-}
+    .order-list table tfoot td {
+        font-weight: bold;
+    }
 
-/* Style the dropdown itself */
-#paymentMethod {
-    appearance: none; /* Removes the default browser styling */
-    background-color: #f8f9fa;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 16px;
-    padding: 8px 12px;
-    width: 250px;
-    color: #495057;
-    cursor: pointer;
-    outline: none;
-    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
+    /* Style the dropdown container */
+    label[for="paymentMethod"] {
+        font-size: 16px;
+        font-weight: bold;
+        margin-right: 10px;
+    }
 
-/* Add hover effect */
-#paymentMethod:hover {
-    border-color: #80bdff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
+    /* Style the dropdown itself */
+    #paymentMethod {
+        appearance: none;
+        /* Removes the default browser styling */
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 16px;
+        padding: 8px 12px;
+        width: 250px;
+        color: #495057;
+        cursor: pointer;
+        outline: none;
+        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
 
-/* Add focus effect */
-#paymentMethod:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.75);
-}
+    /* Add hover effect */
+    #paymentMethod:hover {
+        border-color: #80bdff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
 
-/* Style the dropdown options */
-#paymentMethod option {
-    background-color: #fff;
-    color: #495057;
-    padding: 10px;
-}
+    /* Add focus effect */
+    #paymentMethod:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.75);
+    }
 
-/* Optional: Add styles for disabled option */
-#paymentMethod option[disabled] {
-    color: #6c757d;
-}
-#proceedButton{
-margin-top: 18px;
-    width: 251px;}
+    /* Style the dropdown options */
+    #paymentMethod option {
+        background-color: #fff;
+        color: #495057;
+        padding: 10px;
+    }
 
+    /* Optional: Add styles for disabled option */
+    #paymentMethod option[disabled] {
+        color: #6c757d;
+    }
+
+    #proceedButton {
+        margin-top: 18px;
+        width: 251px;
+    }
 </style>

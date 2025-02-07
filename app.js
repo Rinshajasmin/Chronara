@@ -1,65 +1,59 @@
-const express = require('express');
-const path = require('path');
+const express = require("express");
+const path = require("path");
 const app = express();
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 
 //const helpers = require('./helpers');
 
-const session = require('express-session')
-const exphbs = require('express-handlebars');
-const passport = require('./config/passport')
-const env=require('dotenv').config();
-const db=require('./config/db');
-db()
-const moment = require('moment')
-const nocache=require('nocache')
-app.use(nocache()) 
-
-
-
-
+const session = require("express-session");
+const exphbs = require("express-handlebars");
+const passport = require("./config/passport");
+const env = require("dotenv").config();
+const db = require("./config/db");
+db();
+const moment = require("moment");
+const nocache = require("nocache");
+app.use(nocache());
 
 // Middleware for parsing JSON and form data
 app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
-app.use(session({
-  secret:process.env.SESSION_SECRET,
-  resave:false,
-  saveUninitialized:true,
-  cookie:{
-   secure:false,
-   httpOnly:true,
-   maxAge:72*60*60*1000
-  }
-
-}))
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+    },
+  })
+);
 
 app.use(passport.initialize());
-app.use(passport.session())
-
+app.use(passport.session());
 
 // Set static folder
-app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static(path.join(__dirname, "public")));
 
 // Set up View Engine
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs'); 
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "hbs");
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 app.engine(
-  'hbs',
+  "hbs",
   exphbs.engine({
-    extname: '.hbs',
-    defaultLayout: 'layout',
-    layoutsDir: __dirname + '/views/',
+    extname: ".hbs",
+    defaultLayout: "layout",
+    layoutsDir: __dirname + "/views/",
     partialsDir: [
-      __dirname + '/views/user',    // User-specific partials
-      __dirname + '/views/admin',   // Admin-specific partials
-    ], 
+      __dirname + "/views/user", // User-specific partials
+      __dirname + "/views/admin", // Admin-specific partials
+    ],
     helpers: {
       formatDate: (date, format) => moment(date).local().format(format),
       eq: (a, b) => {
@@ -67,17 +61,22 @@ app.engine(
       },
       statusClass: (status) => {
         switch (status) {
-          case 'Pending': return 'text-warning';
-          case 'Shipped': return 'text-primary';
-          case 'Delivered': return 'text-success';
-          case 'Cancelled': return 'text-danger';
-          default: return 'text-secondary';
+          case "Pending":
+            return "text-warning";
+          case "Shipped":
+            return "text-primary";
+          case "Delivered":
+            return "text-success";
+          case "Cancelled":
+            return "text-danger";
+          default:
+            return "text-secondary";
         }
       },
       or: function (v1, v2) {
         return v1 || v2;
       },
-      isActive: function(expiryDate) {
+      isActive: function (expiryDate) {
         const currentDate = moment(); // Get the current date
         const expiry = moment(expiryDate); // Convert expiry date to moment object
         return currentDate.isBefore(expiry); // Return true if the current date is before expiry date
@@ -93,7 +92,7 @@ app.engine(
         const args = Array.prototype.slice.call(arguments, 0, -1); // Exclude the options object
         return args.every(Boolean); // Return true if all arguments are truthy
       },
-      contains: function(value, substring) {
+      contains: function (value, substring) {
         return value && value.includes(substring); // Check if value contains substring
       },
       ifEquals: function (value1, value2, options) {
@@ -101,7 +100,7 @@ app.engine(
         if (value1 == null || value2 == null) {
           return options.inverse(this); // Render the "else" block if either value is undefined or null
         }
-      
+
         // Compare their string representations
         if (value1.toString() === value2.toString()) {
           return options.fn(this); // Render the "if" block if they are equal
@@ -119,28 +118,27 @@ app.engine(
       },
       gt: (a, b) => a > b, // Greater than comparison
       lt: (a, b) => a < b, // Less than comparison
-      json: function(context) {
+      json: function (context) {
         return JSON.stringify(context);
-    }
+      },
+
+      formatPrice: function (value) {
+        return Number(value).toFixed(2);
+      },
     },
     runtimeOptions: {
-      allowProtoPropertiesByDefault: true
+      allowProtoPropertiesByDefault: true,
     },
   })
 );
 
-
-
-  app.set('view engine', 'hbs');
-
-  
-  
+app.set("view engine", "hbs");
 
 // Import Routes
-const userRoutes = require('./routes/userRoutes');
-app.use('/user', userRoutes); // Prefix your routes
-const adminRoutes = require('./routes/adminRoutes');
-app.use('/admin', adminRoutes); 
+const userRoutes = require("./routes/userRoutes");
+app.use("/user", userRoutes); // Prefix your routes
+const adminRoutes = require("./routes/adminRoutes");
+app.use("/admin", adminRoutes);
 
 // Start the server
 const PORT = process.env.PORT;

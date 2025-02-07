@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Watch Store</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 32px;
+            color: #555;
+            margin: 0;
+        }
+
+       .container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: block; /* Explicitly define block layout */
+}
+
+.section {
+    margin-bottom: 20px;
+    display: block; /* Ensure block layout for each section */
+}
+
+
+        .section h2 {
+            font-size: 20px;
+            color: #222;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .section p {
+            margin: 10px 0;
+            color: #555;
+            font-size: 16px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #333;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #000;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .cookie-banner a {
+            color: #00aaff;
+            text-decoration: underline;
+            margin-left: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 28px;
+            }
+
+            .section h2 {
+                font-size: 18px;
+            }
+
+            .section p {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<header id="header" class="navbar">
+  <div class="logo">chronara</div>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="/user/home">Home</a></li>
+      <li><a href="/user/getContactPage">Contact</a></li>
+      <li><a href="/user/getAboutPage">About</a></li>
+    </ul>
+  </nav>
+  {{#if username}}
+    <div class="dropdown">
+      <a class="sign-in-link" href="#">{{username}}</a>
+      <div class="dropdown-content">
+        <a href="/user/profile">Profile</a>
+        <a href="/user/logout">Logout</a>
+      </div>
+    </div>
+  {{else}}
+    <div class="auth-links">
+      <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+    </div>
+  {{/if}}
+</header>
+
+<body>
+
+<header>
+    <h1>Privacy Policy</h1>
+</header>
+
+<div class="container">
+    <div class="section">
+        <h2>1. Introduction</h2>
+        <p>We at Watch Store are committed to protecting your privacy. This policy outlines how we collect, use, and safeguard your personal data.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. Information We Collect</h2>
+        <p>We collect personal information such as your name, email, shipping address, and payment details to process your orders and enhance your experience.</p>
+    </div>
+
+    <div class="section">
+        <h2>3. How We Use Your Information</h2>
+        <p>Your information is used to process transactions, personalize your experience, and improve our services.</p>
+    </div>
+
+    <div class="section">
+        <h2>4. Third-Party Sharing</h2>
+        <p>We may share your information with trusted third parties like payment processors and shipping providers.</p>
+    </div>
+
+    <div class="section">
+        <h2>5. Your Rights</h2>
+        <p>You have the right to access, update, or delete your personal information. Please contact us to make such requests.</p>
+    </div>
+</div>
+
+{{>userfooter}}
+
+
+
+</body>
+</html>

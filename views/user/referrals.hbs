@@ -1,14 +1,7 @@
-
-
-
-
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Referral Page</title>
-  <link rel="stylesheet" href="styles.css">
 </head>
 <style>
     body {
@@ -17,6 +10,9 @@
   margin: 0;
   padding: 0;
   color: #333;
+}
+.sidebar-container{
+  display: flex;
 }
 
 .referral-container {
@@ -27,6 +23,7 @@
   border-radius: 8px;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 1000px;
 }
 
 h2 {
@@ -101,11 +98,11 @@ table td[colspan] {
   text-align: center;
   font-style: italic;
 }
-
-
 </style>
 <body>
-    {{>profilesidebar}}
+    {{>userHeadernw}}
+    <div class="sidebar-container">
+      {{>sidebar}}
   <div class="referral-container">
     <div class="referral-summary">
       <h2>Referral Summary</h2>
@@ -153,6 +150,8 @@ table td[colspan] {
       </table>
     </div>
   </div>
+  </div>
+  {{>userfooter}}
   <script>
   // Add event listener to the copy button
  document.getElementById('copy-referral-code-btn').addEventListener('click', (event) => {
@@ -175,4 +174,3 @@ table td[colspan] {
 </script>
 </body>
 
-</html>

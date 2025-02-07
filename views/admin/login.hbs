@@ -6,41 +6,64 @@
   </div>
 </nav>
 <div class="login-container">
-    <div class="login-box">
-      <h2>Admin Login</h2>
-      <form method="post" action="/admin/login" id="adminform" name="adminform">
-        {{!-- <label for="username">Your username or email address</label> --}}
-        <input type="email" id="email" name="email" placeholder=" email " required>
-        
-        {{!-- <label for="password">Password</label> --}}
-        <div class="password-container">
-          <input type="password" id="password" name="password" placeholder="Password" required>
-          <span class="toggle-password"></span>
-        </div>
+  <div class="login-box">
+    <h2>Admin Login</h2>
+    <form method="post" action="/admin/login" id="adminform" name="adminform">
+      {{!-- <label for="username">Your username or email address</label> --}}
+      <input type="email" id="email" name="email" placeholder=" email " required>
+      {{#if message}}
+      <span style="color: red;">{{message}}</span>
+      {{/if}}
 
-       <div class="remember-forgot">
-  {{!-- <label>
-   <input type="checkbox">
-    <span>Remember me</span>
-  </label> --}}
-  <span><a href="#">Forgot password?</a></span>
-</div>
-
-        
-        <button type="submit" class="login-button">Sign In</button>
-        
-        <div class="separator">
-          <div class="line"></div>
-          <p>OR</p>
-          <div class="line"></div>
-        </div>
-        
-        <button type="button" class="google-button">
-          {{!-- <img src="publi" alt="Google" /> --}}
-          <img src="/images/Google_Icons-09-512.webp" alt="Google" />
-
-          Continue with Google
+      {{!-- <label for="password">Password</label> --}}
+      <div class="password-container">
+        <input type="password" id="password" name="password" placeholder="Password" required
+          style="border: none; outline: none; flex: 1; padding: 5px;">
+        <button class="btn btn-outline-primary" type="button" onclick="togglePassword('password')">
+          <i class="fa-regular fa-eye"></i>
         </button>
-      </form>
-    </div>
+      </div>
+      {{#if message1}}
+      <span style="color: red;">{{message1}}</span>
+      {{/if}}
+
+
+      <div class="remember-forgot">
+
+      </div>
+
+
+      <button type="submit" class="login-button">Sign In</button>
+
+      <div class="separator">
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+
+    </form>
   </div>
+</div>
+<script>
+
+  function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    field.type = field.type === 'password' ? 'text' : 'password';
+  }
+</script>
+<style>
+  .password-container {
+
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .btn-outline-primary {
+    background: none;
+    border: none;
+    cursor: pointer;
+    "
+
+  }
+</style>

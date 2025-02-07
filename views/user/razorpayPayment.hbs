@@ -1,124 +1,4 @@
-{{!-- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Razorpay Payment</title>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-   <style>
-    body {
-      background:white
-      color: #fff;
-      font-family: 'Arial', sans-serif;
-    }
 
-    .container {
-      margin-top: 10%; 
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-      height: 287px;
-    width: 721px;
-    }
-
-    h2 {
-      font-weight: bold;
-      margin-bottom: 1.5rem;
-    }
-
-  #payNowButton {
-    background: #6039fb;
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    font-size: 1rem; /* Reduced font size */
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    height: 63px;
-    margin-top: 266px;
-    width: 131px
-  }
-
-  #payNowButton:hover {
-    background: #16a085;
-    color: #fff;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-  }
-
-  #payNowButton:active {
-    transform: scale(0.95); /* Slight shrinking effect on click */
-  }
-
-    .footer-text {
-      margin-top: 2rem;
-      font-size: 0.9rem;
-      color: #dfe6e9;
-    }
-  </style>
-</head>
-<body>
-  <div class="container text-center">
-    <h2>Complete Your Payment</h2>
-    <button class="btn btn-primary "id="payNowButton">Pay Now</button>
-    <div>
-          <p class="footer-text">Secure payments powered by Razorpay.</p>
-
-    </div>
-  </div>
-
-  <script>
-    document.getElementById('payNowButton').addEventListener('click', async function () {
-      try {
-        // Fetch Razorpay Key
-        const keyResponse = await fetch('/user/get-razorpay-key');
-        const { key } = await keyResponse.json();
-          const orderId = "{{orderId}}"
-              const amount = {{amount}}; // Using passed amount
-
-
-        // Call backend to create a Razorpay order
-        const response = await fetch('/user/makePayment', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount}), // Amount in paise (e.g., ₹500)
-        });
-
-        const order = await response.json();
-
-        // Open Razorpay Checkout
-        const options = {
-          key: key, // Use the fetched Razorpay Key
-          amount: order.amount,
-          currency: order.currency,
-          name: "Your Company Name",
-          description: "Test Transaction",
-          order_id: order.id,
-          handler: function (response) {
-            // Callback after successful payment
-            console.log(response);
-            alert("Payment Successful");
-            window.location.href = `/user/placeOrder?orderId=${orderId}&paymentId=${response.razorpay_payment_id}&paymentMethod=Razorpay`; // Redirect after payment
-          },
-          prefill: {
-            name: "John Doe",
-            email: "john.doe@example.com",
-            contact: "9999999999",
-          },
-          notes: {
-            address: "Your Company Address",
-          },
-          theme: {
-            color: "#3399cc",
-          },
-        };
-
-        const rzp1 = new Razorpay(options);
-        rzp1.open();
-      } catch (err) {
-        console.error("Error in payment:", err);
-      }
-    });
-  </script>
-</body> --}}
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -173,7 +53,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- Bootstrap JS & Popper.js -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"  crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"  crossorigin="anonymous"></script>
@@ -207,7 +87,7 @@
           handler: function (response) {
             // Callback after successful payment
             console.log(response);
-            alert("Payment Successful");
+           // alert("Payment Successful");
             window.location.href = `/user/placeOrder?orderId=${orderId}&paymentId=${response.razorpay_payment_id}&paymentMethod=Razorpay`; // Redirect after payment
           },
           prefill: {
@@ -221,6 +101,14 @@
           theme: {
             color: "#3399cc",
           },
+           modal: {
+            // Handle modal close event (user closes the payment popup)
+            escape: false, // Prevent accidental closing with Esc key
+            ondismiss: function () {
+              console.log("Payment popup closed by user.");
+              window.location.href = `/user/paymentFailed?orderId=${orderId}`;
+            },
+          },
         };
 
         const rzp1 = new Razorpay(options);
@@ -230,5 +118,4 @@
       }
     });
   </script>
-</body>
-</html>
+

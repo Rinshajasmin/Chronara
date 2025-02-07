@@ -32,7 +32,7 @@ const userAuth = async (req, res, next) => {
         } else {
           // User is either blocked or doesn't exist
           req.session.destroy(() => {
-            res.render('user/login',{message:"Ypu are Blocked by admin",layout:'layout',isUser:true});
+            res.render('user/login',{message:"You are Blocked by admin",layout:'layout',isUser:true});
           });
         }
       } else {

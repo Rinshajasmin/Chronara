@@ -1,5 +1,5 @@
-
-{{>profilesidebar}}
+ 
+{{!-- {{>profilesidebar}} --}}
 
 
 
@@ -14,6 +14,10 @@
         body {
             background-color: #f8f9fa;
             font-family: Arial, sans-serif;
+        }
+        .profile-container{
+            width: 800px;
+            margin-left: 127px;
         }
         .account-settings {
             max-width: 800px;
@@ -43,6 +47,9 @@
             background-color: #5a67d8;
             border-color: #5a67d8;
         }
+        .emailChange{
+            margin-top: 90px;
+        }
         .changePasswordContainer{
            max-width: 800px;
             margin: 50px auto;
@@ -60,8 +67,12 @@
     </style>
 </head>
 <body>
+    {{>userHeadernw}}
+    <div class="sidebar-container" style="display: flex;">
+{{>sidebar}}
+<div class="profile-container">
 <div class="position-fixed top-0 end-0 p-3">
-    <a href="/user/change-email" class="btn btn-primary text-decoration-none ">
+    <a href="/user/change-email" class="btn btn-primary text-decoration-none  emailChange">
         <i class="fa-solid fa-envelope"></i> Change Email
     </a>
 </div>
@@ -301,6 +312,9 @@
         <div id="alertMessage" class="alert alert-danger text-center">{{message}}</div>{{/if}}
     </form>
 </div>
+</div>
+</div>
+{{>userfooter}}
 
 {{!-- <script>
 function validateForm() {

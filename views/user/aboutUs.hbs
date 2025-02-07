@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+{{!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,86 +6,90 @@
   <title>About Chronara</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.8;
       margin: 0;
       padding: 0;
       color: #333;
-      background-color: #f9f9f9;
+      background: linear-gradient(135deg, #ece9e6, #ffffff);
     }
 
     .container {
-      max-width: 800px;
-      margin: 0 auto;
+      max-width: 900px;
+      margin: 30px auto;
       padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
       text-align: center;
-      font-size: 2.5rem;
-      color: #555;
+      font-size: 2.8rem;
+      color: #222;
+      margin-bottom: 10px;
     }
 
     .meta {
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 1rem;
       color: #777;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+    }
+
+    .sections {
+      
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
 
     .content-section {
-      margin-bottom: 40px;
+      padding: 20px;
+      border-radius: 10px;
+      background: #f8f9fa;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .content-section:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .content-section img {
       display: block;
       max-width: 100%;
+      border-radius: 10px;
       margin: 20px auto;
     }
 
     blockquote {
       font-style: italic;
-      background: #eee;
-      padding: 15px;
-      margin: 20px 0;
-      border-left: 5px solid #ccc;
-    }
-
-    /* Fix alignment */
-    .sections {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .content-section h2 {
-      font-size: 1.5rem;
-      color: #333;
-      margin-bottom: 10px;
-    }
-
-    @media (min-width: 768px) {
-      .sections {
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
-
-      .content-section {
-        flex: 1 1 calc(50% - 20px);
-        box-sizing: border-box;
-      }
+      background: #eaf6ff;
+      padding: 20px;
+      border-left: 5px solid #007bff;
+      font-size: 1.2rem;
     }
 
     .share-links {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 30px;
     }
 
     .share-links a {
       margin: 0 10px;
-      color: #555;
-      text-decoration: none;
-      font-size: 1.2rem;
+      color: #007bff;
+      font-size: 1.5rem;
+      transition: transform 0.2s;
+    }
+
+    .share-links a:hover {
+      transform: scale(1.2);
+    }
+
+    @media (min-width: 768px) {
+      .sections {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
@@ -93,43 +97,35 @@
   <div class="container">
     <h1>About Chronara</h1>
     <div class="meta">Rinsha Jasmin | 20 September 2023</div>
-
     <div class="sections">
       <div class="content-section">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ac ultrices odio. Nulla at congue diam, at dignissim turpis.</p>
         <img src="/images/6cd9288633a4bf7729e749d8560d3c61-removebg-preview.png" alt="Person Portrait">
       </div>
-
       <div class="content-section">
         <h2>Who started this initiative?</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ac ultrices odio. Nulla at congue diam, at dignissim turpis.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
       </div>
-
       <div class="content-section">
         <h2>Things we take for granted</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ac ultrices odio. Nulla at congue diam, at dignissim turpis.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
       </div>
-
       <div class="content-section">
         <h2>Future of Chronara</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ac ultrices odio. Nulla at congue diam, at dignissim turpis.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
       </div>
-
       <div class="content-section">
         <h2>Something nobody knows about us</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ac ultrices odio. Nulla at congue diam, at dignissim turpis.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
       </div>
-
       <div class="content-section">
         <blockquote>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ac ultrices odio."</blockquote>
       </div>
-
       <div class="content-section">
         <h2>Where do we stand now</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ac ultrices odio. Nulla at congue diam, at dignissim turpis.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
       </div>
     </div>
-
     <div class="share-links">
       <a href="#">&#x1F465;</a>
       <a href="#">&#x1F426;</a>
@@ -138,4 +134,76 @@
     </div>
   </div>
 </body>
-</html>
+</html> --}}
+<!-- About 1 - Bootstrap Brain Component -->
+<header id="header" class="navbar">
+  <div class="logo">chronara</div>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="/user/getContactPage">Contact</a></li>
+      <li><a href="/user/getAboutPage">About</a></li>
+    </ul>
+  </nav>
+  {{#if username}}
+    <div class="dropdown">
+      <a class="sign-in-link" href="#">{{username}}</a>
+      <div class="dropdown-content">
+        <a href="/user/profile">Profile</a>
+        <a href="/user/logout">Logout</a>
+      </div>
+    </div>
+  {{else}}
+    <div class="auth-links">
+      <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
+    </div>
+  {{/if}}
+</header>
+<section class="py-3 py-md-5">
+  <div class="container">
+    <div class="row gy-3 gy-md-4 gy-lg-0 align-items-lg-center">
+      <div class="col-12 col-lg-6 col-xl-5">
+        <img class="img-fluid rounded" loading="lazy" src="/images/faaf3e3043fa680540b543eeaaa00800.jpg" alt="About 1">
+      </div>
+      <div class="col-12 col-lg-6 col-xl-7">
+        <div class="row justify-content-xl-center">
+          <div class="col-12 col-xl-11">
+            <h2 class="mb-3">Who Are We?</h2>
+            <p class="lead fs-4 text-secondary mb-3">Timeless elegance, crafted for perfection. At Chronara, we blend precision with luxury to create watches that stand the test of time. Whether you're seeking classic sophistication or modern innovation, our timepieces are designed to complement every moment of your journey.</p>
+            <p class="mb-5">We are a fast-growing company, but we have never lost sight of our core values. We believe in collaboration, innovation, and customer satisfaction. We are always looking for new ways to improve our products and services.</p>
+            <div class="row gy-4 gy-md-0 gx-xxl-5X">
+              <div class="col-12 col-md-6">
+                <div class="d-flex">
+                  <div class="me-4 text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+                      <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 class="h4 mb-3">Versatile Brand</h2>
+                    <p class="text-secondary mb-0">We are crafting a digital method that subsists life across all mediums.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="d-flex">
+                  <div class="me-4 text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-fire" viewBox="0 0 16 16">
+                      <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16Zm0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15Z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 class="h4 mb-3">Digital Agency</h2>
+                    <p class="text-secondary mb-0">We believe in innovation by merging primary with elaborate ideas.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{{>userfooter}}
+

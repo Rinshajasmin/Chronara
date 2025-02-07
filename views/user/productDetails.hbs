@@ -19,48 +19,7 @@
             <span></span> {{product.productName}}
         </div>
     </div> --}}
-     <header id="header" class="navbar">
-        <div class="logo">chronara</div>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="/user/home">Home</a></li>
-                <li><a href="/user/contact">Contact</a></li>
-                <li><a href="/user/about">About</a></li>
-
-                {{!-- <li><a href="/user/cart/?id={{_id}}" >Cart</a></li> --}}
-            </ul>
-        </nav>
-        
-         {{#if username}}
-         <div class="shopping-icon">
-              <a href="/user/cart/?id={{_id}}" class="cart-icon">
-              
-                <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
-              </a>
-        <div class="dropdown">
-          
-          <a class="sign-in-link" href="#">  
-            
-                   <i class="fas fa-user-circle"></i> <!-- Profile icon -->
-
-
-            {{username}}
-          </a>
-          <div class="dropdown-content">
-            <a  href="/user/userProfile">Profile</a>
-            <a href="/user/getUserOrders">My Orders</a>
-            <a  href="/user/logout">Logout</a>
-          </div>
-        </div>
-        </div>
-        
-        {{else}}
-        <div class="auth-links">
-            <a href="/user/login">Login</a> | <a href="/user/usersignup">Signup</a>
-        </div>
-       {{/if}}  
- 
-    </header> 
+     {{>userHeadernw}} 
 {{!-- //<section class="breadcrumb-section"> --}}
   {{!-- <div class="container"> --}}
     <nav class="breadcrumb-nav">
@@ -72,81 +31,49 @@
     </nav>
   {{!-- </div> --}}
 {{!-- </section> --}}
+
+
 <section class="mt-50 mb-50">
     <div class="container">
-            <div id="toast" class="toast"></div>
+        <div id="toast" class="toast"></div>
 
-        <div class="row">
-            <div class="col-lg-9">
-                <div class="product-detail accordion-detail">
-                    <div class="row mb-50">
-                        <div class="col-md-6 col-sm-12 col-xs-12">
-                            {{!-- <div class="detail-gallery">
-                                <span class="zoom-icon"><i class="fi-rs-search"></i></span>
-                                <div class="product-image-slider">
-                                <figure class="border-radius-10">
-                                <img src="{{product.productImage.[0]}}" alt="{{product.productName}}">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="product-detail card shadow-lg p-4 border-radius-10">
+                    <div class="row align-items-center">
+                        <!-- Product Image Section -->
+                        <div class="col-md-6">
+                            <div class="detail-gallery text-center">
+                                <!-- Main Image -->
+                                <figure class="border-radius-10 mb-3">
+                                    <img id="main-image" 
+                                         src="{{product.productImage.[0]}}" 
+                                         alt="{{product.productName}}" 
+                                         class="zoomable-image img-fluid border-radius-10" />
                                 </figure>
-                               </div>
 
-                               <div class="slider-nav-thumbnails d-flex justify-content-center gap-3">
-                                {{#each product.productImage}}
-                                <div class="thumbnail-container">
-                                  <img class="thumbnail" src="{{this}}" alt="{{../product.productName}}">
+                                <!-- Thumbnail Images -->
+                                <div class="slider-nav-thumbnails d-flex justify-content-center gap-2">
+                                    {{#each product.productImage}}
+                                    <div class="thumbnail-container">
+                                        <img class="thumbnail border-radius-5" 
+                                             src="{{this}}" 
+                                             alt="{{../product.productName}}" 
+                                             data-full="{{this}}" 
+                                             style="width: 60px; height: 60px;" />
+                                    </div>
+                                    {{/each}}
                                 </div>
-                               {{/each}}
-                               </div>
 
-                            </div> --}}
-                            {{!-- <div class="detail-gallery">
-    <span class="zoom-icon"><i class="fi-rs-search"></i></span>
-    <div class="product-image-slider">
-        <figure class="border-radius-10">
-            <img id="main-image" src="{{product.productImage.[0]}}" alt="{{product.productName}}" />
-        </figure>
-    </div>
+                                <!-- Wishlist Icon -->
+                                <a href="javascript:void(0)" class="wishlist-icon mt-3" data-product-id="{{_id}}" onclick="toggleWishlist(this)">
+                                    <i class="fa-solid fa-heart {{#if isWishlisted}}wishlist-active{{/if}}"></i>
+                                </a>
+                            </div>
+                        </div>
 
-    <div class="slider-nav-thumbnails d-flex justify-content-center gap-3">
-        {{#each product.productImage}}
-            <div class="thumbnail-container">
-                <img class="thumbnail" src="{{this}}" alt="{{../product.productName}}" />
-            </div>
-        {{/each}}
-    </div>
-                           </div>
-                        </div> --}}
-
-
-                        <div class="detail-gallery">
-  <span class="zoom-icon"><i class="fi-rs-search"></i></span>
-
-  <!-- Main Image -->
-  <div class="product-image-slider">
-    <figure class="border-radius-10">
-      <img id="main-image" src="{{product.productImage.[0]}}" alt="{{product.productName}}" class="zoomable-image" />
-    </figure>
-      
-        <a href="javascript:void(0)" class="wishlist-icon" data-product-id="{{_id}}" onclick="toggleWishlist(this)">
-    <i class="fa-solid fa-heart {{#if isWishlisted}}wishlist-active{{/if}}"></i>
-</a>
-  </div>
-
-  <!-- Thumbnail Images -->
-  <div class="slider-nav-thumbnails d-flex justify-content-center gap-3">
-    {{#each product.productImage}}
-      <div class="thumbnail-container">
-        <img class="thumbnail" src="{{this}}" alt="{{../product.productName}}" data-full="{{this}}" />
-      </div>
-    {{/each}}
-  </div>
-  <div>
-    
-  </div>
-</div>
-                    </div>
-
-
-                        <div class="col-md-6 col-sm-12 col-xs-12">
+                        <!-- Product Details Section -->
+                          <div class="col-md-6 col-sm-12 col-xs-12">
                             <div class="detail-info">
                                 <h2 class="title-detail">{{product.productName}}</h2>
                                 <div class="product-detail-rating">
@@ -164,31 +91,35 @@
     </span>
 
 
+
+
         <!-- Reviews -->
         <span class="font-small ml-10 text-muted">(25 reviews)</span>
     </div>
 
 
+
+
                                <div class="clearfix product-price-cover">
     <div class="product-price primary-color float-left">
-        {{#if totalOffer}} 
-            <!-- If there is a total offer, show the sale price -->
-            <ins><span class="text-brand">₹{{salePrice}}</span></ins><br>
-            <ins><span class="old-price font-md ml-15">₹{{product.regularPrice}}</span></ins>
-        {{else}} 
-            <!-- If there is no total offer, show the regular price -->
-            <ins><span class="text-brand">₹{{product.regularPrice}}</span></ins>
-        {{/if}}
-        
-        <span class="save-price font-md color3 ml-15">
+        {{#if totalOffer}}
+    <strong class="text-brand">₹{{salePrice}}</strong><br>
+    <span class="old-price font-md ml-15">₹{{product.regularPrice}}</span>
+{{else}}
+    <span class="text-brand">₹{{product.regularPrice}}</span>
+{{/if}}
+
+       
+        <span class="save-price font-md  text-success color3 ml-15">
             {{#if totalOffer}}
                 Save {{totalOffer}}%
             {{else}}
                 No offer
             {{/if}}
-        </span> 
+        </span>
     </div>
 </div>
+
 
                                 <div class="bt-1 border-color-1 mt-15 mb-15"></div>
                                 <div class="short-desc mb-30">
@@ -211,17 +142,15 @@
                                    
                                 </div>
                                 <ul class="product-meta font-xs color-grey mt-50">
-                                  
-                                   <li class="mb-5">
-                                     <i class="fas fa-tags mr-2"></i>Stock Code: 
-                                      <a href="#">FWM15VKT</a></li>
+                                 
+                                   
                                     <li class="mb-5">
                                        <i class="fas fa-tags mr-2"></i>
                                       Tags: {{category.name}}
                                         {{!-- {{#each category.name}}
                                         <a href="#" rel="tag">{{this}}</a>
                                         {{/each}} --}}
-                                    </li> 
+                                    </li>
                                     {{#if categoryOffer}}
                                     <li class="mb-5">
                                        <i class="fas fa-tags mr-2"></i>categoryOffer: {{categoryOffer}}%</li>
@@ -229,10 +158,11 @@
                                       {{#if productOffer}}
                                     <li class="mb-5"> <i class="fas fa-tags mr-2"></i>productOffer: {{productOffer}}% </li>
                                       {{/if}}
-                                    <li> <i class="fas fa-tags mr-2"></i>Availability: 
+                                    <li> <i class="fas fa-tags mr-2"></i>Availability:
                                         <span class="in-stock text-success ml-5">{{product.status}}</span>
                                     </li>
                                 </ul>
+
 
                                  <div class="product-extra-link2 mb-30">
                                       {{#if quantity}}
@@ -242,13 +172,17 @@
  
 </div>        </div>
                             </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+
+
+
 <div class="reviews-section">
     <div class="rating-summary">
       <div class="average-rating">
@@ -555,7 +489,6 @@ thumbnails.forEach((thumbnail) => {
     font-size: 0.9em; /* Optional: Adjusts the font size for a subtle effect */
 }
 .product-detail {
-    margin-left: 129px;
 }
 
 
@@ -594,12 +527,13 @@ thumbnails.forEach((thumbnail) => {
   border-color: #007bff;
 }
 .detail-info {
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #ffffff; /* Clean white background */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-  font-family: Arial, sans-serif; /* Ensure readable font */
-  width: 421px;
+ padding: 20px;
+    border-radius: 23px;
+    background-color: #f2efef;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+    width: 424px;
+    margin-left: 50px;
 }
 
 .title-detail {
@@ -632,9 +566,7 @@ thumbnails.forEach((thumbnail) => {
   transition: opacity 0.3s ease;
 }
 
-.thumbnail:hover {
-  opacity: 0.7; /* Add opacity change on hover for thumbnails */
-}
+
 
 /* Container for zoom */
 .detail-gallery {
@@ -669,6 +601,7 @@ thumbnails.forEach((thumbnail) => {
      padding: 15px 0;
     background-color: #f8f9fa;
     font-size: 14px;
+    font-family:'Poppins';
 }
 
 .breadcrumb-list {
@@ -742,7 +675,6 @@ thumbnails.forEach((thumbnail) => {
 }
 
 .ml-10 {
-    margin-left: 10px;
 }
 
       .navbar {
