@@ -15,7 +15,9 @@ const {userAuth} = require('../middlewares/auth')
 
 router.get('/login',userController.loadLogin)
 router.post('/login',userController.login)
-router.get('/home',userController.loadHome)
+router.get("/", userController.loadHome); // Now `/` serves the home page
+
+// router.get('/home',userController.loadHome)
 router.get('/shop',userController.loadShop)
 // router.get('/filter/:filter',userController.filterProduct)
 // router.get('/sort/:sortType',userController.sortProduct)

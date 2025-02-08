@@ -139,6 +139,8 @@ const userRoutes = require("./routes/userRoutes");
 app.use("/user", userRoutes); // Prefix your routes
 const adminRoutes = require("./routes/adminRoutes");
 app.use("/admin", adminRoutes);
+app.use("/", userRoutes); // This makes `/` load the home page
+
 
 // Start the server
 const PORT = process.env.PORT;
