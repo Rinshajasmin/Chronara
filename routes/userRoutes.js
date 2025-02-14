@@ -17,10 +17,10 @@ router.get('/login',userController.loadLogin)
 router.post('/login',userController.login)
 router.get("/", userController.loadHome); // Now `/` serves the home page
 
-// router.get('/home',userController.loadHome)
+ router.get('/home',userController.loadHome)
 router.get('/shop',userController.loadShop)
 // router.get('/filter/:filter',userController.filterProduct)
-// router.get('/sort/:sortType',userController.sortProduct) 
+// router.get('/sort/:sortType',userController.sortProduct)
 router.get('/search',userAuth,userController.searchProduct)
 router.get('/filter',userAuth,userController.filterAndSort)
 // router.get('/filter/:filter/:sortType', userController.getFilteredAndSortedProducts);
