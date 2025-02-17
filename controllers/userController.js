@@ -83,9 +83,12 @@ const loadHome = async (req, res) => {
               products: productsWithWishlistStatus,
           });
       } else {
+        console.log("Session Data:", req.session);
+  console.log("User Data:", req.user);
           // For guests, render home without user-specific data
           return res.render('user/home', { products: productData });
       }
+      
   } catch (error) {
       console.error("Home page not found", error);
       res.status(500).send("Server error");

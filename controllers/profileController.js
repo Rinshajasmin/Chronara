@@ -181,7 +181,7 @@ const getUserProfile = async (req, res) => {
       !addressData.address ||
       addressData.address.length === 0
     ) {
-      return res.render("user/profile", { user: userData, userAddress: null }); // No addresses found
+      return res.render("user/profile", { user: userData, userAddress: null ,username:userData.username}); // No addresses found
     }
 
     res.render("user/profile", {

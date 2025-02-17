@@ -8,7 +8,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/user/auth/google/callback",
+      callbackURL: "https://chrona.site/user/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -44,5 +44,7 @@ passport.deserializeUser((id, done) => {
       done(err, null);
     });
 });
+
+
 
 module.exports = passport;

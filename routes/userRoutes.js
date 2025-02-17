@@ -39,6 +39,9 @@ router.post('/resendOtp',userController.resendOtp)
 router.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}));
 router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/user/usersignup'}),(req,res)=>{
    console.log("authentication success")
+   req.session.user = req.user;
+
+   console.log("🔹 Session Data after storing user:", req.session);
     res.redirect('/user/home')
 })
 //profile Management

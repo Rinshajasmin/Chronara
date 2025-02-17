@@ -158,10 +158,13 @@
                                       {{#if productOffer}}
                                     <li class="mb-5"> <i class="fas fa-tags mr-2"></i>productOffer: {{productOffer}}% </li>
                                       {{/if}}
-                                    <li> <i class="fas fa-tags mr-2"></i>Availability:
+                                      {{#if quantity}}
+                                      
+                                      <li> <i class="fas fa-tags mr-2"></i>Availability:
                                         <span class="in-stock text-success ml-5">{{product.status}}</span>
-                                    </li>
-                                </ul>
+                                      </li>
+                                      {{/if}}
+                                      </ul>
 
 
                                  <div class="product-extra-link2 mb-30">
