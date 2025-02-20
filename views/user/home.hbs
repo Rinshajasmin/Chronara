@@ -1,373 +1,438 @@
-
+<!doctype html>
+<html class="no-js" lang="zxx" style="overflow-x: hidden;">
 <head>
-    <link rel="stylesheet" href="/css/user/home.css">
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Watch shop | eCommers</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicon.ico">
 
+    <!-- CSS here -->
+
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/assets/css/flaticon.css">
+    <link rel="stylesheet" href="/assets/css/slicknav.css">
+    <link rel="stylesheet" href="/assets/css/animate.min.css">
+    <link rel="stylesheet" href="/assets/css/magnific-popup.css">
+    <link rel="stylesheet" href="/assets/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="/assets/css/themify-icons.css">
+    <link rel="stylesheet" href="/assets/css/slick.css">
+    <link rel="stylesheet" href="/assets/css/nice-select.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-     
-    
-    {{>userHeadernw}} 
 
-
-    <!-- Hero Section -->
-    
-    <section class="hero">
-        <div class="hero-content">
-            <h1>FIND TIMELESS ELEGANCE...</h1>
-<p>Explore stylish, reliable, and high-quality watches at unbeatable prices. From timeless classics to the latest smartwatches, we’ve got it all. Don’t wait—find your perfect match and order now! </p>           <div class="search-bar">
-                {{!-- <input type="text" placeholder="Search">
-                <button>Search</button> --}}
+<body>
+    <!--? Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="/assets/img/logo/logo.png" alt="">
+                </div>
             </div>
         </div>
-        <div class="hero-image">
-            <img src="/images/c72fdc0228d888b8b22ad50ad7b958b0.jpg" alt="Timeless Elegance">
-        </div>
-    </section>
-    <!-- Categories Section -->
-<section class="categories">
-   {{#if successMessage}}
-        <div class="alert alert-success">
-            {{successMessage}}
-        </div>
-    {{/if}}
-    <h2>Newest Collection Available</h2>
-    <div class="category-list">
-        <a href="/user/shop?category=Men" class="category-item">
-            <img src="/images/menwatch.png" alt="Men Watches">
-            <p>Men</p>
-        </a>
-        <a href="/user/shop?category=Women" class="category-item">
-            <img src="/images/womenwatch.png" alt="Women Watches">
-            <p>Women</p>
-        </a>
-        <a href="/user/shop?category=Luxury Watches" class="category-item">
-            <img src="/images/casuals.png" alt="Casual Watches">
-            <p>Casuals</p>
-        </a>
-        <a href="/user/shop?category=Smart Watches" class="category-item">
-            <img src="/images/smartwatch.png" alt="Smart Watches">
-            <p>Smart Watches</p>
-        </a>
     </div>
+    <!-- Preloader Start -->
+    {{!-- <header>
+        <!-- Header Start -->
+        <div class="header-area">
+            <div class="main-header header-sticky">
+                <div class="container-fluid">
+                    <div class="menu-wrapper">
+                        <!-- Logo -->
+                        <div class="logo">
+                            <a href="index.html"><img src="/assets/img/logo/logo.png" alt=""></a>
+                        </div>
+                        <!-- Main-menu -->
+                        <div class="main-menu d-none d-lg-block">
+                            <nav>                                                
+                                <ul id="navigation">  
+                                    <li><a href="index.html">Home</a></li>
+                                    <li><a href="shop.html">shop</a></li>
+                                    <li><a href="about.html">about</a></li>
+                                    <li class="hot"><a href="#">Latest</a>
+                                        <ul class="submenu">
+                                            <li><a href="shop.html"> Product list</a></li>
+                                            <li><a href="product_details.html"> Product Details</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="blog.html">Blog</a>
+                                        <ul class="submenu">
+                                            <li><a href="blog.html">Blog</a></li>
+                                            <li><a href="blog-details.html">Blog Details</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="#">Pages</a>
+                                        <ul class="submenu">
+                                            <li><a href="login.html">Login</a></li>
+                                            <li><a href="cart.html">Cart</a></li>
+                                            <li><a href="elements.html">Element</a></li>
+                                            <li><a href="confirmation.html">Confirmation</a></li>
+                                            <li><a href="checkout.html">Product Checkout</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="contact.html">Contact</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <!-- Header Right -->
+                        <div class="header-right">
+                            <ul>
+                                <li>
+                                    <div class="nav-search search-switch">
+                                        <span class="flaticon-search"></span>
+                                    </div>
+                                </li>
+                                <li> <a href="login.html"><span class="flaticon-user"></span></a></li>
+                                <li><a href="cart.html"><span class="flaticon-shopping-cart"></span></a> </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Mobile Menu -->
+                    <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Header End -->
+    </header> --}}
+    {{>userHeadernw}}
+    <main>
+        <!--? slider Area Start -->
+        <div class="slider-area ">
+            <div class="slider-active">
+                <!-- Single Slider -->
+                <div class="single-slider slider-height d-flex align-items-center slide-bg">
+                    <div class="container">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
+                                <div class="hero__caption">
+                                    <h1 data-animation="fadeInLeft" data-delay=".4s" data-duration="2000ms">Select Your New Perfect Style</h1>
+                                    <p data-animation="fadeInLeft" data-delay=".7s" data-duration="2000ms">Explore stylish, reliable, and high-quality watches at unbeatable prices. From timeless classics to the latest smartwatches, we’ve got it all. Don’t wait—find your perfect match and order now!.</p>
+                                    <!-- Hero-btn -->
+                                    <div class="hero__btn" data-animation="fadeInLeft" data-delay=".8s" data-duration="2000ms">
+                                        <a href="/user/shop" class="btn hero-btn">Shop Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-4 d-none d-sm-block">
+                                <div class="hero__img" data-animation="bounceIn" data-delay=".4s">
+                                    <img src="/assets/img/hero/watch.png" alt="" class=" heartbeat">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single Slider -->
+                <div class="single-slider slider-height d-flex align-items-center slide-bg">
+                    <div class="container">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
+                                <div class="hero__caption">
+                                    <h1 data-animation="fadeInLeft" data-delay=".4s" data-duration="2000ms">Find Timeless Elegance</h1>
+                                    <p data-animation="fadeInLeft" data-delay=".7s" data-duration="2000ms">Explore stylish, reliable, and high-quality watches at unbeatable prices. From timeless classics to the latest smartwatches, we’ve got it all. Don’t wait—find your perfect match and order now!.</p>
+                                    <!-- Hero-btn -->
+                                    <div class="hero__btn" data-animation="fadeInLeft" data-delay=".8s" data-duration="2000ms">
+                                        <a href="/user/shop" class="btn hero-btn">Shop Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-4 col-sm-4 d-none d-sm-block">
+                                <div class="hero__img" data-animation="bounceIn" data-delay=".4s">
+                                    <img src="/assets/img/hero/watch.png" alt="" class=" heartbeat">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
 </section>
 
-
-    
-  
-
-    <!-- Banner Section -->
-    <div class="containerbanner">
-    <section class="banner">
-        <div class="banner-content">
-            <h2>BESTSELLERS</h2>
-            <p>From ₹500 to ₹10,000. Shop now...</p>
-            <div class="banner-buttons">
+        <!-- slider Area End-->
+        <!-- ? New Product Start -->
+        <section class="new-product-area section-padding30">
+            <div class="">
+                <!-- Section tittle -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="section-tittle mb-70">
+                            <h2>New Arrivals</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-new-pro mb-30 text-center">
+                            <div class="product-img">
+                              <a href="/user/shop?category=Men" >
+            <img src="/assets/img/gallery/new_product1.png" alt="Men Watches">
             
-                <button  class="btn-secondary">
-                  <a href="/user/shop">SHOP NOW</a></button>
+        </a>
+                            </div>
+                            <div class="product-caption">
+                                <h3><a href="product_details.html">MEN</a></h3>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-new-pro mb-30 text-center">
+                            <div class="product-img">
+                                <a href="/user/shop?category=Women" >
+
+                                <img src="/assets/img/gallery/new_product2.png" alt="">
+                                </a>
+                            </div>
+                            <div class="product-caption">
+                                <h3><a href="product_details.html">WOMEN</a></h3>
+                              
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-new-pro mb-30 text-center">
+                            <div class="product-img">
+                                                              <a href="/user/shop?category=Luxury Watches" >
+
+                                <img src="/assets/img/gallery/new_product3.png" alt="">
+                                                              </a>
+                            </div>
+                            <div class="product-caption">
+                                <h3><a href="product_details.html">CASUALS</a></h3>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--  New Product End -->
+        <!--? Gallery Area Start -->
+        <div class="gallery-area">
+            <div class="container-fluid p-0 fix">
+                <div class="row">
+                    <div class="col-xl-6 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-gallery mb-30">
+                            <div class="gallery-img big-img" style="background-image: url(/assets/img/gallery/gallery1.png);"></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-gallery mb-30">
+                            <div class="gallery-img big-img" style="background-image: url(/assets/img/gallery/gallery2.png);"></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-12">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-6 col-sm-6">
+                                <div class="single-gallery mb-30">
+                                    <div class="gallery-img small-img" style="background-image: url(/assets/img/gallery/gallery3.png);"></div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12  col-md-6 col-sm-6">
+                                <div class="single-gallery mb-30">
+                                    <div class="gallery-img small-img" style="background-image: url(/assets/img/gallery/gallery4.png);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
-        <div class="banner-image">
-            <img src="/images/8e6e3d853e0c6a47adbeab27317905dc-removebg-preview.png" alt="Models">
+        <!-- Gallery Area End -->
+        <!--? Popular Items Start -->
+        <div class="popular-items section-padding30">
+                                      <h2>Popular Items</h2>
+
+            <div class="container">
+                <!-- Section tittle -->
+                <div class="row justify-content-center">
+                    <div class="col-xl-7 col-lg-8 col-md-10">
+                        <div class="section-tittle mb-70 text-center">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-popular-items mb-50 text-center">
+                            <div class="popular-img">
+                                <img src="/assets/img/gallery/popular1.png" alt="">
+                                <div class="img-cap">
+                                    <span><a href="/user/shop">See more</a></span>
+                                </div>
+                              
+                            </div>
+                            <div class="popular-caption">
+                                <h3><a href="product_details.html">Premium collection</a></h3>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-popular-items mb-50 text-center">
+                            <div class="popular-img">
+                                <img src="/assets/img/gallery/popular2.png" alt="">
+                                <div class="img-cap">
+                                    <span><a href="/user/shop">See more</a></span>
+                                </div>
+                               
+                            </div>
+                            <div class="popular-caption">
+                                <h3><a href="product_details.html">Traditional Craftmanship</a></h3>
+                              
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-popular-items mb-50 text-center">
+                            <div class="popular-img">
+                                <img src="/assets/img/gallery/popular3.png" alt="">
+                                <div class="img-cap">
+                                    <span><a href="/user/shop">See more</a></span>
+                                </div>
+                                
+                            </div>
+                            <div class="popular-caption">
+                                <h3><a href="product_details.html">Everyday wears</a></h3>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-popular-items mb-50 text-center">
+                            <div class="popular-img">
+                                <img src="/assets/img/gallery/popular4.png" alt="">
+                                <div class="img-cap">
+                                    <span><a href="/user/shop">See more</a></span>
+                                </div>
+                               
+                            </div>
+                            <div class="popular-caption">
+                                <h3><a href="product_details.html">Stainless steel straps</a></h3>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-popular-items mb-50 text-center">
+                            <div class="popular-img">
+                                <img src="/assets/img/gallery/popular5.png" alt="">
+                                <div class="img-cap">
+                                    <span><a href="/user/shop">See more</a></span>
+                                </div>
+                                
+                            </div>
+                            <div class="popular-caption">
+                                <h3><a href="product_details.html">Wrist Watches</a></h3>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                        <div class="single-popular-items mb-50 text-center">
+                            <div class="popular-img">
+                                <img src="/assets/img/gallery/popular6.png" alt="">
+                                <div class="img-cap">
+                                    <span><a href="/user/shop">See more</a></span>
+                                </div>
+                                
+                            </div>
+                            <div class="popular-caption">
+                                <h3><a href="/user/shop">Leather Strap Collection</a></h3>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                <!-- Button -->
+                
+            </div>
+            <div class="row justify-content-center" style="margin-left:626px">
+                    <div class="room-btn pt-70">
+                        <a href="/user/shop" class="btn view-btn1">View More Products</a>
+                    </div>
+                </div>
         </div>
-    </section>
+        <!-- Popular Items End -->
+        </div>
+    
+
+
+
+       
+      
+        <!--? Shop Method Start-->
+        <div class="shop-method-area">
+            <div class="">
+                <div class="method-wrapper">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-xl-4 col-lg-4 col-md-6">
+                            <div class="single-method mb-40">
+                                <i class="ti-package"></i>
+                                <h6> COD Available</h6>
+                                <p>Cash On Delivery Available.</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-6">
+                            <div class="single-method mb-40">
+                                <i class="ti-unlock"></i>
+                                <h6>Secure Payment System</h6>
+                                <p>Various Payments methods available.</p>
+                            </div>
+                        </div> 
+                        <div class="col-xl-4 col-lg-4 col-md-6">
+                            <div class="single-method mb-40">
+                                <i class="ti-reload"></i>
+                                <h6>10 Days Return Policy</h6>
+                                <p>Returns possible within 10 Days.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Shop Method End-->
+    </main>
+   {{>userfooter}}
+    <!--? Search model Begin -->
+    <div class="search-model-box">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-btn">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Searching key.....">
+            </form>
+        </div>
     </div>
-      <div id="toast" class="toast"></div>
+    <!-- Search model end -->
 
-    <section class="watch-section">
-  <div class="container">
-    {{#each products}}
-      <div class="watch-item">
-        {{!-- <a href="/user/wishlist" class="wishlist-icon">
-          <i class="fa-solid fa-heart"></i>
-        </a> --}}
-        <a href="javascript:void(0)" class="wishlist-icon" data-product-id="{{_id}}" onclick="toggleWishlist(this)">
-    <i class="fa-solid fa-heart {{#if isWishlisted}}wishlist-active{{/if}}"></i>
-</a>
+    <!-- JS here -->
 
+   <script src="/assets/js/vendor/modernizr-3.5.0.min.js"></script>
+<script src="/assets/js/vendor/jquery-1.12.4.min.js"></script>
+<script src="/assets/js/popper.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/jquery.slicknav.min.js"></script>
+<script src="/assets/js/owl.carousel.min.js"></script>
+<script src="/assets/js/slick.min.js"></script>
+<script src="/assets/js/wow.min.js"></script>
+<script src="/assets/js/animated.headline.js"></script>
+<script src="/assets/js/jquery.magnific-popup.js"></script>
+<script src="/assets/js/jquery.scrollUp.min.js"></script>
+<script src="/assets/js/jquery.nice-select.min.js"></script>
+<script src="/assets/js/jquery.sticky.js"></script>
+<script src="/assets/js/contact.js"></script>
+<script src="/assets/js/jquery.form.js"></script>
+<script src="/assets/js/jquery.validate.min.js"></script>
+<script src="/assets/js/mail-script.js"></script>
+<script src="/assets/js/jquery.ajaxchimp.min.js"></script>
+<script src="/assets/js/plugins.js"></script>
+<script src="/assets/js/main.js"></script>
 
-        <!-- Product Image with Link -->
-        <a href="/user/productDetails/?id={{_id}}">
-          {{#if productImage.[0]}}
-            <img src="{{productImage.[0]}}" alt="{{productName}}" style="width: 270px; height: 250px; object-fit: cover;"/>
-          {{else}}
-            <img src="/images/default-watch.jpg" alt="Default Image" />
-          {{/if}}
-        </a>
-        <!-- Product Image with Link -->
-{{!-- <a href="/user/productDetails/?id={{_id}}">
-  {{#each productImage}}
-    <!-- Check if the image file is in .webp format (original image) -->
-    {{#if (contains this ".webp")}}
-      <img src="{{this}}" alt="{{productName}}" style="width: 300px; height: 300px; object-fit: cover;" />
-    {{/if}}
-  {{/each}}
-</a> --}}
-
-
-        <!-- Product Details -->
-        <p>{{productName}}</p>
-        <p>Price: ₹{{regularPrice}}</p>
-        <p>
-          {{#if quantity}}
-            <span class="text-success">In Stock</span>
-          {{else}}
-            <span class="text-danger">Out of Stock</span>
-          {{/if}}
-        </p>
-        {{#if quantity}}
-          <div class="cart-link-container">
-            {{!-- <form action="/user/addToCart" method="POST">
-    <input type="hidden" id="productId" name="productId" value="{{_id}}">
-    {{!-- <input type="hidden" id="userId" name="userId" value="{{user._id}}"> --}}
-    {{!-- <button type="submit" class="btn btn-primary">Add to Cart</button>
-</form>  --}}
-<button class="add-to-cart-btn btn btn-primary" data-product-id="{{_id}}" onclick="addToCart('{{_id}}')">Add to Cart</button>
-
-
-
-            {{!-- <a href="/user/cart/?id={{_id}}" class="link-add-to-cart">Add to Cart</a> --}}
-          </div>
-        {{/if}}
-      </div>
-    {{/each}}
-  </div>
-  <div id="toast" class="toast"></div>
-  <div id="toast" class="toast">Item added to wishlist!</div>
-
- 
-</section>
-
-
-
-    {{!-- <section class="watch-section">
-  <div class="container">
-    <div class="watch-item">
-        <div class="wishlist-icon">
-<i class="fa-regular fa-heart"></i>  </div>
-        
-              <img src="/images/2656WM01_1.webp" alt="TIMEX Watch">
-
-      <span class="badge">New</span>
-      <h3>TIMEX</h3>
-      <p>Analog Watch - For Women</p>
-      <button class="buy-btn">Buy</button>
-    </div>
-
-    <div class="watch-item">
-        <div class="wishlist-icon">
-<i class="fa-regular fa-heart"></i>  </div>
-        
-         <img src="/images/1805QM01_1.webp" alt="Van Heusen Watch">
-
-      <span class="badge">New</span>
-      <h3>VAN HEUSEN</h3>
-      <p>Analog Watch - For Women</p>
-      <button class="buy-btn">Buy</button>
-    </div>
-
-    <div class="watch-item">
-        <div class="wishlist-icon">
-<i class="fa-regular fa-heart"></i>  </div>
-        
-    <img src="/images/1806NL02_1.webp" alt="Van Heusen Watch">
-
-      <span class="badge">New</span>
-      <h3>VAN HEUSEN</h3>
-      <p>Analog Watch - For Men</p>
-      <button class="buy-btn">Buy</button>
-    </div>
-
-    <div class="watch-item">
-        <div class="wishlist-icon">
-<i class="fa-regular fa-heart"></i>  </div>
-        
-    <img src="/images/2644KM02_1.jpg" alt="TIMEX Watch">
-
-      <span class="badge">New</span>
-      <h3>TIMEX</h3>
-      <p>Trending watch</p>
-      <button class="buy-btn">Buy</button>
-    </div>
-
-    <div class="watch-item">
-        <div class="wishlist-icon">
-<i class="fa-regular fa-heart"></i>  </div>
-        
-              <img src="/images/90135SM01_1.webp" alt="ROLEX Watch">
-
-      <span class="badge">New</span>
-      <h3>ROLEX</h3>
-      <p>Volt Analog  - For Men</p>
-      <button class="buy-btn">Buy</button>
-    </div>
-  </div>
-</section> --}}
-  {{> userfooter}} <!-- Include the footer partial -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
- 
-{{!-- <script>
-    function addToCart(productId) {
-        // You can use AJAX here to send the productId to your backend
-        fetch('/user/addToCart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ productId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    title: 'Item Added!',
-                    text: 'The item has been added to your cart.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-                console.log(data.cartDetails);
-            } else {
-                Swal.fire({
-                    title: 'Error!',
-                    text: data.message || 'Something went wrong.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error adding to cart:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'An unexpected error occurred.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        });
-    }
-
-
-
-
-</script> --}}
-
-<script>
-    function addToCart(productId) {
-        // Send a request to the backend to add the product to the cart
-        fetch('/user/addToCart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ productId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // If the product is successfully added
-                Swal.fire({
-                    title: 'Item Added!',
-                    text: 'The item has been added to your cart.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-                console.log(data.cartDetails); // Optional: Use this to update the cart UI
-            } else if (data.message === 'No enough stock available.') {
-                // If stock is insufficient, show an appropriate message
-                Swal.fire({
-                    title: 'Insufficient Stock!',
-                    text: data.message, // Message from the backend, e.g., "Only 2 items are available in stock."
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-            } else {
-                // Handle other errors
-                Swal.fire({
-                    text: data.message || 'Something went wrong.',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error adding to cart:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'Please Login and try again .',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        });
-    }
-</script>
-
-
-<script>
-  async function toggleWishlist(element) {
-    const productId = element.getAttribute('data-product-id');
-
-    try {
-        const response = await fetch('/user/toggleWishlist', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ productId }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            const icon = element.querySelector('i');
-            const toast = document.getElementById('toast');
-
-            if (data.isWishlisted) {
-                icon.classList.add('wishlist-active'); // Make heart red
-                showToast('Item added to wishlist');
-
-            } else {
-                icon.classList.remove('wishlist-active'); // Revert to gray
-                showToast('Item removed from wishlist')
-            }
-        } else {
-            alert(data.message);
-        }
-    } catch (error) {
-        console.error('Error toggling wishlist:', error);
-        alert('An error occurred. Please try again.');
-    }
-}
-
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-
-    // Hide the toast after 3 seconds
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
-
-</script>
-
-
-{{!-- <section class="watch-section">
-  <div class="container">
-    {{#each products}}
-    <div class="watch-item">
-      <div class="wishlist-icon">
-        <i class="fa-regular fa-heart"></i>
-      </div>
-      <img src="{{this.productImage}}" alt="{{this.name}}">
-      <span class="badge">{{#if this.isNew}}New{{/if}}</span>
-      {{!-- <h3>{{this.brand}}</h3> --}}
-      {{!-- <p>{{this.productDesc}}</p>
-      <button class="buy-btn">Buy</button>
-    </div>
-    {{/each}}
-  </div>
-</section> 
-{{!-- {{> userfooter}} <!-- Include the footer partial --> --}}
+</body>
+</html>
