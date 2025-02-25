@@ -463,39 +463,48 @@ const invoiceDownload = async (req, res) => {
       .text(`Invoice Date: ${formattedDate}`, 50, 215)
       .text(`Balance Due: ${finalTotal}`, 50, 230);
    
-    // Table header
-    const tableTop = 300;
-    doc
-      .fontSize(10)
-      .text("NO:", 50, tableTop)
-      .text("Item", 150, tableTop)
-      .text("Unit Cost", 270, tableTop) // Shifted slightly to the left
-      .text("Offer Price", 350, tableTop) // New column
-      .text("Quantity", 420, tableTop) // Adjusted positions
-      .text("Total", 500, tableTop); // Adjusted positions
+   // Table header
+const tableTop = 300;
+doc
+  .fontSize(10)
+  .text("NO:", 50, tableTop)
+  .text("Item", 150, tableTop)
+  .text("Unit Cost", 270, tableTop) // Shifted slightly to the left
+  .text("Offer Price", 350, tableTop) // New column
+  .text("Quantity", 420, tableTop) // Adjusted positions
+  .text("Total", 500, tableTop); // Adjusted positions
 
-    doc
-      .moveTo(50, tableTop + 15)
-      .lineTo(550, tableTop + 15)
-      .stroke();
+doc
+  .moveTo(50, tableTop + 15)
+  .lineTo(550, tableTop + 15)
+  .stroke();
 
-    // Add order items
-    let y = tableTop + 25;
-    order.orderItems.forEach((item, index) => {
-      const unitPrice = item.product.regularPrice.toFixed(2); // Format unit price
-      const offerPrice = item.price.toFixed(2); // Fallback if salePrice is missing
-      const lineTotal = (item.price * item.quantity).toFixed(2); // Calculate total with offer price
+// Add order items
+let y = tableTop + 25;
+order.orderItems.forEach((item, index) => {
+  const unitPrice = item.product.regularPrice.toFixed(2); // Format unit price
+  const offerPrice = item.price.toFixed(2); // Fallback if salePrice is missing
+  const lineTotal = (item.price * item.quantity).toFixed(2); // Calculate total with offer price
 
-      doc
-        .text((index + 1).toString(), 50, y) // Serial number
-        .text(item.product.productName, 150, y) // Product name
-        .text(`${unitPrice}`, 270, y) // Unit price
-        .text(`${offerPrice}`, 350, y) // Offer price
-        .text(item.quantity.toString(), 420, y) // Quantity
-        .text(`${lineTotal}`, 500, y); // Total
+  // Adjust the width for each text column (so that they don't overlap)
+  const itemNameX = 150;
+  const unitPriceX = 270;
+  const offerPriceX = 350;
+  const quantityX = 420;
+  const totalX = 500;
 
-      y += 20; // Move to the next row
-    });
+  // Add item text with wrapping (you can adjust the max width)
+  doc
+    .text((index + 1).toString(), 50, y) // Serial number
+    .text(item.product.productName, itemNameX, y, { width: 120, ellipsis: true }) // Product name with wrapping
+    .text(`${unitPrice}`, unitPriceX, y) // Unit price
+    .text(`${offerPrice}`, offerPriceX, y) // Offer price
+    .text(item.quantity.toString(), quantityX, y) // Quantity
+    .text(`${lineTotal}`, totalX, y); // Total
+
+  y += 20; // Move to the next row
+});
+
     // Add total summary
     doc;
     doc
