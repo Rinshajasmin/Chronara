@@ -27,7 +27,10 @@ router.get('/block/:id',adminAuth,customerController.blockCustomer)
 router.get('/UnBlock/:id',adminAuth,customerController.unBlockCustomer)
 //category management
 router.get('/category',adminAuth,categoryController.categoryInfo);
+router.get('/addCategory',adminAuth,categoryController.getaddCategory)
 router.post('/addCategory',adminAuth,categoryController.addCategory)
+router.get('/editCategory/:id',adminAuth,categoryController.geteditCategory)
+
 router.post('/editCategory/:id',adminAuth,categoryController.editCategory)
 router.post('/deleteCategory/:id',adminAuth,categoryController.deleteCategory)
 //product management

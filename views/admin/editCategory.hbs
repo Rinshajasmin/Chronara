@@ -1,0 +1,169 @@
+{{>adminheader}}
+ <div class="card mx-auto" style="max-width: 500px; margin-top: 50px;">
+    <div class="card-body d-flex flex-column align-items-center">
+        <h5 class="card-title text-center">Edit Category</h5>
+
+        <form id="form" action="/admin/editCategory/{{category._id}}" method="POST" name="form" class="w-100">
+            <div class="form-group">
+                <label for="categoryName">Category Name</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{category.name}}" required>
+                 <small class="text-danger d-none" id="nameError">
+                    name cannot be only numbers.
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" class="form-control" rows="3"
+                    required>{{category.description}}</textarea>
+                <small class="text-danger d-none" id="descError">
+                    Description must contain at least one letter.
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="categoryOffer">Offer</label>
+                <input type="number" id="categoryOffer" name="categoryOffer" class="form-control"
+                    value="{{category.categoryOffer}}" required>
+                <small class="text-danger d-none" id="offerError">
+                    Offer must be a positive whole number.
+                </small>
+            </div>
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary">Update Category</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{!-- <script>
+document.getElementById("form").addEventListener("submit", function(event) {
+    let offerInput = document.getElementById("categoryOffer");
+    let offerError = document.getElementById("offerError");
+    let descInput = document.getElementById("description");
+    let descError = document.getElementById("descError");
+
+    let offerValue = offerInput.value.trim();
+    let descValue = descInput.value.trim();
+
+    let isValid = true;
+
+    // Validate if the offer is a positive whole number
+    if (!/^\d+$/.test(offerValue) || parseInt(offerValue) < 0) {
+        offerError.classList.remove("d-none");
+        isValid = false;
+    } else {
+        offerError.classList.add("d-none");
+    }
+
+    // Count the number of alphabetic characters in the description
+    let letterCount = (descValue.match(/[a-zA-Z]/g) || []).length;
+
+    // Validate if description has at least 5 letters (alphabets)
+    if (letterCount < 5) {
+        descError.textContent = "Description must contain at least 5 letters (alphabets).";
+        descError.classList.remove("d-none");
+        isValid = false;
+    } else {
+        descError.classList.add("d-none");
+    }
+
+    if (!isValid) {
+        event.preventDefault(); // Prevent form submission if validation fails
+    }
+});
+</script> --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.getElementById("form").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    let offerInput = document.getElementById("categoryOffer");
+    let offerError = document.getElementById("offerError");
+    let descInput = document.getElementById("description");
+    let descError = document.getElementById("descError");
+    let nameInput = document.getElementById("name");
+    let nameError = document.getElementById("nameError");
+
+    let offerValue = offerInput.value.trim();
+    let descValue = descInput.value.trim();
+    let nameValue = nameInput.value.trim();
+
+    let isValid = true;
+
+    // Validate if the offer is a positive whole number
+    if (!/^\d+$/.test(offerValue) || parseInt(offerValue) < 0) {
+        offerError.classList.remove("d-none");
+        isValid = false;
+    } else {
+        offerError.classList.add("d-none");
+    }
+
+    // Count the number of alphabetic characters in the description
+    let letterCount = (descValue.match(/[a-zA-Z]/g) || []).length;
+
+    // Validate if description has at least 5 letters (alphabets)
+    if (letterCount < 5) {
+        descError.textContent = "Description must contain at least 5 letters (alphabets).";
+        descError.classList.remove("d-none");
+        isValid = false;
+    } else {
+        descError.classList.add("d-none");
+    }
+
+    // Validate name should contain at least one letter
+    if (!/[a-zA-Z]/.test(nameValue)) {
+        nameError.classList.remove("d-none");
+        isValid = false;
+    } else {
+        nameError.classList.add("d-none");
+    }
+
+    if (!isValid) {
+        return; // Stop submission if validation fails
+    }
+
+    // Sending Data via Fetch API
+    fetch(`/admin/editCategory/{{category._id}}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: nameValue,
+            description: descValue,
+            categoryOffer: offerValue
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                title: 'Success!',
+                text: data.message || "Category updated successfully!",
+                icon: 'success',
+                confirmButtonText: 'Okay'
+            }).then(() => {
+                window.location.href = "/admin/category"; // Redirect after success
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: data.error || "Something went wrong, please try again.",
+                icon: 'error',
+                confirmButtonText: 'Try Again'
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong, please try again later.',
+            icon: 'error',
+            confirmButtonText: 'Close'
+        });
+    });
+});
+</script>
+
+
+
