@@ -43,7 +43,11 @@ const addressSchema= new Schema({
       altPhone:{
         type:String,
         required:true
-      }
+      },
+      isDeleted: {  
+        type: Boolean,
+        default: false
+     }
    }]
 
 

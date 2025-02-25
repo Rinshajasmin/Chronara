@@ -1,198 +1,286 @@
 {{>adminheader}}
-<h4>Details</h4>
 <div class="container">
-    <div class="details-grid">
-        <!-- Order Details -->
-        <div class="card">
-            <h2>Order #{{order.orderId}}</h2>
+  <!-- Title -->
+  <div class="d-flex justify-content-between align-items-center py-3">
+  </div>
 
-
-            <div class="status">
-                {{#if (and (neq order.status "Delivered") (neq order.status "Cancelled") (neq order.status
-                "Returned"))}}
-                <form method="POST" action="/admin/statusUpdate/{{order._id}}">
-                    <div class="form-group">
-                        <label for="status">Order Status</label>
-                        <select id="status" name="status" class="form-select form-select-lg mb-3">
-                            <option value="Pending" {{#if (eq order.status "Pending" )}}selected{{/if}}>Pending</option>
-                            <option value="Shipped" {{#if (eq order.status "Shipped" )}}selected{{/if}}>Shipped</option>
-                            <option value="Delivered" {{#if (eq order.status "Delivered" )}}selected{{/if}}>Delivered
-                            </option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Status</button>
-                </form>
-                {{else}}
-                <p class="text-muted">Order is {{order.status}}.</p>
-                {{/if}}
-
-
+  <!-- Main content -->
+  <div class="row">
+    <div class="col-lg-8">
+      <!-- Details -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="mb-3 d-flex justify-content-between">
+            <div>
+            <span class="me-3">{{formatDate order.createdOn "DD MMMM YYYY"}}</span>
+            <span class="badge rounded-pill 
+                {{#if (eq order.status 'Pending')}} bg-warning 
+                {{else if (eq order.status 'Shipped')}} bg-primary 
+                {{else if (eq order.status 'Delivered')}} bg-success 
+                {{else if (or (eq order.status 'Cancelled') (eq order.status 'Returned'))}} bg-danger 
+                {{else}} bg-info {{/if}}">
+                {{order.status}}
+            </span>
             </div>
+            <div class="d-flex">
+                
+              <div class="dropdown">
+                <button class="btn btn-link p-0 text-muted" type="button" data-bs-toggle="dropdown">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Edit</a></li>
+                  <li><a class="dropdown-item" href="#"><i class="bi bi-printer"></i> Print</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <table class="table table-borderless">
+           <thead>
+                    <tr>
+                        <th>Product</th>
+                        {{!-- <th>SKU</th> --}}
+                        <th>Quantity</th>
+                        <th>Actual Price</th>
+                        <th> Offer Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each order.orderItems}}
+                    <tr>
+                       
+                        <td class="product-image">
+                        <img src="{{this.product.productImage.[0]}}" alt="{{this.product.productName}}">
+                        <span>{{this.product.productName}}</span>
+                    </td>
+                        <td>{{this.quantity}}</td>
+                        <td>{{this.product.regularPrice}}</td>
+                        <td>₹{{this.price }}</td>
 
-            <ul>
-                <li><strong>Added:</strong>{{formatDate order.createdOn "DD MMMM YYYY"}}</li>
-                <li><strong>Payment Method:</strong> {{order.paymentMethod}}</li>
-                <li><strong>Shipping Charge:</strong> ₹50.00</li>
-                <li><strong>Payment Status:</strong> {{order.paymentStatus}}</li>
+                        <td>₹{{this.totalPrice}}</td>
+                    </tr>
+                    {{/each}}
 
-            </ul>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">Subtotal:</td>
+                        <td>₹{{ formatPrice order.totalOrderPrice}}</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4">Coupon Discount:</td>
+                        <td>{{couponDiscount}}</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4">You Saved:</td>
+                        <td>{{ formatPrice order.discounts}}</td>
+                    </tr>
+
+
+                    <tr>
+                        <td colspan="4">Shipping Rate:</td>
+                        <td>₹50.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><strong>Total:</strong></td>
+                        <td><strong>₹{{formatPrice order.finalAmount}}</strong></td>
+                    </tr>
+                </tfoot>
+          </table>
         </div>
+      </div>
+      <!-- Payment -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <h3 class="h6">Payment Method</h3>
+                <span class="me-3">#{{order.orderId}}</span>
 
-        <!-- Customer Details -->
-        <div class="card">
-            <h2>Customer</h2>
-            <ul>
-                <li><strong>Name:</strong> {{order.address.username}}</li>
-                <li><strong>Email:</strong> {{order.address.email}}</li>
-                <li><strong>Phone:</strong> {{order.address.phone}}</li>
-            </ul>
-        </div>
-
-        <!-- Address Details -->
-        <div class="card">
-            <h2>Delivery Details</h2>
-            {{!-- {{if addressDetails}} --}}
-            <ul>
-                <li><strong>Address Type:</strong> {{addressDetails.addressType}}</li>
-                <li><strong>Name:</strong> {{addressDetails.name}}</li>
-                <li><strong>Phone:</strong> {{addressDetails.phone}}</li>
-                <li><strong>Alternative Phone:</strong> {{addressDetails.altPhone}}</li>
-                <li><strong>City:</strong> {{addressDetails.city}}</li>
-                <li><strong>Landmark:</strong> {{addressDetails.landMark}}</li>
-                <li><strong>State:</strong> {{addressDetails.state}}</li>
-                <li><strong>Pincode:</strong> {{addressDetails.pincode}}</li>
-            </ul>
-            {{!-- {{/if}} --}}
-        </div>
-    </div>
-
-    <!-- Order List -->
-    <div class="order-list">
-        <h2>Order List</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    {{!-- <th>SKU</th> --}}
-                    <th>Quantity</th>
-                    <th>Actual Price</th>
-
-                    <th>Offer Price</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each order.orderItems}}
-                <tr>
-                    <td>{{this.product.productName}} <br> <small>{{this.product.productDetails}}</small></td>
-
-                    <td>{{this.quantity}}</td>
-                    <td>{{this.product.regularPrice}}</td>
-                    <td>₹{{this.price}}</td>
-
-                    <td>₹{{this.totalPrice}}</td>
-                </tr>
-                {{/each}}
-
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4">You Saved:</td>
-                    <td>{{ formatPrice order.discounts }}</td>
-                </tr>
-                <tr>
-                    <td colspan="4">Subtotal:</td>
-                    <td>₹{{ formatPrice order.totalOrderPrice}}</td>
-                </tr>
-
-
-                <tr>
-                    <td colspan="4">Coupon Discount:</td>
-                    <td>{{couponDiscount}}</td>
-                </tr>
-
-
-
-                <tr>
-                    <td colspan="4">Shipping Rate:</td>
-                    <td>₹50.00</td>
-                </tr>
-                <tr>
-                    <td colspan="4"><strong>Total:</strong></td>
-                    <td><strong>₹{{formatPrice order.finalAmount}}</strong></td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
+              <p>{{order.paymentMethod}} <br>
+              Total:₹ {{formatPrice order.finalAmount}} 
+            <span class="badge rounded-pill 
+                {{#if (eq order.paymentStatus 'Pending')}} bg-warning 
+                {{else if (eq order.paymentStatus 'Paid')}} bg-success 
+                {{else if (eq order.paymentStatus 'Awaiting Payment')}} bg-danger 
+                {{else}} bg-info {{/if}}">
+                {{order.paymentStatus}}
+            </span>
+            <div class="status">
+    {{#if (eq order.paymentStatus "Awaiting Payment")}}
+        <p class="text-muted">Order status cannot be updated because the payment is still pending.</p>
+    {{else if (and (neq order.status "Delivered") (neq order.status "Cancelled") (neq order.status "Returned"))}}
+        <form method="POST" action="/admin/statusUpdate/{{order._id}}">
+            <div class="form-group">
+                <label for="status">Order Status</label>
+                <select id="status" name="status" class="form-select form-select-lg mb-3">
+                    <option value="Pending" {{#if (eq order.status "Pending" )}}selected{{/if}}>Pending</option>
+                    <option value="Shipped" {{#if (eq order.status "Shipped" )}}selected{{/if}}>Shipped</option>
+                    <option value="Delivered" {{#if (eq order.status "Delivered" )}}selected{{/if}}>Delivered</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Status</button>
+        </form>
+    {{else}}
+        <p class="text-muted">Order is {{order.status}}.</p>
+    {{/if}}
 </div>
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f9fa;
-        margin: 0;
-        padding: 0;
-    }
-
-    h2 {
-        font-size: 12px;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .header {
-        margin-bottom: 20px;
-    }
-
-    .header h1 {
-        margin: 0;
-    }
-
-    .header nav {
-        font-size: 14px;
-        color: #6c757d;
-    }
-
-    .details-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-
-    .card {
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .card h2 {
-        margin: 0 0 10px;
-    }
 
 
 
-    .order-list table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
 
-    .order-list table th,
-    .order-list table td {
-        border: 1px solid #dee2e6;
-        padding: 10px;
-        text-align: left;
-    }
+              
+              </p>
+            </div>
+            <div class="col-lg-6">
+              <h3 class="h6">Billing address</h3>
+              <address>
+                <strong>{{addressDetails.name}}</strong><br>
+                {{addressDetails.state}} {{addressDetails.city}}, {{addressDetails.landMark}}<br>
+                +91  {{addressDetails.phone}}, {{addressDetails.pincode}}<br>
+                +91 {{addressDetails.altPhone}}
+              </address>
+               {{#if (and (eq order.paymentStatus "Paid") (neq order.status "Cancelled"))}}
+            <button id="downloadInvoiceButton" class="btn btn-primary"> <i class="fa-solid fa-download"></i>Invoice</button>
+            {{/if}}
+             
+            </div>
+             
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <!-- Customer Notes -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="h6">Customer Info</h3>
+           <strong> {{order.address.username}}</strong><br>
+                    {{order.address.email}},+91 {{order.address.phone}}        </div>
+      </div>
+      <div class="card mb-4">
+        <!-- Shipping information -->
+        <div class="card-body">
+          <h3 class="h6">Shipping Information</h3>
+          <hr>
+          <h3 class="h6">Address</h3>
+          <address>
+              <strong>{{addressDetails.name}}</strong><br>
+                {{addressDetails.state}} {{addressDetails.city}}, {{addressDetails.landMark}}<br>
+                +91  {{addressDetails.phone}}, {{addressDetails.pincode}}<br>
+                +91 {{addressDetails.altPhone}}
+          </address>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+  <style>
+    body{
+    background:#eee;
+}
+.card {
+    box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+}
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0,0,0,.125);
+    border-radius: 1rem;
+}
+.text-reset {
+    --bs-text-opacity: 1;
+    color: inherit!important;
+}
+ .product-image img {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+        }
+a {
+    color: #5465ff;
+    text-decoration: none;
+}
+/* Container Styling */
+.status-container {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+}
 
-    .order-list table tfoot td {
-        font-weight: bold;
-    }
-</style>
+/* Textarea Styling */
+.custom-textarea {
+    width: 100%;
+    height: 60px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+    resize: none;
+    font-size: 14px;
+    transition: 0.3s ease-in-out;
+}
+
+.custom-textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Button Styling */
+.custom-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.custom-btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+.payment-dropdown-container {
+    margin-top: 15px;
+    max-width: 350px;
+}
+
+.custom-dropdown select {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s ease;
+}
+
+.custom-dropdown select:focus {
+    border-color: #0056b3;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 91, 187, 0.5);
+}
+
+#proceedButton {
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+#proceedButton:hover {
+    background: #0056b3;
+}
+
+
+  </style>

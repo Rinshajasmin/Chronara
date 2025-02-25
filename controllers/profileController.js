@@ -319,24 +319,54 @@ const getAddAddress = async(req,res)=>{
     }
 }
 
-const getAllAddresses = async(req,res)=>{
+// const getAllAddresses = async(req,res)=>{
 
-    try {
-        console.log("hello")
-        const userId = req.session.user; // Get user ID from session
-        const userData = await User.findById(userId); // Fetch user data
-        const addressData = await Address.findOne({ userId: userId ,isDeleted:false}); // Fetch the address document
+//     try {
+//         console.log("hello")
+//         const userId = req.session.user; // Get user ID from session
+//         const userData = await User.findById(userId); // Fetch user data
+//         const addressData = await Address.findOne({ userId: userId ,isDeleted:false}); // Fetch the address document
 
-        if (!addressData || !addressData.address || addressData.address.length === 0) {
-            return res.render('user/userAddresses', { user: userData, userAddress: null }); // No addresses found
-        }
-        console.log("addreaas details",addressData)
-        res.render('user/userAddresses', { user: userData, userAddress: addressData.address,username:userData.username }); // Pass only the array
-    } catch (error) {
-        console.error("Error while retrieving user profile:", error);
-        res.redirect('/user/error');
-    }
+//         if (!addressData || !addressData.address || addressData.address.length === 0) {
+//             return res.render('user/userAddresses', { user: userData, userAddress: null }); // No addresses found
+//         }
+//         console.log("addreaas details",addressData)
+//         res.render('user/userAddresses', { user: userData, userAddress: addressData.address,username:userData.username }); // Pass only the array
+//     } catch (error) {
+//         console.error("Error while retrieving user profile:", error);
+//         res.redirect('/user/error');
+//     }
+// };
+
+const getAllAddresses = async (req, res) => {
+  try {
+      console.log("Fetching addresses...");
+
+      const userId = req.session.user; // Get user ID from session
+      const userData = await User.findById(userId); // Fetch user data
+      const addressData = await Address.findOne({ userId: userId }); // Fetch the address document
+
+      if (!addressData || !addressData.address || addressData.address.length === 0) {
+          return res.render('user/userAddresses', { user: userData, userAddress: null });
+      }
+
+      // ✅ Filter out soft-deleted addresses
+      const activeAddresses = addressData.address.filter(addr => !addr.isDeleted);
+
+      console.log("Filtered Address Details:", activeAddresses);
+
+      res.render('user/userAddresses', { 
+          user: userData, 
+          userAddress: activeAddresses,  // ✅ Only show non-deleted addresses
+          username: userData.username 
+      });
+
+  } catch (error) {
+      console.error("Error while retrieving user profile:", error);
+      res.redirect('/user/error');
+  }
 };
+
 
 
 const postAddAddress = async(req,res)=>{
@@ -378,8 +408,8 @@ const deleteAddress = async (req, res) => {
         }
 
         const userAddress = await Address.findOneAndUpdate(
-            { userId: userId },
-            { $pull: { address: { _id: addressId } } }, // Remove the specific address
+            { userId: userId, "address._id": addressId }, 
+            { $set: { "address.$.isDeleted": true } }, 
             { new: true }
         );
 
