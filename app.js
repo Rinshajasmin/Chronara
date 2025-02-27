@@ -12,6 +12,8 @@ const env = require("dotenv").config();
 const db = require("./config/db");
 db();
 const moment = require("moment");
+const hbsHelpers = require("./hbsHelpers");
+
 const nocache = require("nocache");
 app.use(nocache());
 
@@ -54,78 +56,7 @@ app.engine(
       __dirname + "/views/user", // User-specific partials
       __dirname + "/views/admin", // Admin-specific partials
     ],
-    helpers: {
-      formatDate: (date, format) => moment(date).local().format(format),
-      eq: (a, b) => {
-        return a === b; // Return true or false for equality check
-      },
-      statusClass: (status) => {
-        switch (status) {
-          case "Pending":
-            return "text-warning";
-          case "Shipped":
-            return "text-primary";
-          case "Delivered":
-            return "text-success";
-          case "Cancelled":
-            return "text-danger";
-          default:
-            return "text-secondary";
-        }
-      },
-      or: function (v1, v2) {
-        return v1 || v2;
-      },
-      isActive: function (expiryDate) {
-        const currentDate = moment(); // Get the current date
-        const expiry = moment(expiryDate); // Convert expiry date to moment object
-        return currentDate.isBefore(expiry); // Return true if the current date is before expiry date
-      },
-      ifCond: function (value1, value2, options) {
-        return value1 === value2 ? options.fn(this) : options.inverse(this);
-      },
-      neq: function (a, b) {
-        return a !== b; // Return true if not equal
-      },
-      // New helper to perform logical AND
-      and: function () {
-        const args = Array.prototype.slice.call(arguments, 0, -1); // Exclude the options object
-        return args.every(Boolean); // Return true if all arguments are truthy
-      },
-      contains: function (value, substring) {
-        return value && value.includes(substring); // Check if value contains substring
-      },
-      ifEquals: function (value1, value2, options) {
-        // Ensure both values are defined before comparison
-        if (value1 == null || value2 == null) {
-          return options.inverse(this); // Render the "else" block if either value is undefined or null
-        }
-
-        // Compare their string representations
-        if (value1.toString() === value2.toString()) {
-          return options.fn(this); // Render the "if" block if they are equal
-        }
-        return options.inverse(this); // Render the "else" block otherwise
-      },
-      add: (a, b) => a + b, // Add two numbers
-      subtract: (a, b) => a - b, // Subtract one number from another
-      range: (start, end) => {
-        const range = [];
-        for (let i = start; i <= end; i++) {
-          range.push(i);
-        }
-        return range; // Return an array of numbers from start to end
-      },
-      gt: (a, b) => a > b, // Greater than comparison
-      lt: (a, b) => a < b, // Less than comparison
-      json: function (context) {
-        return JSON.stringify(context);
-      },
-
-      formatPrice: function (value) {
-        return Number(value).toFixed(2);
-      },
-    },
+    helpers: hbsHelpers,
     runtimeOptions: {
       allowProtoPropertiesByDefault: true,
     },
